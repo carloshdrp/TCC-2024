@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  VERIFIED
+  USER
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  email         String          @unique
+  name          String
+  password      String
+  role          Role            @default(USER)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  posts         Post[]
+  comments      Comment[]
+  Token         Token[]
+  FlashCard     FlashCard[]
+  CommentRate   CommentRate[]
+  FlashCardRate FlashCardRate[]
+}
+
+// Fórum
+model Post {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  body      String
+  solved    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  comments  Comment[]
+}
+
+model Comment {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  comment     String
+  pinned      Boolean       @default(false)
+  post        Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId      String        @db.ObjectId
+  User        User          @relation(fields: [userId], references: [id])
+  userId      String        @db.ObjectId
+  CommentRate CommentRate[]
+}
+
+model CommentRate {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  value     Int
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String  @db.ObjectId
+  User      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique @db.ObjectId
+}
+
+// Flash Cards
+model FlashCard {
+  id                String              @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  category          String
+  author            User                @relation(fields: [userId], references: [id])
+  userId            String              @db.ObjectId
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  flashCardQuestion FlashCardQuestion[]
+  FlashCardRate     FlashCardRate[]
+}
+
+model FlashCardQuestion {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  difficulty  String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  answer      FlashCardAnswer[]
+  FlashCard   FlashCard?        @relation(fields: [flashCardId], references: [id], onDelete: Cascade)
+  flashCardId String?           @db.ObjectId
+}
+
+model FlashCardAnswer {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  content             String
+  correct             Boolean
+  flashCardQuestion   FlashCardQuestion @relation(fields: [flashCardQuestionId], references: [id], onDelete: Cascade)
+  flashCardQuestionId String            @db.ObjectId
+}
+
+model FlashCardRate {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  value       Int
+  flashCard   FlashCard @relation(fields: [flashCardId], references: [id], onDelete: Cascade)
+  flashCardId String    @db.ObjectId
+  User        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique @db.ObjectId
+}
+
+// Autenticação:
+model Token {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  token       String    @unique
+  type        TokenType
+  expires     DateTime
+  blackListed Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @db.ObjectId
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
