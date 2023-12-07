@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import * as authServices from "../services/AuthServices";
+import * as authServices from "../../api/services/authServices";
 
 // Async thunks
 export const loginUser = createAsyncThunk(
@@ -11,7 +11,7 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 // Inicial state
