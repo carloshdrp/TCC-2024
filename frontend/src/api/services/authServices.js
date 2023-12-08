@@ -38,3 +38,14 @@ export const setAuthToken = (token) => {
     delete axios.defaults.headers.common["Authorization"];
   }
 };
+
+export const verifyToken = async (token) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/verify-token`, {
+      token,
+    });
+    return response.data.valid;
+  } catch (error) {
+    return false;
+  }
+};

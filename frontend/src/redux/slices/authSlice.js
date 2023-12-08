@@ -9,7 +9,27 @@ export const loginUser = createAsyncThunk(
       const response = await authServices.loginUser(userData);
       return response.user;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue("Erro ao realizar login");
+      }
+    }
+  },
+);
+
+export const checkTokenValidity = createAsyncThunk(
+  "auth/checkTokenValidity",
+  async (_, { dispatch }) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      const isValid = await authServices.verifyToken(accessToken);
+      if (isValid) {
+        const user = {};
+        dispatch(setUser(user));
+      } else {
+        dispatch(logoutUser());
+      }
     }
   },
 );
@@ -33,18 +53,19 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
   },
-  extraReducers: {
-    [loginUser.pending]: (state) => {
-      state.status = "loading";
-    },
-    [loginUser.fulfilled]: (state, action) => {
-      state.status = "succeeded";
-      state.user = action.payload;
-    },
-    [loginUser.rejected]: (state, action) => {
-      state.status = "failed";
-      state.error = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
 

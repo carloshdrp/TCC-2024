@@ -28,9 +28,16 @@ const refreshTokens = {
   }),
 };
 
+const verifyToken = {
+  body: Joi.object().keys({
+    token: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   register,
   login,
   logout,
   refreshTokens,
+  verifyToken,
 };

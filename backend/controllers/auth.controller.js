@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService } = require('../services');
+const { tokenTypes } = require('../config/token');
 
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -25,9 +26,21 @@ const refreshTokens = catchAsync(async (req, res) => {
   res.send({ ...tokens });
 });
 
+const verifyToken = catchAsync(async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    await tokenService.verifyToken(token, tokenTypes.ACCESS);
+    res.status(httpStatus.OK).send({ valid: true });
+  } catch (error) {
+    res.status(httpStatus.UNAUTHORIZED).send({ valid: false, message: error.message });
+  }
+});
+
 module.exports = {
   register,
   login,
   logout,
   refreshTokens,
+  verifyToken,
 };

@@ -40,7 +40,7 @@ const attachUser = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Usuário não encontrado');
   }
   req.user = user;
-  req.resourceOwnerId = user.userId;
+  req.resourceOwnerId = user.id;
   next();
 });
 
