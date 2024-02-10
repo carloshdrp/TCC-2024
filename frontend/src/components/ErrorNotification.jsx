@@ -11,9 +11,11 @@ const ErrorNotification = ({ error }) => {
         : error.message || "Ocorreu um erro desconhecido.";
 
     notification.error({
+      type: "error",
       message: `Erro ${error.code || ""}`,
       description: errorMessage,
     });
+    ("");
   }, [error]);
 
   return null;

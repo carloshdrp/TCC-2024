@@ -1,0 +1,13 @@
+#nav-container > a {
+  border-radius: 57px;
+  border: 2px solid var(--Neutral-6, #bfbfbf);
+  padding: 2px 20px;
+  color: #333;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+#nav-container > a.active {
+  border: 2px solid var(--Text, #333);
+}

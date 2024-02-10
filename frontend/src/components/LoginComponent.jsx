@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slices/authSlice";
+import { clearAuthError, loginUser } from "../redux/slices/authSlice";
 import { Form, Input, Button } from "antd";
 import ErrorNotification from "./ErrorNotification.jsx";
 
@@ -13,30 +13,45 @@ const LoginComponent = () => {
     dispatch(loginUser(values));
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(clearAuthError());
+    };
+  }, [dispatch]);
+
   return (
     <>
       <ErrorNotification error={authError} />
 
-      <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
+      <Form
+        name="login"
+        initialValues={{ remember: true }}
+        layout="vertical"
+        className="text-left mb-[5px]"
+        onFinish={onFinish}
+      >
         <Form.Item
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+          label="Email:"
+          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
         >
-          <Input placeholder="Email" />
+          <Input placeholder="Digite seu email" />
         </Form.Item>
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          label="Senha:"
+          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
         >
-          <Input.Password placeholder="Password" />
+          <Input.Password placeholder="Digite sua senha" />
         </Form.Item>
         <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
+            className="w-full mt-2"
             loading={authStatus === "loading"}
           >
-            Login
+            Entrar
           </Button>
         </Form.Item>
       </Form>

@@ -15,7 +15,7 @@ export const loginUser = createAsyncThunk(
         return rejectWithValue("Erro ao realizar login");
       }
     }
-  },
+  }
 );
 
 export const checkTokenValidity = createAsyncThunk(
@@ -31,7 +31,7 @@ export const checkTokenValidity = createAsyncThunk(
         dispatch(logoutUser());
       }
     }
-  },
+  }
 );
 
 // Inicial state
@@ -52,6 +52,9 @@ const authSlice = createSlice({
     setUser(state, action) {
       state.user = action.payload;
     },
+    clearAuthError(state) {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -69,6 +72,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser, setUser } = authSlice.actions;
+export const { logoutUser, setUser, clearAuthError } = authSlice.actions;
 
 export default authSlice.reducer;
