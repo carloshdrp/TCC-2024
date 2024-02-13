@@ -9,5 +9,10 @@
     "wireframe": false,
     "colorBgLayout": "#f5f5f5",
     "colorBgBase": "#f5f5f5"
+  },
+  "components": {
+    "Form": {
+      "itemMarginBottom": "10px"
+    }
   }
 }

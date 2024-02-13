@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthError, loginUser } from "../redux/slices/authSlice";
 import { Form, Input, Button } from "antd";
@@ -18,12 +18,14 @@ const LoginComponent = () => {
       dispatch(clearAuthError());
     };
   }, [dispatch]);
+  const [form] = Form.useForm();
 
   return (
     <>
       <ErrorNotification error={authError} />
 
       <Form
+        form={form}
         name="login"
         initialValues={{ remember: true }}
         layout="vertical"
@@ -33,13 +35,18 @@ const LoginComponent = () => {
         <Form.Item
           name="email"
           label="Email:"
-          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
+          hasFeedback="true"
+          rules={[
+            { required: true, message: "Este é um campo obrigatório!" },
+            { type: "email", message: "Por favor, insira um email válido!" },
+          ]}
         >
           <Input placeholder="Digite seu email" />
         </Form.Item>
         <Form.Item
           name="password"
           label="Senha:"
+          hasFeedback="true"
           rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
         >
           <Input.Password placeholder="Digite sua senha" />
@@ -48,7 +55,7 @@ const LoginComponent = () => {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full mt-2"
+            className="w-full mt-2 mb-[20px]"
             loading={authStatus === "loading"}
           >
             Entrar

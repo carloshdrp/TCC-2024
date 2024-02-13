@@ -9,7 +9,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
 
   if (!user || !(await isPasswordMatch(user, password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Senha ou email incorretos');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Email ou senha incorretos');
   }
   return user;
 };

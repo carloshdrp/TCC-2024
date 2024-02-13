@@ -15,6 +15,7 @@
     "antd": "^5.12.1",
     "axios": "^1.6.2",
     "dotenv": "^16.3.1",
+    "framer-motion": "^11.0.3",
     "lucide-react": "^0.323.0",
     "path": "^0.12.7",
     "react": "^18.2.0",
