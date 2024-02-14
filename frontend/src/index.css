@@ -138,4 +138,28 @@ body {
 
   border-radius: 50px;
   border: 1px solid #3f51b5;
+  transition: all 0.3s ease-in-out;
+
+  overflow: hidden;
+}
+
+.btn-nav-icon {
+  @apply relative flex items-center justify-center w-0 h-0 rounded-full;
+  transition: all 0.5s ease-in-out;
+}
+
+.btn-nav:hover > .btn-nav-icon {
+  @apply w-5 h-5;
+}
+
+.btn-nav-icon > svg {
+  @apply rounded-full bg-primary;
+  width: 1.25rem;
+  height: 1.25rem;
+  transform: translateX(120%);
+  transition: transform 0.5s ease-in-out;
+}
+
+.btn-nav:hover > .btn-nav-icon > svg {
+  transform: translateX(0);
 }

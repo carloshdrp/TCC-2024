@@ -14,7 +14,7 @@ function Home() {
           <motion.span
             initial={{ color: "#333" }}
             animate={{ color: "#3F51B5" }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            transition={{ duration: 1, delay: 0.5 }}
             className="relative"
           >
             aprendizado{" "}
@@ -23,7 +23,7 @@ function Home() {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -100, opacity: 0 }}
-              transition={{ duration: 0.45, ease: "easeInOut", delay: 0.1 }}
+              transition={{ duration: 0.45, ease: "easeInOut", delay: 0.4 }}
               className="absolute bottom-0 -left-3"
             ></motion.img>
           </motion.span>
@@ -31,7 +31,7 @@ function Home() {
           <motion.span
             initial={{ color: "#333" }}
             animate={{ color: "#FF4081" }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            transition={{ duration: 1, delay: 0.3 }}
             className="relative"
           >
             aventura{" "}

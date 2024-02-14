@@ -1,14 +1,28 @@
 import { Layout, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 import "../../styles/layout.css";
-import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useEffect } from "react";
 
 import PropTypes from "prop-types";
 
 const LayoutComponent = ({ children }) => {
+  const location = useLocation();
+  const titles = {
+    "/forum": "Fórum",
+    "/pratice": "Praticar",
+    "/login": "Entrar",
+    "/register": "Registrar",
+    "/contact": "Contato",
+  };
+
+  useEffect(() => {
+    const title = titles[location.pathname];
+    document.title = title ? `${title} - Nome` : "Nome";
+  }, [location]);
   return (
     <Layout className="min-h-[100vh]">
       <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] bg-transparent">
@@ -20,13 +34,16 @@ const LayoutComponent = ({ children }) => {
           </Title>
         </div>
 
-        <div
-          className="flex items-center justify-center gap-3"
-          id="nav-container"
-        >
-          <Link to="/">Início</Link>
-          <Link to="/forum">Fórum</Link>
-          <Link to="/pratice">Praticar</Link>
+        <div id="nav-container">
+          <Link to="/">
+            Início <ArrowRight />
+          </Link>
+          <Link to="/forum">
+            Fórum <ArrowRight />
+          </Link>
+          <Link to="/pratice">
+            Praticar <ArrowRight />
+          </Link>
         </div>
 
         <div className="flex items-center justify-center h-[30px]">
@@ -35,7 +52,7 @@ const LayoutComponent = ({ children }) => {
           </Link>
           <Link to="/contact" className="btn-nav hover:text-primary">
             Contato
-            <div className="w-[20px] h-[20px] bg-primary  relative flex items-center justify-center rounded-full">
+            <div className="btn-nav-icon">
               <ArrowUpRight size="16" color="white" className="absolute" />
             </div>
           </Link>
