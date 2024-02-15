@@ -8,7 +8,6 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (loginData) => {
   const response = await axios.post(`${API_URL}/auth/login`, loginData);
-  // Armazenar os tokens recebidos localmente, por exemplo, em localStorage
   localStorage.setItem("accessToken", response.data.tokens.access.token);
   localStorage.setItem("refreshToken", response.data.tokens.refresh.token);
   return response.data;

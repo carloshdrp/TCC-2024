@@ -3,11 +3,11 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const passport = require('passport');
+const httpStatus = require('http-status');
 const routes = require('./routes');
 const { jwtStrategy } = require('./config/passport');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const { ApiError } = require('./utils');
-const httpStatus = require('http-status');
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.use(cors(corsOptions));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 100,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: (req, res) => {

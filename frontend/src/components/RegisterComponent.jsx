@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAuthError, loginUser } from "../redux/slices/authSlice";
+import { clearAuthError, registerUser } from "../redux/slices/authSlice";
 import { Form, Input, Button } from "antd";
 import ErrorNotification from "./ErrorNotification.jsx";
 
-const LoginComponent = () => {
+const RegisterComponent = () => {
   const dispatch = useDispatch();
   const authStatus = useSelector((state) => state.auth.status);
   const authError = useSelector((state) => state.auth.error);
 
   const onFinish = (values) => {
-    dispatch(loginUser(values));
+    dispatch(registerUser(values));
   };
 
   useEffect(() => {
@@ -24,14 +24,14 @@ const LoginComponent = () => {
       <ErrorNotification error={authError} />
 
       <Form
-        name="login"
+        name="register"
         initialValues={{ remember: true }}
         layout="vertical"
         className="text-left mb-[5px]"
         onFinish={onFinish}
       >
         <Form.Item
-          name="usuario"
+          name="name"
           label="Usuário:"
           hasFeedback="true"
           rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
@@ -72,4 +72,4 @@ const LoginComponent = () => {
   );
 };
 
-export default LoginComponent;
+export default RegisterComponent;

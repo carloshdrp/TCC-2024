@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoginComponent from "../components/LoginComponent.jsx";
 import { checkTokenValidity } from "../redux/slices/authSlice.js";
-import { Typography } from "antd";
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { Link } from "react-router-dom";
 

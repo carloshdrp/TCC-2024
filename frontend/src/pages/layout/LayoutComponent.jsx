@@ -6,10 +6,13 @@ import "../../styles/layout.css";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
 
 const LayoutComponent = ({ children }) => {
+  const user = useSelector((state) => state.auth.user);
+
   const location = useLocation();
   const titles = {
     "/forum": "Fórum",
@@ -47,9 +50,18 @@ const LayoutComponent = ({ children }) => {
         </div>
 
         <div className="flex items-center justify-center h-[30px]">
-          <Link to="/login" className="text-black mr-[15px] hover:text-black">
-            Entrar
-          </Link>
+          {user ? (
+            <Link
+              to="/profile"
+              className="text-black mr-[15px] hover:text-black"
+            >
+              {user.name}
+            </Link>
+          ) : (
+            <Link to="/login" className="text-black mr-[15px] hover:text-black">
+              Entrar
+            </Link>
+          )}
           <Link to="/contact" className="btn-nav hover:text-primary">
             Contato
             <div className="btn-nav-icon">
