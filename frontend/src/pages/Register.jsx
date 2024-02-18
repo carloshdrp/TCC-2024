@@ -1,20 +1,8 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import RegisterComponent from "../components/RegisterComponent.jsx";
-import { checkTokenValidity } from "../redux/slices/authSlice.js";
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { Link } from "react-router-dom";
 
 function Register() {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-
-  useEffect(() => {
-    if (!user) {
-      dispatch(checkTokenValidity());
-    }
-  }, [dispatch, user]);
-
   return (
     <LayoutComponent>
       <div

@@ -1,20 +1,8 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { checkTokenValidity } from "../redux/slices/authSlice.js";
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { Result } from "antd";
 import { Link } from "react-router-dom";
 
 function NotFound() {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-
-  useEffect(() => {
-    if (!user) {
-      dispatch(checkTokenValidity());
-    }
-  }, [dispatch, user]);
-
   return (
     <LayoutComponent>
       <div

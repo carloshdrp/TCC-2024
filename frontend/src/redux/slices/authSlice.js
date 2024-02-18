@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as authServices from "../../api/services/authServices";
 
-// Async thunks
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
@@ -34,38 +33,28 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const checkTokenValidity = createAsyncThunk(
-  "auth/checkTokenValidity",
-  async (_, { dispatch }) => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      const isValid = await authServices.verifyToken(accessToken);
-      if (isValid) {
-        const user = {};
-        dispatch(setUser(user));
-      } else {
-        dispatch(logoutUser());
-      }
-    }
-  }
-);
-
 const initialState = {
   user: null,
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
+  token: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setUser(state, action) {
+      const { user, accessToken } = action.payload;
+
+      state.user = user;
+      state.token = accessToken;
+    },
     logoutUser(state) {
       state.user = null;
+      state.token = null;
+
       authServices.logoutUser();
-    },
-    setUser(state, action) {
-      state.user = action.payload;
     },
     clearAuthError(state) {
       state.error = null;
@@ -98,6 +87,9 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser, setUser, clearAuthError } = authSlice.actions;
+export const { setUser, logoutUser, clearAuthError } = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const selectCurrentUser = (state) => state.auth.user;
+export const selectCurrentToken = (state) => state.auth.token;

@@ -1,10 +1,10 @@
-import { Layout, Typography } from "antd";
+import { Layout, Typography, Avatar } from "antd";
 import { Link, useLocation } from "react-router-dom";
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 import "../../styles/layout.css";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -49,12 +49,18 @@ const LayoutComponent = ({ children }) => {
           </Link>
         </div>
 
-        <div className="flex items-center justify-center h-[30px]">
+        <div className="flex items-center justify-center h-[30px] ">
           {user ? (
             <Link
               to="/profile"
-              className="text-black mr-[15px] hover:text-black"
+              className="text-black mr-[15px] hover:text-black  flex items-center px-2 gap-2"
             >
+              <Avatar
+                className="pt-0.5"
+                size={24}
+                src={user.avatar}
+                icon={!user.avatar && <UserRound />}
+              />
               {user.name}
             </Link>
           ) : (
