@@ -3,6 +3,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Profile from "./pages/Profile.jsx";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { PrivateRoutes } from "./utils/PrivateRoute.jsx";
@@ -22,7 +23,9 @@ function App() {
           <Route path="register" element={<Register />} />
         </Route>
 
-        <Route element={<PrivateRoutes />}></Route>
+        <Route element={<PrivateRoutes />}>
+          <Route path="profile" element={<Profile />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   );

@@ -9,9 +9,10 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
+import { selectCurrentUser } from "../../redux/slices/authSlice";
 
 const LayoutComponent = ({ children }) => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector(selectCurrentUser);
 
   const location = useLocation();
   const titles = {
@@ -20,6 +21,7 @@ const LayoutComponent = ({ children }) => {
     "/login": "Entrar",
     "/register": "Registrar",
     "/contact": "Contato",
+    "/profile": "Perfil",
   };
 
   useEffect(() => {

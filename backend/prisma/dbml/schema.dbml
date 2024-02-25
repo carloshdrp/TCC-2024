@@ -1,0 +1,138 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  name String [not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  posts Post [not null]
+  comments Comment [not null]
+  Token Token [not null]
+  FlashCard FlashCard [not null]
+  CommentRate CommentRate [not null]
+  FlashCardRate FlashCardRate [not null]
+}
+
+Table Post {
+  id String [pk]
+  title String [not null]
+  body String [not null]
+  solved Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  author User [not null]
+  authorId String [not null]
+  comments Comment [not null]
+}
+
+Table Comment {
+  id String [pk]
+  comment String [not null]
+  pinned Boolean [not null, default: false]
+  post Post [not null]
+  postId String [not null]
+  User User [not null]
+  userId String [not null]
+  CommentRate CommentRate [not null]
+}
+
+Table CommentRate {
+  id String [pk]
+  value Int [not null]
+  comment Comment [not null]
+  commentId String [not null]
+  User User [not null]
+  userId String [unique, not null]
+}
+
+Table FlashCard {
+  id String [pk]
+  title String [not null]
+  category String [not null]
+  author User [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  flashCardQuestion FlashCardQuestion [not null]
+  FlashCardRate FlashCardRate [not null]
+}
+
+Table FlashCardQuestion {
+  id String [pk]
+  content String [not null]
+  difficulty String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  answer FlashCardAnswer [not null]
+  FlashCard FlashCard
+  flashCardId String
+}
+
+Table FlashCardAnswer {
+  id String [pk]
+  content String [not null]
+  correct Boolean [not null]
+  flashCardQuestion FlashCardQuestion [not null]
+  flashCardQuestionId String [not null]
+}
+
+Table FlashCardRate {
+  id String [pk]
+  value Int [not null]
+  flashCard FlashCard [not null]
+  flashCardId String [not null]
+  User User [not null]
+  userId String [unique, not null]
+}
+
+Table Token {
+  id String [pk]
+  token String [unique, not null]
+  type TokenType [not null]
+  expires DateTime [not null]
+  blackListed Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  User User [not null]
+  userId String [not null]
+}
+
+Enum Role {
+  ADMIN
+  VERIFIED
+  USER
+}
+
+Enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+Ref: Post.authorId > User.id
+
+Ref: Comment.postId > Post.id [delete: Cascade]
+
+Ref: Comment.userId > User.id
+
+Ref: CommentRate.commentId > Comment.id [delete: Cascade]
+
+Ref: CommentRate.userId > User.id
+
+Ref: FlashCard.userId > User.id
+
+Ref: FlashCardQuestion.flashCardId > FlashCard.id [delete: Cascade]
+
+Ref: FlashCardAnswer.flashCardQuestionId > FlashCardQuestion.id [delete: Cascade]
+
+Ref: FlashCardRate.flashCardId > FlashCard.id [delete: Cascade]
+
+Ref: FlashCardRate.userId > User.id
+
+Ref: Token.userId > User.id [delete: Cascade]

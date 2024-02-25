@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await authServices.loginUser(userData);
-      return response.user;
+      return response;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -22,7 +22,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await authServices.registerUser(userData);
-      return response.user;
+      return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -45,10 +45,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      const { user, accessToken } = action.payload;
+      const { user, token } = action.payload;
 
       state.user = user;
-      state.token = accessToken;
+      state.token = token;
     },
     logoutUser(state) {
       state.user = null;
@@ -67,18 +67,20 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.tokens.access.token;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload;
+        state.error = action.error.message;
       })
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.tokens.access.token;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
