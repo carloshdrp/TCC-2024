@@ -60,7 +60,7 @@ const LayoutComponent = ({ children }) => {
               <Avatar
                 className="pt-0.5"
                 size={24}
-                src={user.avatar}
+                src={"http://localhost:8080/uploads/" + user.avatar}
                 icon={!user.avatar && <UserRound />}
               />
               {user.name}

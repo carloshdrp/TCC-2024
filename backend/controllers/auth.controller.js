@@ -4,6 +4,16 @@ const { authService, userService, tokenService } = require('../services');
 const { tokenTypes } = require('../config/token');
 
 const register = catchAsync(async (req, res) => {
+  const { email, password, name } = req.body;
+
+  if (!email || !password || !name) {
+    throw new Error('"email", "password", and "name" are required');
+  }
+
+  if (req.file) {
+    req.body.avatar = req.file.path;
+  }
+
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.CREATED).send({ user, tokens });

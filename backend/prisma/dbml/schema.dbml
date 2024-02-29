@@ -8,86 +8,105 @@ Table User {
   name String [not null]
   password String [not null]
   role Role [not null, default: 'USER']
+  avatar String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  posts Post [not null]
-  comments Comment [not null]
+  points Int [not null, default: 0]
+  league League [not null, default: 'Topaz']
   Token Token [not null]
-  FlashCard FlashCard [not null]
-  CommentRate CommentRate [not null]
-  FlashCardRate FlashCardRate [not null]
+  UserAchievements UserAchievements [not null]
+  Question Question [not null]
+  Report Report [not null]
+  Answer Answer [not null]
+  Rating Rating [not null]
+  Quiz Quiz [not null]
 }
 
-Table Post {
+Table Achievement {
   id String [pk]
   title String [not null]
-  body String [not null]
-  solved Boolean [not null, default: false]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  author User [not null]
-  authorId String [not null]
-  comments Comment [not null]
+  image String [not null]
+  description String [not null]
+  UserAchievements UserAchievements [not null]
 }
 
-Table Comment {
+Table UserAchievements {
   id String [pk]
-  comment String [not null]
-  pinned Boolean [not null, default: false]
-  post Post [not null]
-  postId String [not null]
-  User User [not null]
   userId String [not null]
-  CommentRate CommentRate [not null]
+  achievementId String [not null]
+  user User [not null]
+  achievement Achievement [not null]
+
+  indexes {
+    (userId, achievementId) [unique]
+  }
 }
 
-Table CommentRate {
-  id String [pk]
-  value Int [not null]
-  comment Comment [not null]
-  commentId String [not null]
-  User User [not null]
-  userId String [unique, not null]
-}
-
-Table FlashCard {
+Table Question {
   id String [pk]
   title String [not null]
-  category String [not null]
-  author User [not null]
+  description String [not null]
+  status Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
   userId String [not null]
+  Answer Answer [not null]
+}
+
+Table Answer {
+  id String [pk]
+  description String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  flashCardQuestion FlashCardQuestion [not null]
-  FlashCardRate FlashCardRate [not null]
+  user User [not null]
+  userId String [not null]
+  question Question [not null]
+  questionId String [not null]
 }
 
-Table FlashCardQuestion {
+Table Quiz {
   id String [pk]
-  content String [not null]
-  difficulty String [not null]
+  title String [not null]
+  description String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  answer FlashCardAnswer [not null]
-  FlashCard FlashCard
-  flashCardId String
+  user User [not null]
+  userId String [not null]
+  Question quizQuestion [not null]
 }
 
-Table FlashCardAnswer {
+Table quizQuestion {
   id String [pk]
-  content String [not null]
-  correct Boolean [not null]
-  flashCardQuestion FlashCardQuestion [not null]
-  flashCardQuestionId String [not null]
+  description String [not null]
+  correct String [not null]
+  wrong1 String [not null]
+  wrong2 String [not null]
+  wrong3 String [not null]
+  wrong4 String [not null]
+  quiz Quiz [not null]
+  quizId String [not null]
 }
 
-Table FlashCardRate {
+Table Report {
   id String [pk]
-  value Int [not null]
-  flashCard FlashCard [not null]
-  flashCardId String [not null]
-  User User [not null]
-  userId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  reportedBy User [not null]
+  userId String [not null]
+  reportableId String [not null]
+  reportableType ReportableType [not null]
+}
+
+Table Rating {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  ratedBy User [not null]
+  userId String [not null]
+  score Int [not null, default: 0]
+  rateableId String [not null]
+  rateableType RateableType [not null]
 }
 
 Table Token {
@@ -108,6 +127,25 @@ Enum Role {
   USER
 }
 
+Enum League {
+  Topaz
+  Rubi
+  Esmeralda
+  Ametista
+  Diamante
+}
+
+Enum ReportableType {
+  QUESTION
+  ANSWER
+  QUIZ
+}
+
+Enum RateableType {
+  ANSWER
+  QUIZ
+}
+
 Enum TokenType {
   ACCESS
   REFRESH
@@ -115,24 +153,22 @@ Enum TokenType {
   VERIFY_EMAIL
 }
 
-Ref: Post.authorId > User.id
+Ref: UserAchievements.userId > User.id
 
-Ref: Comment.postId > Post.id [delete: Cascade]
+Ref: UserAchievements.achievementId > Achievement.id
 
-Ref: Comment.userId > User.id
+Ref: Question.userId > User.id
 
-Ref: CommentRate.commentId > Comment.id [delete: Cascade]
+Ref: Answer.userId > User.id
 
-Ref: CommentRate.userId > User.id
+Ref: Answer.questionId > Question.id
 
-Ref: FlashCard.userId > User.id
+Ref: Quiz.userId > User.id
 
-Ref: FlashCardQuestion.flashCardId > FlashCard.id [delete: Cascade]
+Ref: quizQuestion.quizId > Quiz.id
 
-Ref: FlashCardAnswer.flashCardQuestionId > FlashCardQuestion.id [delete: Cascade]
+Ref: Report.userId > User.id
 
-Ref: FlashCardRate.flashCardId > FlashCard.id [delete: Cascade]
-
-Ref: FlashCardRate.userId > User.id
+Ref: Rating.userId > User.id
 
 Ref: Token.userId > User.id [delete: Cascade]
