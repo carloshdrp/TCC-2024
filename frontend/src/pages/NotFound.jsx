@@ -1,8 +1,9 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
-import { Result } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function NotFound() {
+  const navigate = useNavigate();
   return (
     <LayoutComponent>
       <div
@@ -13,9 +14,9 @@ function NotFound() {
           title="404"
           subTitle="Desculpe, a página que você visitou não existe."
           extra={
-            <Link to="/" className="btn-full">
-              Voltar ao início
-            </Link>
+            <Button onClick={() => navigate(-1)} type="primary" size="large">
+              Voltar à página anterior
+            </Button>
           }
         />{" "}
       </div>

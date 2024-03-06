@@ -58,8 +58,7 @@ const LayoutComponent = ({ children }) => {
               className="text-black mr-[15px] hover:text-black  flex items-center px-2 gap-2"
             >
               <Avatar
-                className="pt-0.5"
-                size={24}
+                size="large"
                 src={"http://localhost:8080/uploads/" + user.avatar}
                 icon={!user.avatar && <UserRound />}
               />

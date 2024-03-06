@@ -10,6 +10,7 @@ import { Form, Input, message, Upload, Button } from "antd";
 import ErrorNotification from "./ErrorNotification.jsx";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice";
 import { useNavigate } from "react-router-dom";
+import ImgCrop from "antd-img-crop";
 
 const RegisterComponent = () => {
   const token = useSelector(selectCurrentToken);
@@ -20,13 +21,21 @@ const RegisterComponent = () => {
     name: "avatar",
     action: "http://localhost:8080/auth/avatar",
     maxCount: 1,
+    listType: "picture",
     headers: {
       authorization: "Bearer " + token,
     },
     beforeUpload: (file) => {
-      const isAccept = file.type === "image/png" || file.type === "image/jpeg";
+      let isAccept = file.type === "image/png" || file.type === "image/jpeg";
       if (!isAccept) {
         message.error(`${file.name} deve ser PNG ou JPG!`);
+      }
+
+      console.log(file.size);
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        isAccept = false;
+        message.error("O avatar precisa ter menos de 5MB!");
       }
       return isAccept || Upload.LIST_IGNORE;
     },
@@ -105,7 +114,13 @@ const RegisterComponent = () => {
           name="password"
           hasFeedback="true"
           label="Senha:"
-          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
+          rules={[
+            { required: true, message: "Este é um campo obrigatório!" },
+            {
+              min: 8,
+              message: "A senha deve ter no mínimo 8 caracteres!",
+            },
+          ]}
         >
           <Input.Password placeholder="Digite sua senha" />
         </Form.Item>
@@ -115,16 +130,13 @@ const RegisterComponent = () => {
           label="Avatar:"
           tooltip="São aceitos arquivos JPG e PNG"
         >
-          <Upload {...props}>
-            <Button
-              icon={<UploadOutlined />}
-              style={{
-                width: "352px",
-              }}
-            >
-              Selecione um arquivo
-            </Button>
-          </Upload>
+          <ImgCrop rotationSlider>
+            <Upload {...props}>
+              {!serverFile && (
+                <Button icon={<UploadOutlined />}>Selecione um arquivo</Button>
+              )}
+            </Upload>
+          </ImgCrop>
         </Form.Item>
         <Form.Item>
           <Button

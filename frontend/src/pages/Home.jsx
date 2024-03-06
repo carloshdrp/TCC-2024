@@ -50,7 +50,7 @@ function Home() {
           seu processo de aprendizagem e desenvolvimento pessoal.
         </p>
         <Link to="/register" className="btn-home">
-          <p>Inicie sua jornada</p>
+          <p className="text-white">Inicie sua jornada</p>
           <div className="icon-container w-[20px] h-[20px] bg-background relative flex items-center justify-center rounded-full">
             <ArrowUpRight size="16" className="icon text-primary" />
           </div>

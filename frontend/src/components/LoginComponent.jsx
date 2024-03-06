@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -49,7 +49,13 @@ const LoginComponent = () => {
           name="password"
           label="Senha:"
           hasFeedback="true"
-          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
+          rules={[
+            { required: true, message: "Este é um campo obrigatório!" },
+            {
+              min: 8,
+              message: "A senha deve ter no mínimo 8 caracteres!",
+            },
+          ]}
         >
           <Input.Password placeholder="Digite sua senha" />
         </Form.Item>
