@@ -1,5 +1,4 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
-import { Link } from "react-router-dom";
 
 function Questions() {
   return (
