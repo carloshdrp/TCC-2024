@@ -9,7 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import { PrivateRoutes } from "./utils/PrivateRoute.jsx";
 import { PublicRoutes } from "./utils/PublicRoute.jsx";
 import Questions from "./pages/Questions.jsx";
-
+import Logout from "./pages/Logout.jsx";
 function App() {
   const location = useLocation();
 
@@ -28,6 +28,7 @@ function App() {
 
         <Route element={<PrivateRoutes />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
     </AnimatePresence>

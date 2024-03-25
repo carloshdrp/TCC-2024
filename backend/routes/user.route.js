@@ -12,4 +12,6 @@ router
   .patch(userController.attachUser, auth('manageUsers'), userController.updateUser)
   .delete(userController.attachUser, auth('manageUsers'), userController.deleteUser);
 
+router.route('/ranking/:userId').get(userController.attachUser, auth('getRanking'), userController.getRanking);
+
 module.exports = router;

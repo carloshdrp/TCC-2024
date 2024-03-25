@@ -16,6 +16,16 @@ const getUsers = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getRanking = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const ranking = await userService.getRanking(userId);
+    res.status(200).json({ ranking });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const getUser = catchAsync(async (req, res) => {
   const user = await userService.getUserById(req.params.userId);
   if (!user) {
@@ -48,6 +58,7 @@ module.exports = {
   createUser,
   getUsers,
   getUser,
+  getRanking,
   updateUser,
   deleteUser,
   attachUser,

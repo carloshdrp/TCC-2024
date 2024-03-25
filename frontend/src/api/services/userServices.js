@@ -26,6 +26,18 @@ export const getUsers = createAsyncThunk(
   }
 );
 
+export const getRanking = createAsyncThunk(
+  "user/getRanking",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/users/ranking/${userId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const getUser = createAsyncThunk(
   "user/getUser",
   async (userId, { rejectWithValue }) => {

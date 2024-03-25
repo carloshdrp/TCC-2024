@@ -6,7 +6,11 @@ export const profileApiSlice = apiSlice.injectEndpoints({
       query: (userId) => `/users/${userId}`,
       keepUnusedDataFor: 5,
     }),
+    getRanking: builder.query({
+      query: (userId) => `/users/ranking/${userId}`,
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
-export const { useGetUsersQuery } = profileApiSlice;
+export const { useGetUsersQuery, useGetRankingQuery } = profileApiSlice;

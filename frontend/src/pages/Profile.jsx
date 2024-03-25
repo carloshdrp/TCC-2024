@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Avatar, Button, Spin } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
+import UserRanking from "../components/UserRanking.jsx";
 import coin from "../assets/coin.png";
 import { Link } from "react-router-dom";
 
@@ -43,6 +44,7 @@ function Profile() {
           <div className="flex flex-col justify-between w-full">
             <p className="text-4xl font-semibold ">{userData.name}</p>
             <UserLeague />
+            <UserRanking />
             <div className="flex items-center gap-1">
               <img src={coin} alt="coin" className="w-5 h-5" />
               <span className="text-lg font-black text-yellow-500">

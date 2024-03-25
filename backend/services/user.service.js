@@ -68,6 +68,26 @@ const deleteUserById = async (userId) => {
   });
 };
 
+const getRanking = async (userId) => {
+  const users = await prisma.user.findMany({
+    include: {
+      Answer: {},
+      Quiz: {},
+    },
+  });
+
+  const usersWithTotal = users.map((user) => ({
+    ...user,
+    total: user.Answer.length + user.Quiz.length,
+  }));
+
+  usersWithTotal.sort((a, b) => b.total - a.total);
+
+  const userRanking = usersWithTotal.findIndex((user) => user.id === userId) + 1;
+
+  return userRanking;
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -75,4 +95,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  getRanking,
 };
