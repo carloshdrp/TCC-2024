@@ -23,8 +23,6 @@ export const refreshTokens = async () => {
   const response = await axios.post(`${API_URL}/auth/refresh-tokens`, {
     refreshToken,
   });
-  // localStorage.setItem("accessToken", response.data.tokens.access.token);
-  // localStorage.setItem("refreshToken", response.data.tokens.refresh.token);
   return response.data;
 };
 

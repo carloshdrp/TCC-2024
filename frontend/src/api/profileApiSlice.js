@@ -10,7 +10,15 @@ export const profileApiSlice = apiSlice.injectEndpoints({
       query: (userId) => `/users/ranking/${userId}`,
       keepUnusedDataFor: 5,
     }),
+    updateUser: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/users/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useGetRankingQuery } = profileApiSlice;
+export const { useGetUsersQuery, useGetRankingQuery, useUpdateUserMutation } =
+  profileApiSlice;

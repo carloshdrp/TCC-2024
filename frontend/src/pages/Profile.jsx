@@ -1,29 +1,31 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
 import { useGetUsersQuery } from "../api/profileApiSlice";
-import {
-  UserRound,
-  Archive,
-  MessageCircleHeart,
-  MessageCircleMore,
-} from "lucide-react";
+import { UserRound, Archive } from "lucide-react";
 import { Avatar, Button, Spin } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import UserRanking from "../components/UserRanking.jsx";
 import coin from "../assets/coin.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ScrollTop from "../components/ScrollTop.jsx";
+import { QuestionsOverview } from "../components/QuestionsOverview.jsx";
+import { API_AVATAR } from "../config/index.js";
+import { useEffect } from "react";
 
 function Profile() {
   const user = useSelector(selectCurrentUser);
-  const { data: userData, error, isLoading } = useGetUsersQuery(user.id);
+  const {
+    data: userData,
+    error,
+    isLoading,
+    refetch,
+  } = useGetUsersQuery(user.id);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
-    }
-  }, [error]);
+    refetch();
+  }, [user]);
 
   let content;
   if (isLoading) {
@@ -31,15 +33,14 @@ function Profile() {
   } else if (error) {
     content = <p>Erro: {error}</p>;
   } else if (userData) {
-    // content = <p>{JSON.stringify(userData, null, 2)}</p>;
     content = (
       <>
         <header className="flex gap-3 p-3 bg-white shadow-md rounded-xl text-text">
           <Avatar
             shape="square"
             size={150}
-            src={"http://localhost:8080/uploads/" + userData.avatar}
-            icon={!userData.avatar && <UserRound />}
+            src={user.avatar ? API_AVATAR + user.avatar : undefined}
+            icon={!userData.avatar && <UserRound size={46} />}
           />
           <div className="flex flex-col justify-between w-full">
             <p className="text-4xl font-semibold ">{userData.name}</p>
@@ -53,10 +54,15 @@ function Profile() {
               <p>Pontos totais</p>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <Button type="primary">Editar Perfil</Button>
-            <Button type="default">
-              <Link to="/logout">Sair da Conta</Link>
+          <div className="flex flex-col justify-between gap-2">
+            <Button type="primary" onClick={() => navigate("edit")}>
+              Editar Perfil
+            </Button>
+            <Button type="default" onClick={() => navigate("/logout")}>
+              Sair da Conta
+            </Button>
+            <Button type="link" danger>
+              <Link to="#">Excluir Conta</Link>
             </Button>
           </div>
         </header>
@@ -76,11 +82,11 @@ function Profile() {
             <h2>Atividades no Fórum</h2>
             <div className="grid grid-flow-col p-2 text-center bg-white rounded-lg shadow-md">
               <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Tópicos Abertos</h3>
+                <h3 className="m-0">Questões Abertas</h3>
                 <p className="text-4xl font-black"> 0</p>
               </div>
               <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Tópicos Respondidos</h3>
+                <h3 className="m-0">Questões Respondidas</h3>
                 <p className="text-4xl font-black"> 0</p>
               </div>
               <div>
@@ -109,74 +115,9 @@ function Profile() {
           </div>
         </div>
 
-        <h2 className="text-text">Seus Tópicos</h2>
-        <div className="grid grid-cols-2 gap-8 text-text">
-          <article className="flex flex-col p-2 bg-white rounded-lg">
-            <h3 className="m-0">Título</h3>
-            <p>
-              Descrição do artigo vai vir nesta linha aqui na qual eu estou
-              escrevendo.
-            </p>
-            <div className="w-full h-0.5 bg-black bg-opacity-25 rounded my-[5px]" />
-            <div className="flex justify-between">
-              <p>01/01/2023</p>
-              <div className="flex gap-2">
-                <div className="flex">
-                  <MessageCircleMore />
-                  <p>2</p>
-                </div>
-                <div className="flex">
-                  <MessageCircleHeart />
-                  <p>5</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="flex flex-col p-2 bg-white rounded-lg">
-            <h3 className="m-0">Título</h3>
-            <p>
-              Descrição do artigo vai vir nesta linha aqui na qual eu estou
-              escrevendo.
-            </p>
-            <div className="w-full h-0.5 bg-black bg-opacity-25 rounded my-[5px]" />
-            <div className="flex justify-between">
-              <p>01/01/2023</p>
-              <div className="flex gap-2">
-                <div className="flex">
-                  <MessageCircleMore />
-                  <p>2</p>
-                </div>
-                <div className="flex">
-                  <MessageCircleHeart />
-                  <p>5</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="flex flex-col p-2 bg-white rounded-lg">
-            <h3 className="m-0">Título</h3>
-            <p>
-              Descrição do artigo vai vir nesta linha aqui na qual eu estou
-              escrevendo.
-            </p>
-            <div className="w-full h-0.5 bg-black bg-opacity-25 rounded my-[5px]" />
-            <div className="flex justify-between">
-              <p>01/01/2023</p>
-              <div className="flex gap-2">
-                <div className="flex">
-                  <MessageCircleMore />
-                  <p>2</p>
-                </div>
-                <div className="flex">
-                  <MessageCircleHeart />
-                  <p>5</p>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
+        <h2 className="text-text">Suas questões no fórum</h2>
+        <QuestionsOverview />
+        <ScrollTop />
       </>
     );
   }

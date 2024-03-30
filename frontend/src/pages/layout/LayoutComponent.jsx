@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { API_AVATAR, APP_NAME } from "../../config";
 
 import PropTypes from "prop-types";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
@@ -26,7 +27,7 @@ const LayoutComponent = ({ children }) => {
 
   useEffect(() => {
     const title = titles[location.pathname];
-    document.title = title ? `${title} - Nome` : "Nome";
+    document.title = title ? `${title} - ${APP_NAME}` : APP_NAME;
   }, [location]);
   return (
     <Layout className="min-h-[100vh]">
@@ -34,7 +35,7 @@ const LayoutComponent = ({ children }) => {
         <div>
           <Title level={2}>
             <Link to="/" style={{ color: "#333" }}>
-              🚀 Nome
+              🚀 {APP_NAME}
             </Link>
           </Title>
         </div>
@@ -46,8 +47,8 @@ const LayoutComponent = ({ children }) => {
           <Link to="/forum">
             Fórum <ArrowRight />
           </Link>
-          <Link to="/pratice">
-            Praticar <ArrowRight />
+          <Link to="/exercises">
+            Exercícios <ArrowRight />
           </Link>
         </div>
 
@@ -59,7 +60,7 @@ const LayoutComponent = ({ children }) => {
             >
               <Avatar
                 size="large"
-                src={"http://localhost:8080/uploads/" + user.avatar}
+                src={user.avatar ? API_AVATAR + user.avatar : undefined}
                 icon={!user.avatar && <UserRound />}
               />
               {user.name}
@@ -86,7 +87,7 @@ const LayoutComponent = ({ children }) => {
         <Content className="px-[90px]">{children}</Content>
       </motion.div>
 
-      <Footer className="px-[90px] text-center">Nome • 2023</Footer>
+      <Footer className="px-[90px] text-center">{APP_NAME} • 2024</Footer>
     </Layout>
   );
 };

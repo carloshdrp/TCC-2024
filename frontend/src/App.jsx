@@ -8,8 +8,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { PrivateRoutes } from "./utils/PrivateRoute.jsx";
 import { PublicRoutes } from "./utils/PublicRoute.jsx";
-import Questions from "./pages/Questions.jsx";
+import Forum from "./pages/Forum.jsx";
 import Logout from "./pages/Logout.jsx";
+import Exercises from "./pages/Exercises.jsx";
+import ProfileEdit from "./pages/ProfileEdit.jsx";
+
 function App() {
   const location = useLocation();
 
@@ -19,7 +22,8 @@ function App() {
         <Route index element={<Home />} />
         <Route path="*" element={<NotFound />} />
 
-        <Route path="forum" element={<Questions />} />
+        <Route path="forum" element={<Forum />} />
+        <Route path="exercises" element={<Exercises />} />
 
         <Route element={<PublicRoutes />}>
           <Route path="login" element={<Login />} />
@@ -28,6 +32,7 @@ function App() {
 
         <Route element={<PrivateRoutes />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="profile/edit" element={<ProfileEdit />} />
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>

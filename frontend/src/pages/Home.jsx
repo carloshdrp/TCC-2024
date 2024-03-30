@@ -4,6 +4,7 @@ import lineImage2 from "../assets/line-2.svg";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
+import ScrollTop from "../components/ScrollTop.jsx";
 
 function Home() {
   return (
@@ -56,6 +57,7 @@ function Home() {
           </div>
         </Link>
       </div>
+      <ScrollTop />
     </LayoutComponent>
   );
 }

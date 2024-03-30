@@ -1,11 +1,11 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 
-function Questions() {
+function Forum() {
   return (
     <LayoutComponent>
-      <h1>Questões</h1>
+      <h1>Fórum</h1>
     </LayoutComponent>
   );
 }
 
-export default Questions;
+export default Forum;

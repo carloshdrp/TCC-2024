@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { notification } from "antd";
 
 const ErrorNotification = ({ error }) => {
   useEffect(() => {
     if (!error) return;
-
     const errorMessage =
       error.code === 429
         ? "Muitas requisições. Tente novamente mais tarde."

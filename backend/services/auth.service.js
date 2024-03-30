@@ -49,7 +49,6 @@ const refreshAuth = async (refreshToken) => {
 
     return tokenService.generateAuthTokens(user);
   } catch (error) {
-    console.error(error);
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Não autorizado');
   }
 };

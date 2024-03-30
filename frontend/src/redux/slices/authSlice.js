@@ -50,6 +50,9 @@ const authSlice = createSlice({
       state.user = user;
       state.token = token;
     },
+    updateUserState(state, action) {
+      state.user = { ...state.user, ...action.payload };
+    },
     logoutUser(state) {
       state.user = null;
       state.token = null;
@@ -72,7 +75,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
@@ -87,7 +90,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logoutUser, clearAuthError } = authSlice.actions;
+export const { setUser, updateUserState, logoutUser, clearAuthError } =
+  authSlice.actions;
 
 export default authSlice.reducer;
 

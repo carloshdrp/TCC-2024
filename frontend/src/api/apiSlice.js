@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUser, logoutUser } from "../redux/slices/authSlice";
+import { message } from "antd";
 import { API_URL } from "../config";
 
 const baseQuery = fetchBaseQuery({
@@ -18,11 +19,12 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-
-  if (result?.error?.originalStatus === 403) {
-    console.log("Reautenticando...");
-    const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
-    console.log(refreshResult);
+  if (result?.error?.status === 401) {
+    const refreshResult = await baseQuery(
+      "/auth/refresh-tokens",
+      api,
+      extraOptions
+    );
     if (refreshResult?.data) {
       const user = api.getState().auth.user;
 
@@ -31,6 +33,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logoutUser());
+      message.error("Sua sessão expirou, faça login novamente.");
+      return;
     }
   }
   return result;
