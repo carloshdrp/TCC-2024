@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUser, logoutUser } from "../redux/slices/authSlice";
-import { message } from "antd";
+import { notification } from "antd";
 import { API_URL } from "../config";
 
 const baseQuery = fetchBaseQuery({
@@ -33,8 +33,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logoutUser());
-      message.error("Sua sessão expirou, faça login novamente.");
-      return;
+      return notification.error({
+        type: "error",
+        message: "Erro de autenticação!",
+        description: "A sua sessão de usuário expirou. Faça login novamente.",
+      });
     }
   }
   return result;

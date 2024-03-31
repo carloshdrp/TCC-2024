@@ -46,19 +46,26 @@ const getUserByEmail = async (email) => {
 };
 
 const updateUserById = async (userId, updateBody) => {
-  if (updateBody.email) {
+  const updateData = { ...updateBody };
+
+  if (updateData.email) {
     const emailExists = await prisma.user.findUnique({
-      where: { email: updateBody.email },
+      where: { email: updateData.email },
     });
 
     if (emailExists && emailExists.id !== userId) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Este email já está em uso!');
     }
+  }
+
+  if (updateData.password) {
+    const hashedPassword = await bcrypt.hash(updateData.password, 10);
+    updateData.password = hashedPassword;
   }
 
   return prisma.user.update({
     where: { id: userId },
-    data: updateBody,
+    data: updateData,
   });
 };
 

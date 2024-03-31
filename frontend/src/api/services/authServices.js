@@ -14,17 +14,15 @@ export const loginUser = async (loginData) => {
 export const logoutUser = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
   await axios.post(`${API_URL}/auth/logout`, { refreshToken });
-  // localStorage.removeItem("accessToken");
-  // localStorage.removeItem("refreshToken");
 };
 
-export const refreshTokens = async () => {
-  const refreshToken = localStorage.getItem("refreshToken");
-  const response = await axios.post(`${API_URL}/auth/refresh-tokens`, {
-    refreshToken,
-  });
-  return response.data;
-};
+// export const refreshTokens = async () => {
+//   const refreshToken = localStorage.getItem("refreshToken");
+//   const response = await axios.post(`${API_URL}/auth/refresh-tokens`, {
+//     refreshToken,
+//   });
+//   return response.data;
+// };
 
 export const setAuthToken = (token) => {
   if (token) {

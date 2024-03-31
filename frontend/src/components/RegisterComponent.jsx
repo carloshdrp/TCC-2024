@@ -67,11 +67,17 @@ const RegisterComponent = () => {
 
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    values.avatar = serverFile;
-    dispatch(registerUser(values));
-    message.success("Registro realizado com sucesso!");
-    navigate("/login");
+  const onFinish = async (values) => {
+    try {
+      values.avatar = serverFile;
+      await dispatch(registerUser(values));
+      message.success("Registro realizado com sucesso!");
+      navigate("/login");
+    } catch (error) {
+      message.error(
+        "Ocorreu um erro ao registrar. Por favor, tente novamente."
+      );
+    }
   };
 
   useEffect(() => {

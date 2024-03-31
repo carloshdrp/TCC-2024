@@ -85,7 +85,7 @@ export const QuestionsOverview = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-8 text-text">
+      <div className="grid grid-cols-2 gap-8 mb-2 text-text">
         {currentArticles.map((article) => (
           <article
             className="flex flex-col p-2 bg-white rounded-lg"
@@ -112,9 +112,18 @@ export const QuestionsOverview = () => {
       </div>
       <Pagination
         current={currentPage}
+        style={{ textAlign: "right" }}
         total={articleKeys.length}
         pageSize={articlesPerPage}
-        onChange={(page) => setCurrentPage(page)}
+        onChange={(page) => {
+          setCurrentPage(page);
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 100);
+        }}
       />
     </>
   );

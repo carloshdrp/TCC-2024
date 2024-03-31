@@ -53,7 +53,7 @@ app.use(limiter);
 app.use('/', routes);
 
 app.use((req, res, next) => {
-  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+  next(new ApiError(httpStatus.NOT_FOUND, `Route "${req.originalUrl}" not found`));
 });
 
 app.use(errorConverter);

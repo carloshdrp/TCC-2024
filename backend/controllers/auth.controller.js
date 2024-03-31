@@ -7,7 +7,7 @@ const register = catchAsync(async (req, res) => {
   const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
-    throw new Error('"email", "password", and "name" are required');
+    throw new Error('"email", "password", e "name" são obrigatórios');
   }
 
   if (req.file) {

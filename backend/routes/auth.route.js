@@ -1,12 +1,12 @@
 const express = require('express');
 const validate = require('../middlewares/validate');
-const { authValidation } = require('../validations');
+const { authValidation, userValidation } = require('../validations');
 const { authController, avatarController } = require('../controllers');
 const upload = require('../middlewares/upload');
 
 const router = express.Router();
 
-router.post('/register', validate(authValidation.register), authController.register);
+router.post('/register', validate(userValidation.createUser), authController.register);
 
 router.post('/avatar', upload.single('avatar'), avatarController.uploadAvatar);
 router.delete('/avatar', avatarController.deleteAvatar);

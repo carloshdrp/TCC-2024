@@ -49,13 +49,7 @@ const LoginComponent = () => {
           name="password"
           label="Senha:"
           hasFeedback="true"
-          rules={[
-            { required: true, message: "Este é um campo obrigatório!" },
-            {
-              min: 8,
-              message: "A senha deve ter no mínimo 8 caracteres!",
-            },
-          ]}
+          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
         >
           <Input.Password placeholder="Digite sua senha" />
         </Form.Item>
