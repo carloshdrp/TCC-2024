@@ -8,6 +8,7 @@ import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { API_AVATAR, APP_NAME } from "../../config";
+import ScrollTop from "../../components/ScrollTop";
 
 import PropTypes from "prop-types";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
@@ -88,6 +89,7 @@ const LayoutComponent = ({ children }) => {
       </motion.div>
 
       <Footer className="px-[90px] text-center">{APP_NAME} • 2024</Footer>
+      <ScrollTop />
     </Layout>
   );
 };

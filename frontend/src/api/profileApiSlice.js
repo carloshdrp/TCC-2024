@@ -17,8 +17,18 @@ export const profileApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    removeUser: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useGetRankingQuery, useUpdateUserMutation } =
-  profileApiSlice;
+export const {
+  useGetUsersQuery,
+  useGetRankingQuery,
+  useUpdateUserMutation,
+  useRemoveUserMutation,
+} = profileApiSlice;

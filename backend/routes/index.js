@@ -2,7 +2,7 @@ const express = require('express');
 const rootRoute = require('./root.route');
 const userRoute = require('./user.route');
 const authRoute = require('./auth.route');
-const postRoute = require('./post.route');
+const questionRoute = require('./question.route');
 const commentRoute = require('./comment.route');
 
 const router = express.Router();
@@ -21,8 +21,8 @@ const routes = [
     route: userRoute,
   },
   {
-    path: '/posts',
-    route: postRoute,
+    path: '/questions',
+    route: questionRoute,
   },
   {
     path: '/comments',

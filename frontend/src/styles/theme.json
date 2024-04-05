@@ -4,6 +4,7 @@
     "colorSecondary": "FF4081",
     "colorInfo": "#3f51b5",
     "colorTextBase": "#333333",
+    "colorText": "#333333",
     "fontSize": 16,
     "fontFamily": "'M PLUS Rounded 1c', sans-serif",
     "wireframe": false,
@@ -13,6 +14,13 @@
   "components": {
     "Form": {
       "itemMarginBottom": "10px"
+    },
+    "Tabs": {
+      "inkBarColor": "rgba(255, 64, 129, 1)",
+      "itemActiveColor": "rgba(255, 64, 129, 1)",
+      "itemHoverColor": "rgba(255, 64, 129, 0.8)",
+      "itemColor": "#333333",
+      "itemSelectedColor": "rgba(255, 64, 129, 1)"
     }
   }
 }

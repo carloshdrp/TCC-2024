@@ -46,12 +46,13 @@ Table Question {
   id String [pk]
   title String [not null]
   description String [not null]
-  status Boolean [not null, default: false]
+  locked Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
   Answer Answer [not null]
+  QuestionTags QuestionTags [not null]
 }
 
 Table Answer {
@@ -63,6 +64,20 @@ Table Answer {
   userId String [not null]
   question Question [not null]
   questionId String [not null]
+}
+
+Table Tags {
+  id String [pk]
+  name String [not null]
+  QuestionTags QuestionTags [not null]
+}
+
+Table QuestionTags {
+  id String [pk]
+  questionId String [not null]
+  tagId String [not null]
+  question Question [not null]
+  tag Tags [not null]
 }
 
 Table Quiz {
@@ -162,6 +177,10 @@ Ref: Question.userId > User.id
 Ref: Answer.userId > User.id
 
 Ref: Answer.questionId > Question.id
+
+Ref: QuestionTags.questionId > Question.id
+
+Ref: QuestionTags.tagId > Tags.id
 
 Ref: Quiz.userId > User.id
 

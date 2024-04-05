@@ -1,17 +1,23 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
-import { useGetUsersQuery } from "../api/profileApiSlice";
+import {
+  useGetUsersQuery,
+  useRemoveUserMutation,
+} from "../api/profileApiSlice";
 import { UserRound, Archive } from "lucide-react";
-import { Avatar, Button, Spin } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Avatar, Button, Spin, Modal, notification } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import UserRanking from "../components/UserRanking.jsx";
 import coin from "../assets/coin.png";
-import { Link, useNavigate } from "react-router-dom";
-import ScrollTop from "../components/ScrollTop.jsx";
+import { useNavigate } from "react-router-dom";
 import { QuestionsOverview } from "../components/QuestionsOverview.jsx";
 import { API_AVATAR } from "../config/index.js";
 import { useEffect } from "react";
+import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice.js";
+
+const { confirm } = Modal;
 
 function Profile() {
   const user = useSelector(selectCurrentUser);
@@ -22,6 +28,45 @@ function Profile() {
     refetch,
   } = useGetUsersQuery(user.id);
   const navigate = useNavigate();
+
+  const [removeUser] = useRemoveUserMutation();
+  const [deleteAvatar] = useDeleteAvatarMutation();
+
+  const showConfirm = () => {
+    confirm({
+      title: "Você tem certeza?",
+      icon: <ExclamationCircleFilled />,
+      content:
+        "Uma vez que deletar sua conta, não poderá recuperá-la e seus dados serão apagados.",
+      onText: "Deletar",
+      okType: "danger",
+      cancelText: "Cancelar",
+      width: 600,
+      onOk: async () => {
+        try {
+          if (user.avatar) {
+            await deleteAvatar(user.avatar);
+          }
+
+          await removeUser(user.id);
+
+          notification.success({
+            message: "Conta deletada com sucesso!",
+            description: "É uma pena ver você ir embora. Até mais... 👋 ",
+          });
+
+          navigate("/logout");
+        } catch (error) {
+          notification.error({
+            message: "Erro ao deletar conta",
+            description:
+              "Ocorreu um erro ao tentar deletar sua conta. Por favor, tente novamente.",
+          });
+          console.log("erro:", error);
+        }
+      },
+    });
+  };
 
   useEffect(() => {
     refetch();
@@ -61,8 +106,8 @@ function Profile() {
             <Button type="default" onClick={() => navigate("/logout")}>
               Sair da Conta
             </Button>
-            <Button type="link" danger>
-              <Link to="#">Excluir Conta</Link>
+            <Button type="link" danger onClick={showConfirm}>
+              Excluir Conta
             </Button>
           </div>
         </header>
@@ -117,7 +162,6 @@ function Profile() {
 
         <h2 className="text-text">Suas questões no fórum</h2>
         <QuestionsOverview />
-        <ScrollTop />
       </>
     );
   }
