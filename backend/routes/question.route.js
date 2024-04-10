@@ -9,17 +9,22 @@ const router = express.Router();
 router
   .route('/')
   .get(questionController.getQuestions)
-  .post(auth(), validate(questionValidation.createQuestion), questionController.createQuestion);
+  .post(validate(questionValidation.createQuestion), auth(), questionController.createQuestion);
 
 router
   .route('/:questionId')
   .get(validate(questionValidation.getQuestion), questionController.getQuestion)
   .patch(
+    validate(questionValidation.updateQuestion),
     questionController.attachQuestion,
     auth('manageQuestions'),
-    validate(questionValidation.updateQuestion),
     questionController.updateQuestion,
   )
-  .delete(questionController.attachQuestion, auth('manageQuestions'), questionController.deleteQuestion);
+  .delete(
+    validate(questionValidation.deleteQuestion),
+    questionController.attachQuestion,
+    auth('manageQuestions'),
+    questionController.deleteQuestion,
+  );
 
 module.exports = router;

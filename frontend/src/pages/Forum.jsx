@@ -38,14 +38,22 @@ function Forum() {
         <Breadcrumb items={topMenu} className="col-span-4" />
         <div className="flex flex-col w-full col-span-3 row-span-3 gap-5 min-h-[calc(100vh-180px)]">
           <ForumNavigator />
-          <Button
-            type="primary"
-            onClick={() => navigate("ask")}
-            style={{ background: "rgb(255, 64, 129, 1)" }}
-            className="font-medium"
-          >
-            Criar uma pergunta
-          </Button>
+          {userState && (
+            <Button
+              type="primary"
+              onClick={() => navigate("ask")}
+              style={
+                userState.points > 1
+                  ? { background: "rgb(255, 64, 129, 1)" }
+                  : true
+              }
+              className="font-medium"
+              disabled={userState.points > 1 ? false : true}
+            >
+              Criar uma pergunta
+            </Button>
+          )}
+
           <ForumArticle />
           <ForumArticle />
         </div>

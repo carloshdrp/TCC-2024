@@ -26,8 +26,15 @@ const updateQuestion = {
   }),
 };
 
+const deleteQuestion = {
+  params: Joi.object().keys({
+    questionId: Joi.string().required().custom(objectId),
+  }),
+};
+
 module.exports = {
   createQuestion,
   getQuestion,
   updateQuestion,
+  deleteQuestion,
 };

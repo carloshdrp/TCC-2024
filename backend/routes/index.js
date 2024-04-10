@@ -4,6 +4,8 @@ const userRoute = require('./user.route');
 const authRoute = require('./auth.route');
 const questionRoute = require('./question.route');
 const commentRoute = require('./comment.route');
+const tagsRoute = require('./tags.route');
+const tagsRelationRoute = require('./tags-relation.route');
 
 const router = express.Router();
 
@@ -27,6 +29,14 @@ const routes = [
   {
     path: '/comments',
     route: commentRoute,
+  },
+  {
+    path: '/tags',
+    route: tagsRoute,
+  },
+  {
+    path: '/tags-relation',
+    route: tagsRelationRoute,
   },
 ];
 

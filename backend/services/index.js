@@ -3,3 +3,5 @@ module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.questionService = require('./question.service');
 module.exports.commentService = require('./comment.service');
+module.exports.tagsService = require('./tags.service');
+module.exports.tagsRelationService = require('./tags-relation.service');

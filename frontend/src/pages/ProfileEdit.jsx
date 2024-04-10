@@ -13,7 +13,7 @@ import { updateUserState, selectCurrentUser } from "../redux/slices/authSlice";
 import {
   useGetUsersQuery,
   useUpdateUserMutation,
-} from "../api/profileApiSlice";
+} from "../api/slices/profileApiSlice";
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import ScrollTop from "../components/ScrollTop.jsx";
 import { useEffect, useState } from "react";

@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
+import { useGetUsersQuery } from "../api/slices/profileApiSlice";
 import topaz from "../assets/Leagues/topaz.png";
 import ruby from "../assets/Leagues/ruby.png";
 import emerald from "../assets/Leagues/emerald.png";
@@ -8,10 +10,15 @@ import diamond from "../assets/Leagues/diamond.png";
 
 export default function UserLeague() {
   const user = useSelector(selectCurrentUser);
+  const { data: userData, refetch } = useGetUsersQuery(user.id);
+
+  useEffect(() => {
+    refetch();
+  }, [user]);
 
   let image;
   let color;
-  switch (user.league) {
+  switch (userData.league) {
     default:
       image = topaz;
       color = "bg-orange-200";
@@ -38,8 +45,8 @@ export default function UserLeague() {
     <div
       className={`flex items-center gap-1 px-2 py-1 ${color} w-fit rounded-xl`}
     >
-      <img src={image} alt={user.league} className="w-5 h-5" />
-      <p>{user.league}</p>
+      <img src={image} alt={userData.league} className="w-5 h-5" />
+      <p>{userData.league}</p>
     </div>
   );
 }

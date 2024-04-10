@@ -40,7 +40,7 @@ const attachQuestion = catchAsync(async (req, res, next) => {
   }
   req.question = question;
   req.resourceOwnerId = question.userId;
-  next();
+  return next();
 });
 
 module.exports = {

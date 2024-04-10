@@ -12,6 +12,7 @@ import Forum from "./pages/Forum.jsx";
 import Logout from "./pages/Logout.jsx";
 import Exercises from "./pages/Exercises.jsx";
 import ProfileEdit from "./pages/ProfileEdit.jsx";
+import { ForumAskCreate } from "./pages/ForumAskCreate.jsx";
 
 function App() {
   const location = useLocation();
@@ -33,6 +34,9 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="profile" element={<Profile />} />
           <Route path="profile/edit" element={<ProfileEdit />} />
+
+          <Route path="forum/ask" element={<ForumAskCreate />} />
+
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>

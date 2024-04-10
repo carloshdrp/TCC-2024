@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
-const createQuestion = async (questionBody, authorId, tags) => {
+const createQuestion = async (questionBody, authorId) => {
   const question = await prisma.question.create({
     data: {
       ...questionBody,
@@ -11,18 +12,6 @@ const createQuestion = async (questionBody, authorId, tags) => {
       },
     },
   });
-  if (Array.isArray(tags)) {
-    await Promise.all(
-      tags.map((tagId) =>
-        prisma.questionTags.create({
-          data: {
-            questionId: question.id,
-            tagId,
-          },
-        }),
-      ),
-    );
-  }
 
   return question;
 };
@@ -35,6 +24,7 @@ const queryQuestions = async (filter, options) => {
     orderBy: options.sort,
     include: {
       Answer: true,
+      QuestionTags: true,
     },
   });
 
@@ -56,7 +46,7 @@ const getQuestionById = async (questionId) => {
   return question;
 };
 
-const updateQuestionById = async (userId, questionId, updateBody, newTags) => {
+const updateQuestionById = async (userId, questionId, updateBody) => {
   const question = await getQuestionById(questionId);
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -70,23 +60,6 @@ const updateQuestionById = async (userId, questionId, updateBody, newTags) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Esta pergunta já foi respondida e não pode ser modificada.');
   }
 
-  await prisma.questionTags.deleteMany({
-    where: { questionId },
-  });
-
-  if (Array.isArray(newTags)) {
-    await Promise.all(
-      newTags.map((tagId) =>
-        prisma.questionTags.create({
-          data: {
-            questionId: question.id,
-            tagId,
-          },
-        }),
-      ),
-    );
-  }
-
   return prisma.question.update({
     where: { id: questionId },
     data: updateBody,
@@ -94,11 +67,7 @@ const updateQuestionById = async (userId, questionId, updateBody, newTags) => {
 };
 
 const deleteQuestionById = async (questionId) => {
-  await getQuestionById(questionId);
-
-  await prisma.questionTags.deleteMany({
-    where: { questionId },
-  });
+  const question = await getQuestionById(questionId);
 
   return prisma.question.delete({
     where: { id: questionId },
