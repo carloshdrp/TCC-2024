@@ -15,12 +15,15 @@ import { useEffect, useState } from "react";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice";
 import { MoveLeft } from "lucide-react";
 import { useCreateForumQuestionMutation } from "../api/slices/forumApiSlice";
+import { useCreateTagRelationMutation } from "../api/slices/tagsRelationApiSlice";
 import { useGetTagsQuery } from "../api/slices/tagsApiSlice";
 
 export const ForumAskCreate = () => {
   const [form] = Form.useForm();
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [tagId, setTagId] = useState(0);
   const [createForumQuestion, { isLoading }] = useCreateForumQuestionMutation();
+  const [createTagRelation] = useCreateTagRelationMutation();
   const { isLoading: tagsLoading, data: tags } = useGetTagsQuery();
 
   const userState = useSelector(selectCurrentUser);
@@ -32,6 +35,7 @@ export const ForumAskCreate = () => {
     tagOptions = Object.values(tags).map((tag) => {
       return {
         label: tag.name,
+        key: tag.id,
         value: tag.name,
       };
     });
@@ -48,6 +52,19 @@ export const ForumAskCreate = () => {
     refetch();
   }, [userState, refetch]);
 
+  // useEffect(() => {
+  //   if (question && tagId !== 0) {
+  //     try {
+  //       createTagRelation({ questionId: question.id, tagId });
+  //     } catch (error) {
+  //       notification.error({
+  //         message: "Erro ao criar relação",
+  //         description: error.error,
+  //       });
+  //     }
+  //   }
+  // }, [question, tagId]);
+
   useEffect(() => {
     if (userState.points < 1) {
       notification.error({
@@ -62,7 +79,26 @@ export const ForumAskCreate = () => {
 
   const onFinish = async (values) => {
     try {
-      await createForumQuestion(values);
+      const { data: question } = await createForumQuestion(values);
+
+      let defaultTagId = tagId;
+
+      if (tagId == 0) {
+        defaultTagId = tagOptions[0].key;
+      }
+
+      try {
+        await createTagRelation({
+          questionId: question.id,
+          tagId: defaultTagId,
+        });
+      } catch (error) {
+        notification.error({
+          message: "Erro ao criar relação",
+          description: error.error,
+        });
+      }
+
       notification.success({
         message: "Pergunta criada com sucesso",
       });
@@ -148,6 +184,7 @@ export const ForumAskCreate = () => {
               showSearch
               options={tagOptions}
               defaultValue={tagOptions[0].value}
+              onChange={(_, { key }) => setTagId(key)}
             />
           )}
         </Form.Item>
@@ -165,7 +202,7 @@ export const ForumAskCreate = () => {
           <Popconfirm
             title="Essa ação custa 1 ponto"
             description="Você tem certeza que deseja continuar?"
-            visible={confirmVisible}
+            open={confirmVisible}
             onConfirm={handleConfirm}
             onCancel={handleCancel}
             placement="topRight"
