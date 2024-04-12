@@ -18,7 +18,7 @@ const queryTags = async (filter, options) => {
     skip: options.skip,
     orderBy: options.sort,
     include: {
-      QuestionTags: true,
+      Question: true,
     },
   });
 

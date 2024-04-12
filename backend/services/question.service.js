@@ -3,12 +3,15 @@ const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
-const createQuestion = async (questionBody, authorId) => {
+const createQuestion = async (questionBody, authorId, tagId) => {
   const question = await prisma.question.create({
     data: {
       ...questionBody,
       user: {
         connect: { id: authorId },
+      },
+      tag: {
+        connect: { id: tagId },
       },
     },
   });
@@ -18,13 +21,19 @@ const createQuestion = async (questionBody, authorId) => {
 
 const queryQuestions = async (filter, options) => {
   const questions = await prisma.question.findMany({
-    where: filter,
+    where: {
+      title: {
+        contains: filter.title,
+      },
+      tag: { name: filter.tagName },
+    },
     take: options.limit,
     skip: options.skip,
     orderBy: options.sort,
     include: {
       Answer: true,
-      QuestionTags: true,
+      tag: true,
+      user: true,
     },
   });
 

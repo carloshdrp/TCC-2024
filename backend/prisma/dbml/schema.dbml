@@ -51,8 +51,9 @@ Table Question {
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
+  tag Tags [not null]
+  tagId String [not null]
   Answer Answer [not null]
-  QuestionTags QuestionTags [not null]
 }
 
 Table Answer {
@@ -69,15 +70,7 @@ Table Answer {
 Table Tags {
   id String [pk]
   name String [not null]
-  QuestionTags QuestionTags [not null]
-}
-
-Table QuestionTags {
-  id String [pk]
-  questionId String [not null]
-  tagId String [not null]
-  question Question [not null]
-  tag Tags [not null]
+  Question Question [not null]
 }
 
 Table Quiz {
@@ -174,13 +167,11 @@ Ref: UserAchievements.achievementId > Achievement.id
 
 Ref: Question.userId > User.id
 
+Ref: Question.tagId > Tags.id
+
 Ref: Answer.userId > User.id
 
 Ref: Answer.questionId > Question.id
-
-Ref: QuestionTags.questionId > Question.id
-
-Ref: QuestionTags.tagId > Tags.id
 
 Ref: Quiz.userId > User.id
 

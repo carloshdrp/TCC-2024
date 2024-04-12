@@ -5,13 +5,13 @@ const { pick, ApiError } = require('../utils');
 
 const createQuestion = catchAsync(async (req, res) => {
   const authorId = req.user.id;
-  const { tags, ...questionBody } = req.body;
-  const question = await questionService.createQuestion(questionBody, authorId, tags);
+  const { tagId, ...questionBody } = req.body;
+  const question = await questionService.createQuestion(questionBody, authorId, tagId);
   res.status(httpStatus.CREATED).send(question);
 });
 
 const getQuestions = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['title']);
+  const filter = pick(req.query, ['title', 'tagName']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await questionService.queryQuestions(filter, options);
   res.send(result);

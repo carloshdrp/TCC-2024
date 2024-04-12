@@ -11,8 +11,6 @@ const forumNavigatorSlice = createSlice({
   initialState,
   reducers: {
     setSelectedTab(state, action) {
-      console.log("Setting selectedTab to", action.payload);
-
       state.selectedTab = action.payload;
     },
     setSearch(state, action) {

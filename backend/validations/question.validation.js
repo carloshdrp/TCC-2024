@@ -5,6 +5,7 @@ const createQuestion = {
   body: Joi.object().keys({
     title: Joi.string().required(),
     description: Joi.string().required(),
+    tagId: Joi.string().custom(objectId).required(),
   }),
 };
 
@@ -23,6 +24,7 @@ const updateQuestion = {
     description: Joi.string(),
     locked: Joi.boolean(),
     userId: Joi.string().custom(objectId),
+    tagId: Joi.string().custom(objectId),
   }),
 };
 

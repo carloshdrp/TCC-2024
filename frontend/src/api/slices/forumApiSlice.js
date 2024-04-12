@@ -3,7 +3,13 @@ import { apiSlice } from "../apiSlice";
 export const forumApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getForumQuestions: builder.query({
-      query: () => "/questions",
+      query: (filter, options) => {
+        const params = new URLSearchParams({
+          ...filter,
+          ...options,
+        }).toString();
+        return `/questions?${params}`;
+      },
     }),
     getForumQuestion: builder.query({
       query: (id) => `/questions/${id}`,

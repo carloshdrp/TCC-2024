@@ -1,11 +1,14 @@
-import { Breadcrumb, Button } from "antd";
+import { Breadcrumb, Button, Tooltip } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { useNavigate } from "react-router-dom";
 import { ForumNavigator } from "../components/Forum/ForumNavigator.jsx";
 import { ForumArticle } from "../components/Forum/ForumArticle.jsx";
 import { useSelector } from "react-redux";
-import { getSelectedTab } from "../redux/slices/forumNavigatorSlice.js";
+import {
+  getSearch,
+  getSelectedTab,
+} from "../redux/slices/forumNavigatorSlice.js";
 import { ForumAchievements } from "../components/Forum/ForumAchievements.jsx";
 import { ForumTrendingTopics } from "../components/Forum/ForumTrendingTopics.jsx";
 import { ForumStatisticWidgets } from "../components/Forum/ForumStatisticWidgets.jsx";
@@ -15,6 +18,7 @@ function Forum() {
   const navigate = useNavigate();
   const selectedTab = useSelector(getSelectedTab);
   const userState = useSelector(selectCurrentUser);
+  const searchTitle = useSelector(getSearch);
 
   const topMenu = [
     {
@@ -39,23 +43,31 @@ function Forum() {
         <div className="flex flex-col w-full col-span-3 row-span-3 gap-5 min-h-[calc(100vh-180px)]">
           <ForumNavigator />
           {userState && (
-            <Button
-              type="primary"
-              onClick={() => navigate("ask")}
-              style={
-                userState.points > 1
-                  ? { background: "rgb(255, 64, 129, 1)" }
-                  : true
+            <Tooltip
+              title={
+                userState.points < 1
+                  ? "Você precisa de pelo menos 1 ponto para criar uma pergunta"
+                  : ""
               }
-              className="font-medium"
-              disabled={userState.points > 1 ? false : true}
+              placement="topRight"
             >
-              Criar uma pergunta
-            </Button>
+              <Button
+                type="primary"
+                onClick={() => navigate("ask")}
+                style={
+                  userState.points > 1
+                    ? { background: "rgb(255, 64, 129, 1)" }
+                    : true
+                }
+                className="font-medium"
+                disabled={userState.points > 1 ? false : true}
+              >
+                Criar uma pergunta
+              </Button>
+            </Tooltip>
           )}
 
-          <ForumArticle />
-          <ForumArticle />
+          <ForumArticle selectedTab={selectedTab} searchTitle={searchTitle} />
         </div>
         <div className="flex flex-col h-full row-span-3 gap-5">
           {userState && <ForumAchievements />}
