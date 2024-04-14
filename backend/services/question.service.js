@@ -24,12 +24,15 @@ const queryQuestions = async (filter, options) => {
     where: {
       title: {
         contains: filter.title,
+        mode: 'insensitive',
       },
       tag: { name: filter.tagName },
     },
     take: options.limit,
     skip: options.skip,
-    orderBy: options.sort,
+    orderBy: {
+      createdAt: options.createdAt,
+    },
     include: {
       Answer: true,
       tag: true,
@@ -45,6 +48,8 @@ const getQuestionById = async (questionId) => {
     where: { id: questionId },
     include: {
       Answer: true,
+      tag: true,
+      user: true,
     },
   });
 

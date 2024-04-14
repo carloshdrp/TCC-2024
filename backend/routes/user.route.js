@@ -17,6 +17,7 @@ router
   .patch(validate(userValidation.updateUser), userController.attachUser, auth('manageUsers'), userController.updateUser)
   .delete(validate(userValidation.deleteUser), userController.attachUser, auth('manageUsers'), userController.deleteUser);
 
-router.route('/ranking/:userId').get(userController.attachUser, auth('getRanking'), userController.getRanking);
+router.route('/ranking/:userId').get(userController.getRanking);
+router.route('/league/:userId').get(userController.getLeague);
 
 module.exports = router;

@@ -13,6 +13,7 @@ import Logout from "./pages/Logout.jsx";
 import Exercises from "./pages/Exercises.jsx";
 import ProfileEdit from "./pages/ProfileEdit.jsx";
 import { ForumAskCreate } from "./pages/ForumAskCreate.jsx";
+import { ForumQuestion } from "./pages/ForumQuestion.jsx";
 
 function App() {
   const location = useLocation();
@@ -24,6 +25,8 @@ function App() {
         <Route path="*" element={<NotFound />} />
 
         <Route path="forum" element={<Forum />} />
+        <Route path="forum/:questionId" element={<ForumQuestion />} />
+
         <Route path="exercises" element={<Exercises />} />
 
         <Route element={<PublicRoutes />}>

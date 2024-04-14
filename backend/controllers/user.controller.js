@@ -27,11 +27,13 @@ const getRanking = async (req, res) => {
 };
 
 const getUser = catchAsync(async (req, res) => {
-  const user = await userService.getUserById(req.params.userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  if (req.params.userId !== undefined) {
+    const user = await userService.getUserById(req.params.userId);
+    if (!user) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    res.send(user);
   }
-  res.send(user);
 });
 
 const updateUser = catchAsync(async (req, res) => {
@@ -42,6 +44,11 @@ const updateUser = catchAsync(async (req, res) => {
 const deleteUser = catchAsync(async (req, res) => {
   await userService.deleteUserById(req.params.userId);
   res.status(httpStatus.NO_CONTENT).send();
+});
+
+const getLeague = catchAsync(async (req, res) => {
+  const league = await userService.getLeague(req.params.userId);
+  res.send(league);
 });
 
 const attachUser = catchAsync(async (req, res, next) => {
@@ -61,5 +68,6 @@ module.exports = {
   getRanking,
   updateUser,
   deleteUser,
+  getLeague,
   attachUser,
 };

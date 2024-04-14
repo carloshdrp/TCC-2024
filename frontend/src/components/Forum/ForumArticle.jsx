@@ -1,4 +1,4 @@
-import { Avatar, Button, Spin } from "antd";
+import { Avatar, Button, Spin, Dropdown } from "antd";
 import { UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetForumQuestionsQuery } from "../../api/slices/forumApiSlice";
@@ -6,19 +6,26 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect } from "react";
 import { API_AVATAR } from "../../config";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../redux/slices/authSlice";
+import { EllipsisOutlined } from "@ant-design/icons";
 
 export const ForumArticle = ({ selectedTab, searchTitle }) => {
   const navigate = useNavigate();
+  const userData = useSelector(selectCurrentUser);
   const filter = {
     tagName: selectedTab,
     ...(searchTitle ? { title: searchTitle } : {}),
+  };
+  const options = {
+    createdAt: "newest",
   };
   const {
     data: questionsData,
     error: questionError,
     isLoading: questionLoading,
     refetch,
-  } = useGetForumQuestionsQuery(filter);
+  } = useGetForumQuestionsQuery(filter, options);
 
   useEffect(() => {
     refetch();
@@ -38,15 +45,42 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
           locale: ptBR,
         });
 
+        const settings = [
+          {
+            key: "edit",
+            label: "Editar",
+            onClick: () => navigate(`${question.id}/edit`),
+          },
+          {
+            key: "delete",
+            label: "Deletar",
+            danger: true,
+            onClick: () => navigate(`${question.id}/delete`),
+          },
+        ];
+
         return (
           <div key={question.id}>
             <div className="bg-white rounded-t-[10px] flex flex-col gap-[10px] text-text p-[10px]">
-              <p
-                className="text-2xl font-medium truncate hover:whitespace-normal"
-                id="title"
-              >
-                {question.title}
-              </p>
+              <div className="flex justify-between">
+                <p
+                  className="text-2xl font-medium truncate hover:whitespace-normal"
+                  id="title"
+                >
+                  {question.title}
+                </p>
+                {userData && question.user.id === userData.id && (
+                  <Dropdown
+                    menu={{
+                      items: settings,
+                    }}
+                    trigger={["click"]}
+                    className="cursor-pointer"
+                  >
+                    <EllipsisOutlined className="px-2 text-xl rounded-md text-text hover:bg-background " />
+                  </Dropdown>
+                )}
+              </div>
 
               <div className="flex flex-row gap-1 ">
                 <span className="px-3 py-0.5 rounded-xl bg-text bg-opacity-15">
@@ -65,7 +99,7 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
                     }
                     icon={
                       question.user.avatar ? undefined : (
-                        <UserRound size={32} color="#333" strokeWidth={1.5} />
+                        <UserRound size={32} strokeWidth={1.5} />
                       )
                     }
                   />
@@ -96,7 +130,14 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
         );
       });
     } else {
-      content = <p>Seja o primeiro a criar uma pergunta nesta seção! 😉</p>;
+      content = searchTitle ? (
+        <p>
+          Não foi possível encontrar uma pergunta com um título igual a{" "}
+          {searchTitle} 😢
+        </p>
+      ) : (
+        <p>Seja o primeiro a criar uma pergunta nesta seção! 😉</p>
+      );
     }
   }
 

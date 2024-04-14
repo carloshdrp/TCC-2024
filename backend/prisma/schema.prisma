@@ -176,6 +176,7 @@ model Rating {
 }
 
 enum RateableType {
+  QUESTION
   ANSWER
   QUIZ
 }

@@ -14,6 +14,10 @@ export const profileApiSlice = apiSlice.injectEndpoints({
       query: (userId) => `/users/ranking/${userId}`,
       keepUnusedDataFor: 5,
     }),
+    getLeague: builder.query({
+      query: (userId) => `/users/league/${userId}`,
+      keepUnusedDataFor: 5,
+    }),
     updateUser: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/users/${id}`,
@@ -34,6 +38,7 @@ export const {
   useGetUsersQuery,
   useGetUserQuery,
   useGetRankingQuery,
+  useGetLeagueQuery,
   useUpdateUserMutation,
   useRemoveUserMutation,
 } = profileApiSlice;

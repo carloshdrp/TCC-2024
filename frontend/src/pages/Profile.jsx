@@ -70,7 +70,7 @@ function Profile() {
 
   useEffect(() => {
     refetch();
-  }, [user]);
+  }, [refetch]);
 
   let content;
   if (isLoading) {
@@ -89,7 +89,7 @@ function Profile() {
           />
           <div className="flex flex-col justify-between w-full">
             <p className="text-4xl font-semibold ">{userData.name}</p>
-            <UserLeague />
+            <UserLeague leagueSize="medium" userId={userData.id} />
             <UserRanking />
             <div className="flex items-center gap-1">
               <img src={coin} alt="coin" className="w-5 h-5" />
