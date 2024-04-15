@@ -15,6 +15,7 @@ import { ForumStatisticWidgets } from "../components/Forum/ForumStatisticWidgets
 import {
   selectCurrentUser,
   updateUserState,
+  setUser,
 } from "../redux/slices/authSlice.js";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -33,7 +34,11 @@ function Forum() {
   useEffect(() => {
     if (userState?.id) {
       refetch().then(() => {
-        dispatch(updateUserState(userData));
+        if (userData) {
+          dispatch(updateUserState(userData));
+        } else {
+          dispatch(setUser(null));
+        }
       });
     }
   }, [dispatch, refetch, userState?.id, userData]);

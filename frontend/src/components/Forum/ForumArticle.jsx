@@ -9,6 +9,7 @@ import { API_AVATAR } from "../../config";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
 import { EllipsisOutlined } from "@ant-design/icons";
+import { useGetRatingByRateableTypeQuery } from "../../api/slices/ratingApiSlice";
 
 export const ForumArticle = ({ selectedTab, searchTitle }) => {
   const navigate = useNavigate();
@@ -16,16 +17,17 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
   const filter = {
     tagName: selectedTab,
     ...(searchTitle ? { title: searchTitle } : {}),
+    sortBy: "desc",
   };
-  const options = {
-    createdAt: "newest",
-  };
+
   const {
     data: questionsData,
     error: questionError,
     isLoading: questionLoading,
     refetch,
-  } = useGetForumQuestionsQuery(filter, options);
+  } = useGetForumQuestionsQuery(filter);
+
+  const { data: ratingData } = useGetRatingByRateableTypeQuery("QUESTION");
 
   useEffect(() => {
     refetch();
@@ -33,7 +35,15 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
 
   let content;
   if (questionLoading) {
-    content = <Spin tip="perguntas..." size="large" />;
+    content = (
+      <Spin
+        tip="Buscando perguntas..."
+        size="large"
+        className="rounded-[10px] bg-white bg-opacity-100"
+      >
+        <div className="w-full h-24 mt-11 " />
+      </Spin>
+    );
   } else if (questionError) {
     content = <p>Erro: {questionError}</p>;
   } else if (questionsData) {
@@ -44,6 +54,10 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
           addSuffix: true,
           locale: ptBR,
         });
+
+        const ratingCount = ratingData.filter(
+          (rating) => rating.rateableId === question.id
+        ).length;
 
         const settings = [
           {
@@ -113,8 +127,16 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
 
                 <div>
                   <div className="flex gap-2">
-                    <span>{question.Answer.length} respostas</span>
-                    <span>0 avaliações</span>
+                    {question.Answer.length > 1 ? (
+                      <span>{question.Answer.length} Respostas</span>
+                    ) : (
+                      <span>{question.Answer.length} Resposta</span>
+                    )}
+                    {ratingCount > 1 ? (
+                      <span>{ratingCount} Curtidas</span>
+                    ) : (
+                      <span>{ratingCount} Curtida</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -133,7 +155,8 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
       content = searchTitle ? (
         <p>
           Não foi possível encontrar uma pergunta com um título igual a{" "}
-          {searchTitle} 😢
+          <span className="px-0.5 rounded bg-gray-200">{searchTitle}</span>{" "}
+          nesta categoria 😢
         </p>
       ) : (
         <p>Seja o primeiro a criar uma pergunta nesta seção! 😉</p>

@@ -27,12 +27,13 @@ const queryQuestions = async (filter, options) => {
         mode: 'insensitive',
       },
       tag: { name: filter.tagName },
+      user: {
+        id: filter.userId,
+      },
     },
     take: options.limit,
     skip: options.skip,
-    orderBy: {
-      createdAt: options.createdAt,
-    },
+    orderBy: { createdAt: options.sortBy },
     include: {
       Answer: true,
       tag: true,

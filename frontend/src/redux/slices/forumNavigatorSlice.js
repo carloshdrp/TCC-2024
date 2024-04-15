@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedTab: "Geral",
   search: "",
-  filter: "Todos",
 };
 
 const forumNavigatorSlice = createSlice({
@@ -16,9 +15,6 @@ const forumNavigatorSlice = createSlice({
     setSearch(state, action) {
       state.search = action.payload;
     },
-    setFilter(state, action) {
-      state.filter = action.payload;
-    },
   },
 });
 
@@ -29,4 +25,3 @@ export default forumNavigatorSlice.reducer;
 
 export const getSelectedTab = (state) => state.forumNavigator.selectedTab;
 export const getSearch = (state) => state.forumNavigator.search;
-export const getFilter = (state) => state.forumNavigator.filter;

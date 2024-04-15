@@ -1,39 +1,17 @@
-import { Dropdown, Tabs, Input } from "antd";
+import { Tabs, Input } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setSelectedTab,
   setSearch,
-  setFilter,
-  getFilter,
   getSelectedTab,
 } from "../../redux/slices/forumNavigatorSlice";
-import { Filter } from "lucide-react";
 const { Search } = Input;
 
 export const ForumNavigator = () => {
   const dispatch = useDispatch();
-  const filterNow = useSelector(getFilter);
   const selectedTab = useSelector(getSelectedTab);
 
   const onSearch = (value) => dispatch(setSearch(value));
-
-  const filter = [
-    {
-      key: "Todos",
-      label: "Todos",
-      onClick: () => dispatch(setFilter("Todos")),
-    },
-    {
-      key: "Sem respostas",
-      label: "Sem respostas",
-      onClick: () => dispatch(setFilter("Sem respostas")),
-    },
-    {
-      key: "Fechados",
-      label: "Fechados",
-      onClick: () => dispatch(setFilter("Fechados")),
-    },
-  ];
 
   const tabs = [
     {
@@ -75,20 +53,6 @@ export const ForumNavigator = () => {
               width: 400,
             }}
           />
-          <Dropdown
-            menu={{
-              items: filter,
-              selectable: true,
-              defaultSelectedKeys: [`${filterNow}`],
-            }}
-            trigger={["click"]}
-            className="cursor-pointer"
-          >
-            <p className="flex items-center text-text">
-              {filterNow}
-              <Filter />
-            </p>
-          </Dropdown>
         </div>
       </div>
       <Tabs

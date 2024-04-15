@@ -112,7 +112,6 @@ Table Rating {
   updatedAt DateTime [not null]
   ratedBy User [not null]
   userId String [not null]
-  score Int [not null, default: 0]
   rateableId String [not null]
   rateableType RateableType [not null]
 }
@@ -150,6 +149,7 @@ Enum ReportableType {
 }
 
 Enum RateableType {
+  QUESTION
   ANSWER
   QUIZ
 }

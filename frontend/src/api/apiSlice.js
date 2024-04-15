@@ -40,11 +40,21 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       });
     }
   }
+  if (result && result.error && result.error.status === 429) {
+    notification.error({
+      type: "error",
+      message: "Erro de limitação de taxa!",
+      description:
+        "Você atingiu o limite de solicitações ao servidor. Tente novamente mais tarde.",
+    });
+    throw new Error("Erro de limitação de taxa!");
+  }
   return result;
 };
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
+  // eslint-disable-next-line no-unused-vars
   endpoints: (builder) => ({}),
 });
 

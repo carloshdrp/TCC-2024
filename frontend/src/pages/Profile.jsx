@@ -10,6 +10,8 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Avatar, Button, Spin, Modal, notification } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import UserRanking from "../components/UserRanking.jsx";
+import ProfileForumActivities from "../components/Profile/ProfileForumActivities.jsx";
+
 import coin from "../assets/coin.png";
 import { useNavigate } from "react-router-dom";
 import { QuestionsOverview } from "../components/QuestionsOverview.jsx";
@@ -125,20 +127,7 @@ function Profile() {
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
             <h2>Atividades no Fórum</h2>
-            <div className="grid grid-flow-col p-2 text-center bg-white rounded-lg shadow-md">
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questões Abertas</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questões Respondidas</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-              <div>
-                <h3 className="m-0">Avaliações</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-            </div>
+            <ProfileForumActivities userId={user.id} />
           </div>
 
           <div className="w-1/2">

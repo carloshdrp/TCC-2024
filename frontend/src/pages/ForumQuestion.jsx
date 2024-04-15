@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { Breadcrumb, Spin, Avatar } from "antd";
+import { Breadcrumb, Spin, Avatar, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import LayoutComponent from "./layout/LayoutComponent";
 import { useGetForumQuestionQuery } from "../api/slices/forumApiSlice";
-import { UserRound } from "lucide-react";
+import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
 import { API_AVATAR } from "../config";
 import UserLeague from "../components/UserLeague";
 import { formatDistanceToNow } from "date-fns";
@@ -28,13 +28,11 @@ export const ForumQuestion = () => {
     content = <p>Erro: {questionError}</p>;
   } else if (questionData) {
     const dateCreate = new Date(questionData.createdAt);
-    const createDataFormated = formatDistanceToNow(dateCreate, {
-      addSuffix: true,
+    const createDataFormatted = formatDistanceToNow(dateCreate, {
       locale: ptBR,
     });
     const dateUpdate = new Date(questionData.updatedAt);
-    const updatedDataFormated = formatDistanceToNow(dateUpdate, {
-      addSuffix: true,
+    const updatedDataFormatted = formatDistanceToNow(dateUpdate, {
       locale: ptBR,
     });
 
@@ -102,14 +100,40 @@ export const ForumQuestion = () => {
               </div>
               <div className="flex flex-col justify-between gap-[10px] items-end w-full">
                 <p className="text-sm opacity-60">
-                  Pergunta criada {createDataFormated}
+                  Pergunta criada: {createDataFormatted} atrás
                 </p>
                 <p className="text-sm opacity-60">
-                  Última modificação {updatedDataFormated}
+                  Última modificação: {updatedDataFormatted} atrás
                 </p>
               </div>
             </div>
+            <div className="flex justify-between">
+              <Button
+                type="link"
+                danger
+                className="flex gap-[5px] items-start p-0"
+              >
+                <div className="flex items-center justify-center w-6 h-6 bg-red-200 rounded-full">
+                  <AlertOctagon size={16} />
+                </div>
+                <p>Reportar essa pergunta</p>
+              </Button>
+              <div className="flex gap-[5px] items-center">
+                <Button type="link" className="flex gap-[5px] items-start p-0">
+                  <div className="flex items-center justify-center w-7 h-7 bg-secondary bg-opacity-30 rounded-[10px]">
+                    <ThumbsUp
+                      size={20}
+                      color="#FFF"
+                      fill="rgba(255, 64, 129, 0.30)"
+                    />
+                  </div>
+                </Button>
+                <p>0 Curtidas</p>
+              </div>
+            </div>
           </div>
+          <p>Nenhuma resposta</p>
+          <Button type="primary">Adicionar uma resposta</Button>
         </div>
       </LayoutComponent>
     );
