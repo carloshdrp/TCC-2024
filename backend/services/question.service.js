@@ -63,7 +63,7 @@ const getQuestionById = async (questionId) => {
 
 const updateQuestionById = async (userId, questionId, updateBody) => {
   const question = await getQuestionById(questionId);
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { id: userId },
   });
 

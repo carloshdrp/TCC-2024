@@ -26,7 +26,6 @@ export default function UserLeague({ leagueSize, userId }) {
   if (isLoading) {
     content = <p>Carregando...</p>;
   } else if (userData) {
-    console.log(userData);
     switch (userData.league) {
       default:
         image = topaz;

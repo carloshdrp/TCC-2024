@@ -14,6 +14,8 @@ import Exercises from "./pages/Exercises.jsx";
 import ProfileEdit from "./pages/ProfileEdit.jsx";
 import { ForumAskCreate } from "./pages/ForumAskCreate.jsx";
 import { ForumQuestion } from "./pages/ForumQuestion.jsx";
+import ForumQuestionEdit from "./pages/ForumQuestionEdit.jsx";
+import DeleteConfirm from "./components/Forum/DeleteConfirm.jsx";
 
 function App() {
   const location = useLocation();
@@ -39,6 +41,11 @@ function App() {
           <Route path="profile/edit" element={<ProfileEdit />} />
 
           <Route path="forum/ask" element={<ForumAskCreate />} />
+          <Route
+            path="forum/:questionId/edit"
+            element={<ForumQuestionEdit />}
+          />
+          <Route path="forum/:questionId/delete" element={<DeleteConfirm />} />
 
           <Route path="logout" element={<Logout />} />
         </Route>

@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { useGetRatingByRateableTypeQuery } from "../../api/slices/ratingApiSlice";
+import PropTypes from "prop-types";
 
 export const ForumArticle = ({ selectedTab, searchTitle }) => {
   const navigate = useNavigate();
@@ -27,7 +28,15 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
     refetch,
   } = useGetForumQuestionsQuery(filter);
 
-  const { data: ratingData } = useGetRatingByRateableTypeQuery("QUESTION");
+  const {
+    data: ratingData,
+    refetch: refreshRating,
+    isLoading: ratingLoading,
+  } = useGetRatingByRateableTypeQuery("QUESTION");
+
+  useEffect(() => {
+    refreshRating();
+  }, [refreshRating]);
 
   useEffect(() => {
     refetch();
@@ -55,9 +64,14 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
           locale: ptBR,
         });
 
-        const ratingCount = ratingData.filter(
-          (rating) => rating.rateableId === question.id
-        ).length;
+        let ratingCount;
+        if (ratingLoading) {
+          ratingCount = <Spin />;
+        } else if (ratingData) {
+          ratingCount = ratingData.filter(
+            (rating) => rating.rateableId === question.id
+          ).length;
+        }
 
         const settings = [
           {
@@ -165,4 +179,13 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
   }
 
   return content;
+};
+
+ForumArticle.propTypes = {
+  selectedTab: PropTypes.string.isRequired,
+  searchTitle: PropTypes.string,
+};
+ForumArticle.propTypes = {
+  selectedTab: PropTypes.string.isRequired,
+  searchTitle: PropTypes.string,
 };

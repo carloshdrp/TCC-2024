@@ -31,10 +31,10 @@ export const ratingApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     deleteRating: builder.mutation({
-      query: (id, userId) => ({
+      query: ({ id, userId }) => ({
         url: `/ratings/${id}`,
         method: "DELETE",
-        body: userId,
+        body: { userId },
       }),
     }),
   }),
