@@ -95,6 +95,15 @@ const getRanking = async (userId) => {
   return userRanking;
 };
 
+const getLeague = async (userId) => {
+  const league = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { league: true },
+  });
+
+  return league;
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -103,4 +112,5 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getRanking,
+  getLeague,
 };

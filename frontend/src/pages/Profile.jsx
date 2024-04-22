@@ -4,12 +4,14 @@ import { selectCurrentUser } from "../redux/slices/authSlice";
 import {
   useGetUsersQuery,
   useRemoveUserMutation,
-} from "../api/profileApiSlice";
+} from "../api/slices/profileApiSlice";
 import { UserRound, Archive } from "lucide-react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Avatar, Button, Spin, Modal, notification } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import UserRanking from "../components/UserRanking.jsx";
+import ProfileForumActivities from "../components/Profile/ProfileForumActivities.jsx";
+
 import coin from "../assets/coin.png";
 import { useNavigate } from "react-router-dom";
 import { QuestionsOverview } from "../components/QuestionsOverview.jsx";
@@ -70,7 +72,7 @@ function Profile() {
 
   useEffect(() => {
     refetch();
-  }, [user]);
+  }, [refetch]);
 
   let content;
   if (isLoading) {
@@ -84,12 +86,12 @@ function Profile() {
           <Avatar
             shape="square"
             size={150}
-            src={user.avatar ? API_AVATAR + user.avatar : undefined}
+            src={userData.avatar ? API_AVATAR + userData.avatar : undefined}
             icon={!userData.avatar && <UserRound size={46} />}
           />
           <div className="flex flex-col justify-between w-full">
             <p className="text-4xl font-semibold ">{userData.name}</p>
-            <UserLeague />
+            <UserLeague leagueSize="medium" userId={userData.id} />
             <UserRanking />
             <div className="flex items-center gap-1">
               <img src={coin} alt="coin" className="w-5 h-5" />
@@ -125,20 +127,7 @@ function Profile() {
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
             <h2>Atividades no Fórum</h2>
-            <div className="grid grid-flow-col p-2 text-center bg-white rounded-lg shadow-md">
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questões Abertas</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questões Respondidas</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-              <div>
-                <h3 className="m-0">Avaliações</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-            </div>
+            <ProfileForumActivities userId={user.id} />
           </div>
 
           <div className="w-1/2">

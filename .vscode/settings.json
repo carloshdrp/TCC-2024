@@ -1,3 +1,6 @@
 {
-  "editor.fontFamily": "Cascadia Code, 'Courier New', monospace"
+  "editor.fontFamily": "Cascadia Code, 'Courier New', monospace",
+  "cSpell.words": [
+    "Popconfirm"
+  ]
 }

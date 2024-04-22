@@ -9,15 +9,15 @@ const router = express.Router();
 router
   .route('/')
   .get(commentController.getComments)
-  .post(auth(), validate(commentValidation.createComment), commentController.createComment);
+  .post(validate(commentValidation.createComment), auth(), commentController.createComment);
 
 router
   .route('/:commentId')
   .get(auth(), commentController.getComment)
   .patch(
+    validate(commentValidation.updateComment),
     commentController.attachComment,
     auth('manageComments'),
-    validate(commentValidation.updateComment),
     commentController.updateComment,
   )
   .delete(commentController.attachComment, auth('manageComments'), commentController.deleteComment);

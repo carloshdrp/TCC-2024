@@ -12,6 +12,10 @@ import Forum from "./pages/Forum.jsx";
 import Logout from "./pages/Logout.jsx";
 import Exercises from "./pages/Exercises.jsx";
 import ProfileEdit from "./pages/ProfileEdit.jsx";
+import { ForumAskCreate } from "./pages/ForumAskCreate.jsx";
+import { ForumQuestion } from "./pages/ForumQuestion.jsx";
+import ForumQuestionEdit from "./pages/ForumQuestionEdit.jsx";
+import DeleteConfirm from "./components/Forum/DeleteConfirm.jsx";
 
 function App() {
   const location = useLocation();
@@ -23,6 +27,8 @@ function App() {
         <Route path="*" element={<NotFound />} />
 
         <Route path="forum" element={<Forum />} />
+        <Route path="forum/:questionId" element={<ForumQuestion />} />
+
         <Route path="exercises" element={<Exercises />} />
 
         <Route element={<PublicRoutes />}>
@@ -33,6 +39,18 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="profile" element={<Profile />} />
           <Route path="profile/edit" element={<ProfileEdit />} />
+
+          <Route path="forum/ask" element={<ForumAskCreate />} />
+          <Route
+            path="forum/:questionId/edit"
+            element={<ForumQuestionEdit />}
+          />
+          <Route path="forum/:questionId/delete" element={<DeleteConfirm />} />
+
+          <Route path="forum/:questionId/answer" element={<ForumAskCreate />} />
+          <Route path="answer/:answerId/edit" element={<ForumQuestionEdit />} />
+          <Route path="answer/:answerId/delete" element={<DeleteConfirm />} />
+
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>

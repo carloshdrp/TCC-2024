@@ -1,5 +1,5 @@
 import axios from "axios";
-import store from "./store";
+import store from "../redux";
 import { refreshTokens } from "./authSlice";
 
 axios.interceptors.response.use(

@@ -8,15 +8,16 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
+  .post(validate(userValidation.createUser), auth('manageUsers'), userController.createUser)
+  .get(validate(userValidation.getUsers), auth('getUsers'), userController.getUsers);
 
 router
   .route('/:userId')
-  .get(userController.attachUser, auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(userController.attachUser, auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
-  .delete(userController.attachUser, auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .get(validate(userValidation.getUser), userController.attachUser, auth('getUsers'), userController.getUser)
+  .patch(validate(userValidation.updateUser), userController.attachUser, auth('manageUsers'), userController.updateUser)
+  .delete(validate(userValidation.deleteUser), userController.attachUser, auth('manageUsers'), userController.deleteUser);
 
-router.route('/ranking/:userId').get(userController.attachUser, auth('getRanking'), userController.getRanking);
+router.route('/ranking/:userId').get(userController.getRanking);
+router.route('/league/:userId').get(userController.getLeague);
 
 module.exports = router;

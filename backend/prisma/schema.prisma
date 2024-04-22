@@ -86,8 +86,10 @@ model Question {
   user   User   @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
 
-  Answer       Answer[]
-  QuestionTags QuestionTags[]
+  tag   Tags   @relation(fields: [tagId], references: [id])
+  tagId String @db.ObjectId
+
+  Answer Answer[]
 }
 
 model Answer {
@@ -105,25 +107,20 @@ model Answer {
 }
 
 model Tags {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  QuestionTags QuestionTags[]
-}
-
-model QuestionTags {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  questionId String @db.ObjectId
-  tagId      String @db.ObjectId
-
-  question Question @relation(fields: [questionId], references: [id])
-  tag      Tags     @relation(fields: [tagId], references: [id])
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  Question Question[]
 }
 
 // Questionário:
 model Quiz {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
+  subject     Subject
+
+  isCompleted Boolean @default(false)
+  difficulty  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,6 +144,22 @@ model quizQuestion {
   quizId String @db.ObjectId
 }
 
+enum Subject {
+  MATEMATICA
+  PORTUGUES
+  HISTORIA
+  GEOGRAFIA
+  BIOLOGIA
+  QUIMICA
+  FISICA
+  SOCIOLOGIA
+  FILOSOFIA
+  INGLES
+  ESPANHOL
+  ARTE
+  EDUCACAO_FISICA
+}
+
 // Denúncias:
 model Report {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -155,7 +168,7 @@ model Report {
   reportedBy User     @relation(fields: [userId], references: [id])
   userId     String   @db.ObjectId
 
-  reportableId   String
+  reportableId   String         @db.ObjectId
   reportableType ReportableType
 
   @@index([reportableId, reportableType])
@@ -174,15 +187,15 @@ model Rating {
   updatedAt DateTime @updatedAt
   ratedBy   User     @relation(fields: [userId], references: [id])
   userId    String   @db.ObjectId
-  score     Int      @default(0)
 
-  rateableId   String
+  rateableId   String       @db.ObjectId
   rateableType RateableType
 
   @@index([rateableId, rateableType])
 }
 
 enum RateableType {
+  QUESTION
   ANSWER
   QUIZ
 }

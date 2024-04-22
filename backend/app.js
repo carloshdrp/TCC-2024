@@ -37,7 +37,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 1 * 60 * 1000,
   max: 100,
   standardHeaders: 'draft-7',
   legacyHeaders: false,

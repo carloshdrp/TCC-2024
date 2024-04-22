@@ -16,14 +16,6 @@ export const logoutUser = async () => {
   await axios.post(`${API_URL}/auth/logout`, { refreshToken });
 };
 
-// export const refreshTokens = async () => {
-//   const refreshToken = localStorage.getItem("refreshToken");
-//   const response = await axios.post(`${API_URL}/auth/refresh-tokens`, {
-//     refreshToken,
-//   });
-//   return response.data;
-// };
-
 export const setAuthToken = (token) => {
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;

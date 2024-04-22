@@ -5,13 +5,13 @@ const { pick, ApiError } = require('../utils');
 
 const createQuestion = catchAsync(async (req, res) => {
   const authorId = req.user.id;
-  const { tags, ...questionBody } = req.body;
-  const question = await questionService.createQuestion(questionBody, authorId, tags);
+  const { tagId, ...questionBody } = req.body;
+  const question = await questionService.createQuestion(questionBody, authorId, tagId);
   res.status(httpStatus.CREATED).send(question);
 });
 
 const getQuestions = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['title']);
+  const filter = pick(req.query, ['title', 'tagName', 'userId']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await questionService.queryQuestions(filter, options);
   res.send(result);
@@ -29,7 +29,8 @@ const updateQuestion = catchAsync(async (req, res) => {
 });
 
 const deleteQuestion = catchAsync(async (req, res) => {
-  await questionService.deleteQuestionById(req.params.questionId);
+  const userId = req.user.id;
+  await questionService.deleteQuestionById(req.params.questionId, userId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
@@ -40,7 +41,7 @@ const attachQuestion = catchAsync(async (req, res, next) => {
   }
   req.question = question;
   req.resourceOwnerId = question.userId;
-  next();
+  return next();
 });
 
 module.exports = {
