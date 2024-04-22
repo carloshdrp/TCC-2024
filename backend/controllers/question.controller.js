@@ -29,7 +29,8 @@ const updateQuestion = catchAsync(async (req, res) => {
 });
 
 const deleteQuestion = catchAsync(async (req, res) => {
-  await questionService.deleteQuestionById(req.params.questionId);
+  const userId = req.user.id;
+  await questionService.deleteQuestionById(req.params.questionId, userId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

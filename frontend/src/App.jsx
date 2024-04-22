@@ -47,6 +47,10 @@ function App() {
           />
           <Route path="forum/:questionId/delete" element={<DeleteConfirm />} />
 
+          <Route path="forum/:questionId/answer" element={<ForumAskCreate />} />
+          <Route path="answer/:answerId/edit" element={<ForumQuestionEdit />} />
+          <Route path="answer/:answerId/delete" element={<DeleteConfirm />} />
+
           <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>

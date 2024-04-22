@@ -114,9 +114,13 @@ model Tags {
 
 // Questionário:
 model Quiz {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
+  subject     Subject
+
+  isCompleted Boolean @default(false)
+  difficulty  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -138,6 +142,22 @@ model quizQuestion {
 
   quiz   Quiz   @relation(fields: [quizId], references: [id])
   quizId String @db.ObjectId
+}
+
+enum Subject {
+  MATEMATICA
+  PORTUGUES
+  HISTORIA
+  GEOGRAFIA
+  BIOLOGIA
+  QUIMICA
+  FISICA
+  SOCIOLOGIA
+  FILOSOFIA
+  INGLES
+  ESPANHOL
+  ARTE
+  EDUCACAO_FISICA
 }
 
 // Denúncias:

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Breadcrumb, Spin, Avatar, Button, Dropdown } from "antd";
+import { Breadcrumb, Spin, Avatar, Button, Dropdown, notification } from "antd";
 import { HomeOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import LayoutComponent from "./layout/LayoutComponent";
@@ -16,11 +16,23 @@ import {
 } from "../api/slices/ratingApiSlice";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import QuestionAnswers from "../components/QuestionAnswers";
+import { motion, AnimatePresence } from "framer-motion";
+import { Form, Input } from "antd";
+import {
+  useCreateAnswerMutation,
+  useGetAnswersByQuestionIdQuery,
+} from "../api/slices/answersApiSlice";
 
 export const ForumQuestion = () => {
   const { questionId } = useParams();
   const userState = useSelector(selectCurrentUser);
+  const [form] = Form.useForm();
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [processingLike, setProcessingLike] = useState(false);
+  const [refreshAnswers, setRefreshAnswers] = useState(0);
 
   const {
     data: questionData,
@@ -31,14 +43,37 @@ export const ForumQuestion = () => {
 
   useEffect(() => {
     refetch();
-  }, [questionData, refetch]);
+  }, [questionData, refetch, refreshAnswers]);
 
   const ratingData = useGetRatingByRateableIdQuery(questionId);
+
+  const [createAnswer, { isLoading }] = useCreateAnswerMutation();
+  const { data: answerData } = useGetAnswersByQuestionIdQuery(questionId);
 
   const [deleteRating] = useDeleteRatingMutation();
   const [createRating] = useCreateRatingMutation();
 
   const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      await createAnswer({
+        questionId,
+        description: values.description,
+      });
+      form.resetFields();
+      setRefreshAnswers((i) => i + 1);
+      setIsExpanded(false);
+      notification.success({
+        message: "Resposta adicionada com sucesso!",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Erro ao adicionar resposta!",
+        description: error.error,
+      });
+    }
+  };
 
   let content;
   if (questionLoading) {
@@ -77,14 +112,17 @@ export const ForumQuestion = () => {
       },
     ];
 
+    const rating = ratingData?.data.find(
+      (rating) => rating.userId === userState?.id
+    );
+
     const handleLike = () => {
-      const rating = ratingData.data.find(
-        (rating) => rating.userId === userState.id
-      );
+      setProcessingLike(true);
 
       if (rating) {
         deleteRating({ id: rating.id, userId: userState.id }).then(() => {
           ratingData.refetch();
+          setProcessingLike(false);
         });
       } else {
         createRating({
@@ -92,6 +130,7 @@ export const ForumQuestion = () => {
           rateableType: "QUESTION",
         }).then(() => {
           ratingData.refetch();
+          setProcessingLike(false);
         });
       }
     };
@@ -110,8 +149,12 @@ export const ForumQuestion = () => {
       },
     ];
 
+    const toggleExpansion = () => {
+      setIsExpanded(!isExpanded);
+    };
+
     content = (
-      <LayoutComponent>
+      <LayoutComponent questionName={questionData.title}>
         <div className="flex flex-col gap-[20px]">
           <Breadcrumb items={topMenu} />
 
@@ -138,10 +181,9 @@ export const ForumQuestion = () => {
             </p>
 
             <p>{questionData.description}</p>
-            <span className="bg-text w-full h-[1.5px] bg-opacity-10 rounded-full" />
 
             <div className="flex">
-              <div className="flex gap-[10px]">
+              <div className="flex gap-[10px] ">
                 <Avatar
                   shape="circle"
                   size={55}
@@ -191,13 +233,22 @@ export const ForumQuestion = () => {
                     type="link"
                     className="flex gap-[5px] items-start p-0"
                     onClick={handleLike}
+                    disabled={processingLike}
                   >
-                    <div className="flex items-center justify-center w-7 h-7 bg-secondary bg-opacity-30 rounded-[10px]">
-                      <ThumbsUp
-                        size={20}
-                        color="#FFF"
-                        fill="rgba(255, 64, 129, 0.30)"
-                      />
+                    <div className="flex items-center justify-center w-8 h-8 bg-secondary bg-opacity-30 rounded-[10px]">
+                      {rating ? (
+                        <ThumbsUp
+                          size={24}
+                          color="#FFF"
+                          fill="rgba(63, 81, 181)"
+                        />
+                      ) : (
+                        <ThumbsUp
+                          size={24}
+                          color="#FFF"
+                          fill="rgba(255, 64, 129, 0.30)"
+                        />
+                      )}
                     </div>
                   </Button>
                 )}
@@ -212,7 +263,78 @@ export const ForumQuestion = () => {
               </div>
             </div>
           </div>
-          <p>Nenhuma resposta</p>
+          {answerData?.length > 1 ? (
+            <p>{answerData.length} Respostas</p>
+          ) : (
+            <p>{answerData.length} Resposta</p>
+          )}
+          <span className="bg-text w-full h-[2px] bg-opacity-10 rounded-full" />
+
+          {userState &&
+            userState?.id !== questionData.userId &&
+            !answerData.some((answer) => answer.userId === userState?.id) && (
+              <div className="flex flex-col">
+                <Button type="primary" onClick={toggleExpansion}>
+                  Responder essa pergunta
+                </Button>
+
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                      transition={{ duration: 0.5 }}
+                      style={{ originY: 0, overflow: "hidden", marginTop: 10 }} // Isso faz com que a animação comece do topo
+                    >
+                      <Form
+                        form={form}
+                        name="perguntar"
+                        initialValues={{ remember: true }}
+                        layout="vertical"
+                        className="text-left rounded-[10px]"
+                        onFinish={onFinish}
+                      >
+                        <Form.Item
+                          name="description"
+                          hasFeedback="true"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Este é um campo obrigatório!",
+                            },
+                            {
+                              min: 20,
+                              message:
+                                "A resposta deve ter no mínimo 20 caracteres!",
+                            },
+                          ]}
+                        >
+                          <Input.TextArea
+                            placeholder="Digite uma resposta detalhada"
+                            className="bg-white"
+                          />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button
+                            className="w-full "
+                            loading={isLoading}
+                            htmlType="submit"
+                          >
+                            Enviar resposta
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+          <QuestionAnswers
+            questionId={questionData.id}
+            refreshAnswers={refreshAnswers}
+          />
         </div>
       </LayoutComponent>
     );

@@ -67,7 +67,7 @@ const updateQuestionById = async (userId, questionId, updateBody) => {
     where: { id: userId },
   });
 
-  if (!user) {
+  if (!user || question.userId !== userId) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para acessar este recurso!');
   }
 
@@ -81,8 +81,11 @@ const updateQuestionById = async (userId, questionId, updateBody) => {
   });
 };
 
-const deleteQuestionById = async (questionId) => {
+const deleteQuestionById = async (questionId, userId) => {
   const question = await getQuestionById(questionId);
+  if (question.userId !== userId) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para acessar este recurso!');
+  }
 
   return prisma.question.delete({
     where: { id: questionId },
