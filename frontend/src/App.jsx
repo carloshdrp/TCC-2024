@@ -16,6 +16,7 @@ import { ForumAskCreate } from "./pages/ForumAskCreate.jsx";
 import { ForumQuestion } from "./pages/ForumQuestion.jsx";
 import ForumQuestionEdit from "./pages/ForumQuestionEdit.jsx";
 import DeleteConfirm from "./components/Forum/DeleteConfirm.jsx";
+import ExerciseCreate from "./pages/ExerciseCreate.jsx";
 
 function App() {
   const location = useLocation();
@@ -46,10 +47,11 @@ function App() {
             element={<ForumQuestionEdit />}
           />
           <Route path="forum/:questionId/delete" element={<DeleteConfirm />} />
-
           <Route path="forum/:questionId/answer" element={<ForumAskCreate />} />
           <Route path="answer/:answerId/edit" element={<ForumQuestionEdit />} />
           <Route path="answer/:answerId/delete" element={<DeleteConfirm />} />
+
+          <Route path="exercises/create" element={<ExerciseCreate />} />
 
           <Route path="logout" element={<Logout />} />
         </Route>

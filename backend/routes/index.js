@@ -7,6 +7,8 @@ const commentRoute = require('./comment.route');
 const tagsRoute = require('./tags.route');
 const ratingRoute = require('./rating.route');
 const answerRoute = require('./answer.route');
+const quizRoute = require('./quiz.route');
+const quizQuestionRoute = require('./quizQuestion.route');
 
 const router = express.Router();
 
@@ -42,6 +44,14 @@ const routes = [
   {
     path: '/answers',
     route: answerRoute,
+  },
+  {
+    path: '/quiz',
+    route: quizRoute,
+  },
+  {
+    path: '/quiz-questions',
+    route: quizQuestionRoute,
   },
 ];
 

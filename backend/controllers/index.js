@@ -7,3 +7,5 @@ module.exports.avatarController = require('./avatar.controller');
 module.exports.tagsController = require('./tags.controller');
 module.exports.ratingController = require('./rating.controller');
 module.exports.answerController = require('./answer.controller');
+module.exports.quizController = require('./quiz.controller');
+module.exports.quizQuestionController = require('./quizQuestion.controller');

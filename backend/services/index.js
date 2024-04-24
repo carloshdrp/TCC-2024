@@ -6,3 +6,5 @@ module.exports.commentService = require('./comment.service');
 module.exports.tagsService = require('./tags.service');
 module.exports.ratingService = require('./rating.service');
 module.exports.answerService = require('./answer.service');
+module.exports.quizService = require('./quiz.service');
+module.exports.quizQuestionService = require('./quizQuestion.service');

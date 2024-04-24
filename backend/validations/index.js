@@ -6,3 +6,5 @@ module.exports.commentValidation = require('./comment.validation');
 module.exports.tagsValidation = require('./tags.validation');
 module.exports.ratingValidation = require('./rating.validation');
 module.exports.answerValidation = require('./answer.validation');
+module.exports.quizValidation = require('./quiz.validation');
+module.exports.quizQuestionValidation = require('./quizQuestion.validation');
