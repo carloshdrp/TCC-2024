@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 import { apiSlice } from "../api/apiSlice";
 import authReducer from "./slices/authSlice";
 import forumNavigatorReducer from "./slices/forumNavigatorSlice";
-import exerciseCreateReducer from "./slices/exerciseCreateSlice";
+import quizCreateReducer from "./slices/quizCreateSlice";
 
 const persistConfig = {
   key: "authData",
@@ -18,7 +18,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: persistedAuthReducer,
     forumNavigator: forumNavigatorReducer,
-    exerciseCreate: exerciseCreateReducer,
+    quizCreate: quizCreateReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

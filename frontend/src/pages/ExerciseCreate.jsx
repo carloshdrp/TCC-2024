@@ -3,7 +3,7 @@ import { Steps } from "antd";
 import QuizCreate from "../components/QuizCreate.jsx";
 import QuizQuestionCreate from "../components/QuizQuestionCreate.jsx";
 import QuizReview from "../components/QuizReview.jsx";
-import { getStep } from "../redux/slices/exerciseCreateSlice.js";
+import { getStep } from "../redux/slices/quizCreateSlice.js";
 import { useSelector } from "react-redux";
 
 const steps = [
