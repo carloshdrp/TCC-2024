@@ -28,7 +28,6 @@ const queryQuizzes = async (filter, options) => {
       difficulty: {
         equals: filter.difficulty,
       },
-      isCompleted: filter.isCompleted,
     },
     take: options.limit,
     skip: options.skip,

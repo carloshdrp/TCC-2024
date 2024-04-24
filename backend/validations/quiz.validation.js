@@ -8,7 +8,6 @@ const createQuiz = {
     description: Joi.string().required(),
     subject: Joi.string().required(),
     difficulty: Joi.string(),
-    isCompleted: Joi.boolean(),
   }),
 };
 
@@ -18,7 +17,6 @@ const getQuizzes = {
     subject: Joi.string().valid(...Object.values(Subject)),
     userId: Joi.string().custom(objectId),
     difficulty: Joi.string(),
-    isCompleted: Joi.boolean(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -40,7 +38,6 @@ const updateQuiz = {
     description: Joi.string(),
     Subject: Joi.string().valid(...Object.values(Subject)),
     difficulty: Joi.string(),
-    isCompleted: Joi.boolean(),
     userId: Joi.string().custom(objectId),
   }),
 };

@@ -41,6 +41,7 @@ model User {
   Answer           Answer[]
   Rating           Rating[]
   Quiz             Quiz[]
+  QuizRelation     quizRelation[]
 }
 
 // Gamificação:
@@ -119,8 +120,7 @@ model Quiz {
   description String
   subject     Subject
 
-  isCompleted Boolean @default(false)
-  difficulty  Int?
+  difficulty Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -128,7 +128,21 @@ model Quiz {
   user   User   @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
 
-  Question quizQuestion[]
+  Question     quizQuestion[]
+  QuizRelation quizRelation[]
+}
+
+model quizRelation {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  quizId String @db.ObjectId
+  userId String @db.ObjectId
+
+  completed Boolean @default(false)
+
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([quizId, userId])
 }
 
 model quizQuestion {

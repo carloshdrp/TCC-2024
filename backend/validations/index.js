@@ -8,3 +8,4 @@ module.exports.ratingValidation = require('./rating.validation');
 module.exports.answerValidation = require('./answer.validation');
 module.exports.quizValidation = require('./quiz.validation');
 module.exports.quizQuestionValidation = require('./quizQuestion.validation');
+module.exports.quizRelationValidation = require('./quizRelation.validation');

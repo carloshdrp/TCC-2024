@@ -8,3 +8,4 @@ module.exports.ratingService = require('./rating.service');
 module.exports.answerService = require('./answer.service');
 module.exports.quizService = require('./quiz.service');
 module.exports.quizQuestionService = require('./quizQuestion.service');
+module.exports.quizRelationService = require('./quizRelation.service');

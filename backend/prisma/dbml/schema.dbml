@@ -20,6 +20,7 @@ Table User {
   Answer Answer [not null]
   Rating Rating [not null]
   Quiz Quiz [not null]
+  QuizRelation quizRelation [not null]
 }
 
 Table Achievement {
@@ -78,13 +79,26 @@ Table Quiz {
   title String [not null]
   description String [not null]
   subject Subject [not null]
-  isCompleted Boolean [not null, default: false]
   difficulty Int
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
   Question quizQuestion [not null]
+  QuizRelation quizRelation [not null]
+}
+
+Table quizRelation {
+  id String [pk]
+  quizId String [not null]
+  userId String [not null]
+  completed Boolean [not null, default: false]
+  quiz Quiz [not null]
+  user User [not null]
+
+  indexes {
+    (quizId, userId) [unique]
+  }
 }
 
 Table quizQuestion {
@@ -193,6 +207,10 @@ Ref: Answer.userId > User.id
 Ref: Answer.questionId > Question.id
 
 Ref: Quiz.userId > User.id
+
+Ref: quizRelation.quizId > Quiz.id
+
+Ref: quizRelation.userId > User.id
 
 Ref: quizQuestion.quizId > Quiz.id
 
