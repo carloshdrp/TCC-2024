@@ -57,7 +57,7 @@ const ForumQuestionEdit = () => {
     try {
       let defaultTagId = tagId;
 
-      if (tagId == 0) {
+      if (tagId === 0) {
         defaultTagId = questionData.data.tag.id;
       }
 

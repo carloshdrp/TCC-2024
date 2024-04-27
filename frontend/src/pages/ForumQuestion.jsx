@@ -48,7 +48,8 @@ export const ForumQuestion = () => {
   const ratingData = useGetRatingByRateableIdQuery(questionId);
 
   const [createAnswer, { isLoading }] = useCreateAnswerMutation();
-  const { data: answerData } = useGetAnswersByQuestionIdQuery(questionId);
+  const { data: answerData, isLoading: answerLoading } =
+    useGetAnswersByQuestionIdQuery(questionId);
 
   const [deleteRating] = useDeleteRatingMutation();
   const [createRating] = useCreateRatingMutation();
@@ -76,11 +77,11 @@ export const ForumQuestion = () => {
   };
 
   let content;
-  if (questionLoading) {
+  if (questionLoading || answerLoading) {
     content = <Spin fullscreen />;
   } else if (questionError) {
     content = <p>Erro: {questionError}</p>;
-  } else if (questionData) {
+  } else if (questionData && answerData) {
     const dateCreate = new Date(questionData.createdAt);
     const createDataFormatted = formatDistanceToNow(dateCreate, {
       locale: ptBR,
@@ -113,7 +114,7 @@ export const ForumQuestion = () => {
     ];
 
     const rating = ratingData?.data.find(
-      (rating) => rating.userId === userState?.id
+      (rating) => rating.userId === userState?.id,
     );
 
     const handleLike = () => {
@@ -285,7 +286,11 @@ export const ForumQuestion = () => {
                       animate={{ height: "auto" }}
                       exit={{ height: 0 }}
                       transition={{ duration: 0.5 }}
-                      style={{ originY: 0, overflow: "hidden", marginTop: 10 }} // Isso faz com que a animação comece do topo
+                      style={{
+                        originY: 0,
+                        overflow: "hidden",
+                        marginTop: 10,
+                      }} // Isso faz com que a animação comece do topo
                     >
                       <Form
                         form={form}

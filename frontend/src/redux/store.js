@@ -5,6 +5,7 @@ import { apiSlice } from "../api/apiSlice";
 import authReducer from "./slices/authSlice";
 import forumNavigatorReducer from "./slices/forumNavigatorSlice";
 import quizCreateReducer from "./slices/quizCreateSlice";
+import quizMenuReducer from "./slices/quizMenuSlice";
 
 const persistConfig = {
   key: "authData",
@@ -19,6 +20,7 @@ export const store = configureStore({
     auth: persistedAuthReducer,
     forumNavigator: forumNavigatorReducer,
     quizCreate: quizCreateReducer,
+    quizMenu: quizMenuReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

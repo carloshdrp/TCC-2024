@@ -84,7 +84,7 @@ function Forum() {
                     : true
                 }
                 className="font-medium"
-                disabled={userState.points >= 1 ? false : true}
+                disabled={userState.points < 1}
               >
                 Criar uma pergunta
               </Button>

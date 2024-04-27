@@ -66,7 +66,7 @@ export const ForumAskCreate = () => {
     try {
       let defaultTagId = tagId;
 
-      if (tagId == 0) {
+      if (tagId === 0) {
         defaultTagId = tagOptions[0].key;
       }
 
