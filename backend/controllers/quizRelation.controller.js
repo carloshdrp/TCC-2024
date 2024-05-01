@@ -26,7 +26,7 @@ const updateQuizRelation = catchAsync(async (req, res) => {
 });
 
 const deleteQuizRelation = catchAsync(async (req, res) => {
-  await quizRelationService.deleteQuizRelationById(req.user.id, req.params.quizRelationId);
+  await quizRelationService.deleteQuizRelation(req.user.id, req.params.quizRelationId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

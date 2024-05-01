@@ -20,7 +20,7 @@ export const quizRelationApiSlice = apiSlice.injectEndpoints({
     }),
     deleteQuizRelation: builder.mutation({
       query: (id) => ({
-        url: `/quiz-relation/${id}`,
+        url: `/quiz-relations/${id}`,
         method: "DELETE",
       }),
     }),

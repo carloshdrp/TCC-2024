@@ -103,10 +103,31 @@ const deleteQuizRelationById = async (userId, quizRelationId) => {
   });
 };
 
+const deleteQuizRelation = async (userId, quizId) => {
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+  });
+
+  if (!quizId) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Relação não encontrada');
+  }
+
+  if (!user) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para realizar esta ação.');
+  }
+
+  await prisma.quizRelation.deleteMany({
+    where: {
+      quizId,
+    },
+  });
+};
+
 module.exports = {
   createQuizRelation,
   queryQuizRelations,
   getQuizRelationById,
   updateQuizRelationById,
   deleteQuizRelationById,
+  deleteQuizRelation,
 };

@@ -6,17 +6,38 @@ import {
   getQuestion,
   setStep,
   removeQuestion,
+  updateQuestion,
+  getEditing,
 } from "../redux/slices/quizCreateSlice.js";
+import { useHandleCancel } from "../utils/quiz/handleCancel.js";
+import { useState } from "react";
 
 const QuizQuestionCreate = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const question = useSelector(getQuestion);
-  // dispatch(setStep(2));
+  const editing = useSelector(getEditing);
+  const handleCancel = useHandleCancel();
+  const [questionId, setQuestionId] = useState(null);
+  const [editQuestion, setEditQuestion] = useState(false);
 
   const onFinish = async (values) => {
+    setEditQuestion(false);
     try {
-      dispatch(addQuestion(values));
+      const existingQuestionIndex = question.findIndex(
+        (q) => q.id === questionId,
+      );
+
+      if (existingQuestionIndex !== -1) {
+        dispatch(
+          updateQuestion({
+            index: existingQuestionIndex,
+            question: { ...values, id: questionId },
+          }),
+        );
+      } else {
+        dispatch(addQuestion(values));
+      }
 
       notification.success({
         message: "Questão salva com sucesso!",
@@ -39,17 +60,11 @@ const QuizQuestionCreate = () => {
           <div className="flex justify-between">
             <p className="text-2xl font-extrabold">Questões</p>
             <Button
-              type="primary"
-              style={
-                question.length !== 0 && { background: "rgb(255, 64, 129, 1)" }
-              }
-              disabled={question.length === 0}
               onClick={() => {
-                if (question.length === 0) return;
-                dispatch(setStep(2));
+                dispatch(setStep(0));
               }}
             >
-              Revisar
+              Voltar
             </Button>
           </div>
 
@@ -63,15 +78,31 @@ const QuizQuestionCreate = () => {
                 key: "edit",
                 label: "Editar",
                 onClick: () => {
+                  setEditQuestion(true);
                   form.setFieldsValue(item);
-                  handleRemove();
+                  console.log("item", item);
+                  if (!editing) {
+                    handleRemove();
+                  } else {
+                    setQuestionId(item.id);
+                  }
                 },
               },
               {
                 key: "delete",
                 label: "Deletar",
                 danger: true,
-                onClick: handleRemove,
+                onClick: () => {
+                  if (editing) {
+                    const updatedQuestion = {
+                      ...question[index],
+                      deleted: true,
+                    };
+                    dispatch(
+                      updateQuestion({ index, question: updatedQuestion }),
+                    );
+                  }
+                },
               },
             ];
 
@@ -79,6 +110,7 @@ const QuizQuestionCreate = () => {
               <div
                 key={index}
                 className="flex items-center justify-between p-2 border-2 border-solid border-neutral-200 rounded-[10px]"
+                style={item.deleted ? { display: "none" } : {}}
               >
                 <p className="truncate hover:whitespace-normal">
                   {item.description}
@@ -102,7 +134,7 @@ const QuizQuestionCreate = () => {
             form={form}
             name="myForm"
             layout="vertical"
-            className="text-left px-3 py-2  rounded-[10px]"
+            className="text-left   rounded-[10px]"
             onFinish={onFinish}
           >
             <Form.Item
@@ -188,10 +220,31 @@ const QuizQuestionCreate = () => {
 
             <Form.Item>
               <Button type="primary" className="w-full mt-4" htmlType="submit">
-                Adicionar
+                {editQuestion ? "Atualizar" : "Adicionar"} questão
               </Button>
             </Form.Item>
           </Form>
+        </div>
+        <div className="col-span-full">
+          <Button
+            type="primary"
+            style={
+              question.filter((item) => !item.deleted).length !== 0 && {
+                background: "rgb(255, 64, 129, 1)",
+              }
+            }
+            disabled={question.filter((item) => !item.deleted).length === 0}
+            className="w-full"
+            onClick={() => {
+              if (question.filter((item) => !item.deleted).length === 0) return;
+              dispatch(setStep(2));
+            }}
+          >
+            Revisar questionário
+          </Button>
+          <Button danger onClick={handleCancel} className="w-full mt-2 pr-2">
+            Cancelar
+          </Button>
         </div>
       </div>
     </>

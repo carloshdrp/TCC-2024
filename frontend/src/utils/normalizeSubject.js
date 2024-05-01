@@ -17,3 +17,15 @@ const normalizedSubjects = {
 export function normalizeSubject(subject) {
   return normalizedSubjects[subject];
 }
+
+const reverseNormalizedSubjects = Object.entries(normalizedSubjects).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {},
+);
+
+export function reverseNormalizeSubject(subject) {
+  return reverseNormalizedSubjects[subject];
+}

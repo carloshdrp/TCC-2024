@@ -12,7 +12,7 @@ export const quizQuestionApiSlice = apiSlice.injectEndpoints({
       },
     }),
     getQuizQuestion: builder.query({
-      query: (id) => `/quiz-question/${id}`,
+      query: (id) => `/quiz-questions/${id}`,
     }),
     createQuizQuestion: builder.mutation({
       query: ({ question, quizId }) => ({
@@ -23,14 +23,14 @@ export const quizQuestionApiSlice = apiSlice.injectEndpoints({
     }),
     updateQuizQuestion: builder.mutation({
       query: ({ question, quizId, quizQuestionId }) => ({
-        url: `/quiz-question?quizId=${quizId}&quizQuestionId=${quizQuestionId}`,
+        url: `/quiz-questions?quizId=${quizId}&quizQuestionId=${quizQuestionId}`,
         method: "PATCH",
         body: question,
       }),
     }),
     deleteQuizQuestion: builder.mutation({
       query: ({ quizId, quizQuestionId }) => ({
-        url: `/quiz-question?quizId=${quizId}&quizQuestionId=${quizQuestionId}`,
+        url: `/quiz-questions?quizId=${quizId}&quizQuestionId=${quizQuestionId}`,
         method: "DELETE",
       }),
     }),

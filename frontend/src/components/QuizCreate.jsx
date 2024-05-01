@@ -1,6 +1,7 @@
 import { Form, Input, Button, Select, notification } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuiz, setStep, getQuiz } from "../redux/slices/quizCreateSlice.js";
+import { useHandleCancel } from "../utils/quiz/handleCancel.js";
 
 const QuizCreate = () => {
   const [form] = Form.useForm();
@@ -11,7 +12,8 @@ const QuizCreate = () => {
 
   const onFinish = async (values) => {
     try {
-      dispatch(setQuiz(values));
+      const updatedQuiz = { ...quizData, ...values };
+      dispatch(setQuiz(updatedQuiz));
       dispatch(setStep(1));
 
       notification.success({
@@ -85,6 +87,7 @@ const QuizCreate = () => {
     form.setFieldsValue(quizData);
   }
 
+  const handleCancel = useHandleCancel();
   return (
     <>
       <Form
@@ -125,6 +128,9 @@ const QuizCreate = () => {
         <Form.Item>
           <Button type="primary" className="w-full mt-2" htmlType="submit">
             Avançar
+          </Button>
+          <Button danger onClick={handleCancel} className="w-full mt-2">
+            Cancelar
           </Button>
         </Form.Item>
       </Form>

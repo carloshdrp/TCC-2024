@@ -1,5 +1,13 @@
 import { useParams } from "react-router-dom";
-import { Breadcrumb, Spin, Avatar, Button, Dropdown, notification } from "antd";
+import {
+  Breadcrumb,
+  Spin,
+  Avatar,
+  Button,
+  Dropdown,
+  notification,
+  Badge,
+} from "antd";
 import { HomeOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import LayoutComponent from "./layout/LayoutComponent";
@@ -275,9 +283,19 @@ export const ForumQuestion = () => {
             userState?.id !== questionData.userId &&
             !answerData.some((answer) => answer.userId === userState?.id) && (
               <div className="flex flex-col">
-                <Button type="primary" onClick={toggleExpansion}>
-                  Responder essa pergunta
-                </Button>
+                <Badge.Ribbon
+                  text="+1 ponto"
+                  className="-mt-1 text-sm"
+                  color="gold"
+                >
+                  <Button
+                    type="primary"
+                    onClick={toggleExpansion}
+                    className="w-full h-9"
+                  >
+                    Responder essa pergunta
+                  </Button>
+                </Badge.Ribbon>
 
                 <AnimatePresence>
                   {isExpanded && (

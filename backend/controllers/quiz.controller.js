@@ -10,7 +10,7 @@ const createQuiz = catchAsync(async (req, res) => {
 });
 
 const getQuizzes = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['title', 'userId', 'difficulty']);
+  const filter = pick(req.query, ['title', 'subject', 'userId', 'difficulty']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await quizService.queryQuizzes(filter, options);
   res.send(result);

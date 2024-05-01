@@ -36,7 +36,7 @@ const updateQuiz = {
   body: Joi.object().keys({
     title: Joi.string(),
     description: Joi.string(),
-    Subject: Joi.string().valid(...Object.values(Subject)),
+    subject: Joi.string().valid(...Object.values(Subject)),
     difficulty: Joi.string(),
     userId: Joi.string().custom(objectId),
   }),
