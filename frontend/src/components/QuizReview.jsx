@@ -183,7 +183,11 @@ const QuizReview = () => {
         </p>
       </Card>
       <Card
-        title="Dados das questões"
+        title={
+          "Dados das questões ( Total: " +
+          question.filter((item) => !item.deleted).length +
+          ")"
+        }
         className="mb-4"
         extra={
           <Button type="text" onClick={() => dispatch(setStep(1))}>
@@ -191,11 +195,6 @@ const QuizReview = () => {
           </Button>
         }
       >
-        <p>
-          <strong>Número de questões:</strong>{" "}
-          {question.filter((item) => !item.deleted).length}
-          <br />
-        </p>
         <Collapse accordion ghost>
           {question
             .filter((item) => !item.deleted)

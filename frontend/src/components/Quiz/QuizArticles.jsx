@@ -68,32 +68,40 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
 
   useEffect(() => {
     refetch();
-  }, [refetch]);
+  }, [refetch, quizId]);
 
-  useEffect(() => {
-    if (quizId?.Question?.length === 0) {
-      deleteQuiz(quizId.id)
-        .then(() => {
-          notification.success({
-            message: "Questionário excluído com sucesso!",
-            description:
-              "O questionário e as questões associadas a ele foram apagadas.",
-          });
-          setQuizId({});
-        })
-        .catch((error) => {
-          notification.error({
-            message: "Erro ao deletar questionário",
-            description:
-              "Ocorreu um erro ao tentar deletar o questionário. Por favor, tente novamente.",
-          });
-          console.log(error);
-        })
-        .finally(() => {
-          refetch();
-        });
+  const handleDeleteQuiz = async (quiz) => {
+    try {
+      await deleteQuizRelation(quiz.id);
+
+      await Promise.all(
+        quiz.Question.map((question) =>
+          deleteQuizQuestion({
+            quizId: quiz.id,
+            quizQuestionId: question.id,
+          }),
+        ),
+      );
+
+      await deleteQuiz(quiz.id);
+
+      notification.success({
+        message: "Questionário deletado com sucesso!",
+        description:
+          "O questionário e as questões associadas a ele foram apagadas.",
+      });
+
+      setQuizId({});
+      refetch();
+    } catch (e) {
+      notification.error({
+        message: "Erro ao deletar questionário",
+        description:
+          "Ocorreu um erro ao tentar deletar o questionário. Por favor, tente novamente.",
+      });
+      console.log(e);
     }
-  }, [quizId, deleteQuiz, refetch]);
+  };
 
   let content;
   if (quizzesLoading) {
@@ -139,24 +147,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
             okType: "danger",
             cancelText: "Voltar",
             width: 600,
-            onOk: async () => {
-              try {
-                await deleteQuizRelation(quiz.id);
-                await quiz.Question.forEach((question) => {
-                  deleteQuizQuestion({
-                    quizId: quiz.id,
-                    quizQuestionId: question.id,
-                  });
-                });
-                setQuizId(quiz);
-              } catch (error) {
-                notification.error({
-                  message: "Erro ao deletar questionário",
-                  description:
-                    "Ocorreu um erro ao tentar deletar o questionário. Por favor, tente novamente.",
-                });
-              }
-            },
+            onOk: () => handleDeleteQuiz(quiz),
           });
         };
 
