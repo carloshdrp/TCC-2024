@@ -1,6 +1,6 @@
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import ExercisesMenu from "../components/Quiz/ExercisesMenu.jsx";
-import { Button, Input, Badge } from "antd";
+import { Badge, Button, Input } from "antd";
 import QuizArticles from "../components/Quiz/QuizArticles.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { getMenuTab } from "../redux/slices/quizMenuSlice.js";
@@ -13,6 +13,8 @@ import {
 } from "../redux/slices/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice.js";
+import { useGetQuizzesQuery } from "../api/slices/quizApiSlice.js";
+
 const { Search } = Input;
 
 function Exercises() {
@@ -39,6 +41,18 @@ function Exercises() {
     }
   }, [dispatch, refetch, userState?.id, userData]);
 
+  const { data: quizzesData } = useGetQuizzesQuery();
+
+  const handleRandomQuiz = async () => {
+    try {
+      const randomQuiz =
+        quizzesData[Math.floor(Math.random() * quizzesData.length)];
+      navigate(`/exercise/${randomQuiz.id}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <LayoutComponent>
       <div className="grid grid-cols-12 gap-3 text-text">
@@ -64,7 +78,9 @@ function Exercises() {
                   Questionário aleatório
                 </h2>
                 <p className="mb-[50px]">Ideal para uma revisão geral</p>
-                <Button type="primary">Começar</Button>
+                <Button type="primary" onClick={handleRandomQuiz}>
+                  Começar
+                </Button>
               </div>
 
               <div className="flex flex-col bg-[url('./assets/bg-discovery-card-2.png')] bg-center bg-repeat-round w-full p-[20px] text-white rounded-[10px]">

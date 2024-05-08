@@ -21,6 +21,8 @@ Table User {
   Rating Rating [not null]
   Quiz Quiz [not null]
   QuizRelation quizRelation [not null]
+  QuizQuestionAnswer QuizQuestionAnswer [not null]
+  QuizDifficultyFeedback QuizDifficultyFeedback [not null]
 }
 
 Table Achievement {
@@ -86,6 +88,7 @@ Table Quiz {
   userId String [not null]
   Question quizQuestion [not null]
   QuizRelation quizRelation [not null]
+  QuizDifficultyFeedback QuizDifficultyFeedback [not null]
 }
 
 Table quizRelation {
@@ -111,6 +114,28 @@ Table quizQuestion {
   wrong4 String [not null]
   quiz Quiz [not null]
   quizId String [not null]
+  QuizQuestionAnswer QuizQuestionAnswer [not null]
+}
+
+Table QuizQuestionAnswer {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  choice Choice [not null]
+  quizQuestionId String [not null]
+  userId String [not null]
+  quizQuestion quizQuestion [not null]
+  user User [not null]
+}
+
+Table QuizDifficultyFeedback {
+  id String [pk]
+  quiz Quiz [not null]
+  user User [not null]
+  quizId String [not null]
+  userId String [not null]
+  score Int [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table Report {
@@ -157,6 +182,14 @@ Enum League {
   Esmeralda
   Ametista
   Diamante
+}
+
+Enum Choice {
+  correct
+  wrong1
+  wrong2
+  wrong3
+  wrong4
 }
 
 Enum Subject {
@@ -213,6 +246,14 @@ Ref: quizRelation.quizId > Quiz.id
 Ref: quizRelation.userId > User.id
 
 Ref: quizQuestion.quizId > Quiz.id
+
+Ref: QuizQuestionAnswer.quizQuestionId > quizQuestion.id
+
+Ref: QuizQuestionAnswer.userId > User.id
+
+Ref: QuizDifficultyFeedback.quizId > Quiz.id
+
+Ref: QuizDifficultyFeedback.userId > User.id
 
 Ref: Report.userId > User.id
 

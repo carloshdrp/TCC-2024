@@ -181,7 +181,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
             <div className="flex justify-between">
               <h2
                 className=" font-medium text-[20px] m-0 cursor-pointer hover:underline"
-                onClick={() => console.log("oi")}
+                onClick={() => navigate(`/exercise/${quiz.id}`)}
               >
                 {quiz.title}
               </h2>

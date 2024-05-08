@@ -1,6 +1,6 @@
 const express = require('express');
-const { quizValidation } = require('../validations');
-const { quizController } = require('../controllers');
+const { quizValidation, quizFeedbackValidation } = require('../validations');
+const { quizController, quizFeedbackController } = require('../controllers');
 const validate = require('../middlewares/validate');
 const auth = require('../middlewares/auth');
 
@@ -10,6 +10,15 @@ router
   .route('/')
   .get(quizController.getQuizzes)
   .post(validate(quizValidation.createQuiz), auth(), quizController.createQuiz);
+
+router
+  .route('/feedback/')
+  .get(validate(quizFeedbackValidation.getQuizFeedbacks), quizFeedbackController.getQuizFeedbacks)
+  .post(validate(quizFeedbackValidation.createQuizFeedback), auth(), quizFeedbackController.createQuizFeedback);
+
+router
+  .route('/feedback/:quizFeedbackId')
+  .delete(validate(quizFeedbackValidation.deleteQuizFeedback), auth(), quizFeedbackController.deleteQuizFeedback);
 
 router
   .route('/:quizId')

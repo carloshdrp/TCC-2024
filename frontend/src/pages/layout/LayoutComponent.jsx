@@ -1,7 +1,5 @@
-import { Layout, Typography, Avatar } from "antd";
+import { Avatar, Layout, Typography } from "antd";
 import { Link, useLocation } from "react-router-dom";
-const { Title } = Typography;
-const { Header, Footer, Content } = Layout;
 import "../../styles/layout.css";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
@@ -12,6 +10,9 @@ import ScrollTop from "../../components/ScrollTop";
 
 import PropTypes from "prop-types";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
+
+const { Title } = Typography;
+const { Header, Footer, Content } = Layout;
 
 const LayoutComponent = ({ children }) => {
   const user = useSelector(selectCurrentUser);
@@ -31,7 +32,7 @@ const LayoutComponent = ({ children }) => {
     document.title = title ? `${title} - ${APP_NAME}` : APP_NAME;
   }, [location]);
   return (
-    <Layout className="min-h-[100vh]">
+    <Layout>
       <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] bg-transparent">
         <div>
           <Title level={2}>
@@ -85,7 +86,7 @@ const LayoutComponent = ({ children }) => {
         exit={{ x: -100, opacity: 0 }}
         transition={{ duration: 0.45, ease: "easeInOut" }}
       >
-        <Content className="px-[90px]">{children}</Content>
+        <Content className="px-[90px] min-h-screen">{children}</Content>
       </motion.div>
 
       <Footer className="px-[90px] text-center">{APP_NAME} • 2024</Footer>
