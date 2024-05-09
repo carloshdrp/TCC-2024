@@ -1,6 +1,7 @@
 import {
   clearQuestion,
   clearQuiz,
+  setEditing,
   setStep,
 } from "../../redux/slices/quizCreateSlice.js";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ export function useHandleCancel() {
     dispatch(setStep(0));
     dispatch(clearQuiz());
     dispatch(clearQuestion());
+    dispatch(setEditing(false));
     navigate("/exercises");
   };
 }

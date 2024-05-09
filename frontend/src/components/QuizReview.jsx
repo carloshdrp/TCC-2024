@@ -1,11 +1,11 @@
 import { Button, Card, Collapse, notification } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getQuiz,
-  getQuestion,
-  setStep,
   getEditing,
+  getQuestion,
+  getQuiz,
   setEditing,
+  setStep,
 } from "../redux/slices/quizCreateSlice";
 import { Pencil } from "lucide-react";
 import { normalizeSubject } from "../utils/normalizeSubject";
@@ -129,8 +129,8 @@ const QuizReview = () => {
             description: e.message,
           });
         } finally {
-          handleCancel();
           setEditing(false);
+          handleCancel();
           setProcessing(false);
         }
       };
