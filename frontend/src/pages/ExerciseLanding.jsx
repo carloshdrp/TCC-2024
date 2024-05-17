@@ -42,6 +42,7 @@ import {
 } from "../redux/slices/quizCreateSlice.js";
 import { useDeleteQuizQuestionMutation } from "../api/slices/quizQuestionApiSlice.js";
 import { useDeleteQuizRelationMutation } from "../api/slices/quizRelationApiSlice.js";
+import { useGetQuizScoreQuery } from "../api/slices/quizFeedbackApiSlice.js";
 
 const ExerciseLanding = () => {
   const { exerciseId } = useParams();
@@ -51,6 +52,12 @@ const ExerciseLanding = () => {
   const [processingLike, setProcessingLike] = useState(false);
 
   const { data: quiz, isLoading, error, refetch } = useGetQuizQuery(exerciseId);
+
+  const {
+    data: quizScore,
+    isLoading: scoreLoading,
+    refetch: refreshScore,
+  } = useGetQuizScoreQuery(exerciseId);
 
   const [deleteQuiz] = useDeleteQuizMutation();
   const [deleteQuizQuestion] = useDeleteQuizQuestionMutation();
@@ -66,6 +73,14 @@ const ExerciseLanding = () => {
   useEffect(() => {
     refreshRating();
   }, [refreshRating]);
+
+  useEffect(() => {
+    refreshScore();
+  }, [refreshScore]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,7 +117,7 @@ const ExerciseLanding = () => {
   if (isLoading) {
     content = (
       <Spin
-        tip="Buscando perguntas..."
+        tip="Buscando questionário..."
         size="large"
         className="rounded-[10px] bg-white bg-opacity-100"
       >
@@ -135,6 +150,13 @@ const ExerciseLanding = () => {
       rating = <Spin />;
     } else if (ratingData) {
       rating = ratingData?.find((rating) => rating.userId === userState?.id);
+    }
+
+    let score;
+    if (scoreLoading) {
+      score = <Spin />;
+    } else if (quizScore) {
+      score = quizScore.score;
     }
 
     const handleDeleteQuiz = async (quiz) => {
@@ -176,7 +198,7 @@ const ExerciseLanding = () => {
         icon: <ExclamationCircleFilled />,
         content:
           "Uma vez que deletar o questionário, não poderá recuperá-lo e todos os dados serão apagados.",
-        onText: "Deletar",
+        okText: "Deletar",
         okType: "danger",
         cancelText: "Voltar",
         width: 600,
@@ -256,15 +278,19 @@ const ExerciseLanding = () => {
             </div>
 
             <div className="flex items-center gap-1">
-              <Rate disabled defaultValue={quiz.difficulty} allowHalf />
+              <Rate disabled defaultValue={score} allowHalf />
               <p className="text-[#EABF28]">
-                {quiz.difficulty === null
+                {score === null
                   ? "N.A."
-                  : quiz.difficulty > 0 && quiz.difficulty < 2
-                    ? "Fácil"
-                    : quiz.difficulty >= 2 && quiz.difficulty < 4
-                      ? "Médio"
-                      : "Difícil"}
+                  : score <= 1
+                    ? "Muito Fácil"
+                    : score <= 2
+                      ? "Fácil"
+                      : score <= 3
+                        ? "Médio"
+                        : score <= 4
+                          ? "Difícil"
+                          : "Muito Difícil"}
               </p>
             </div>
           </div>
@@ -310,7 +336,7 @@ const ExerciseLanding = () => {
               <div className="flex items-center justify-center w-6 h-6 bg-red-200 rounded-full">
                 <AlertOctagon size={16} />
               </div>
-              <p>Reportar essa pergunta</p>
+              <p>Reportar esse questionário</p>
             </Button>
             <div className="flex gap-[5px] items-center">
               {userState && userState.id !== quiz.userId && (
@@ -348,11 +374,18 @@ const ExerciseLanding = () => {
             </div>
           </div>
         </div>
+        <Button
+          type="primary"
+          className="w-full mt-2 h-10 font-medium text-lg"
+          onClick={() => navigate("practice")}
+        >
+          Começar questionário
+        </Button>
       </>
     );
   }
 
-  return <LayoutComponent>{content}</LayoutComponent>;
+  return <LayoutComponent quizName={quiz?.title}>{content}</LayoutComponent>;
 };
 
 export default ExerciseLanding;

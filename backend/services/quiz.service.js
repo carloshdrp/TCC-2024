@@ -26,9 +26,6 @@ const queryQuizzes = async (filter, options) => {
       user: {
         id: filter.userId,
       },
-      difficulty: {
-        equals: filter.difficulty,
-      },
     },
     take: options.limit,
     skip: options.skip,

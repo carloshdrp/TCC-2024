@@ -10,4 +10,4 @@ module.exports.quizService = require('./quiz.service');
 module.exports.quizQuestionService = require('./quizQuestion.service');
 module.exports.quizRelationService = require('./quizRelation.service');
 module.exports.quizQuestionAnswerService = require('./quizQuestionAnswer.service');
-module.exports.quizFeedbackService = require('./quizFeedback.service');
+module.exports.quizAttemptService = require('./quizFeedback.service');

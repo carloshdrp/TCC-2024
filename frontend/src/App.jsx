@@ -18,6 +18,7 @@ import ForumQuestionEdit from "./pages/ForumQuestionEdit.jsx";
 import DeleteConfirm from "./components/Forum/DeleteConfirm.jsx";
 import ExerciseCreate from "./pages/ExerciseCreate.jsx";
 import ExerciseLanding from "./pages/ExerciseLanding.jsx";
+import ExercisePractice from "./pages/ExercisePractice.jsx";
 
 function App() {
   const location = useLocation();
@@ -54,6 +55,10 @@ function App() {
 
           <Route path="exercises/create" element={<ExerciseCreate />} />
           <Route path="exercise/:exerciseId" element={<ExerciseLanding />} />
+          <Route
+            path="exercise/:exerciseId/practice"
+            element={<ExercisePractice />}
+          />
 
           <Route path="logout" element={<Logout />} />
         </Route>

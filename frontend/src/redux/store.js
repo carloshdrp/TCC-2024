@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { apiSlice } from "../api/apiSlice";
 import authReducer from "./slices/authSlice";
 import forumNavigatorReducer from "./slices/forumNavigatorSlice";
 import quizCreateReducer from "./slices/quizCreateSlice";
 import quizMenuReducer from "./slices/quizMenuSlice";
+import quizPracticeReducer from "./slices/quizPraticeSlice";
 
 const persistConfig = {
   key: "authData",
@@ -21,6 +22,7 @@ export const store = configureStore({
     forumNavigator: forumNavigatorReducer,
     quizCreate: quizCreateReducer,
     quizMenu: quizMenuReducer,
+    quizPractice: quizPracticeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

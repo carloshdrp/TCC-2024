@@ -11,4 +11,4 @@ module.exports.quizController = require('./quiz.controller');
 module.exports.quizQuestionController = require('./quizQuestion.controller');
 module.exports.quizRelationController = require('./quizRelation.controller');
 module.exports.quizQuestionAnswerController = require('./quizQuestionAnswer.controller');
-module.exports.quizFeedbackController = require('./quizFeedback.controller');
+module.exports.quizAttemptController = require('./quizFeedback.controller');

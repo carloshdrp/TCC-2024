@@ -163,3 +163,8 @@ body {
 .btn-nav:hover > .btn-nav-icon > svg {
   transform: translateX(0);
 }
+
+.survey > div {
+  @apply flex flex-col items-center;
+
+}

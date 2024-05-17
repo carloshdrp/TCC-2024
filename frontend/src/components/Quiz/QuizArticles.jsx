@@ -22,6 +22,7 @@ import {
 } from "../../redux/slices/quizCreateSlice.js";
 import { useDeleteQuizQuestionMutation } from "../../api/slices/quizQuestionApiSlice.js";
 import { useDeleteQuizRelationMutation } from "../../api/slices/quizRelationApiSlice.js";
+import { useGetQuizzesFeedbacksQuery } from "../../api/slices/quizFeedbackApiSlice.js";
 
 const QuizArticles = ({ menuTab, searchTitle }) => {
   const userState = useSelector(selectCurrentUser);
@@ -55,6 +56,9 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
     refetch: refreshRating,
     isLoading: ratingLoading,
   } = useGetRatingByRateableTypeQuery("QUIZ");
+
+  const { data: quizzesFeedbacks, isLoading: quizzesFeedbacksLoding } =
+    useGetQuizzesFeedbacksQuery();
 
   const [quizId, setQuizId] = useState({});
 
@@ -137,6 +141,21 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
           ).length;
         }
 
+        let feedbacksForQuiz = quizzesFeedbacks?.filter(
+          (feedback) => feedback.quizId === quiz.id,
+        );
+
+        let quizScore;
+        if (feedbacksForQuiz?.length === 0) {
+          quizScore = 0;
+        } else {
+          quizScore =
+            feedbacksForQuiz?.reduce(
+              (acc, feedback) => acc + feedback.score,
+              0,
+            ) / feedbacksForQuiz?.length;
+        }
+
         const showConfirm = () => {
           confirm({
             title: "Você tem certeza?",
@@ -207,15 +226,25 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                <Rate disabled defaultValue={quiz.difficulty} allowHalf />
+                {quizzesFeedbacks && !quizzesFeedbacksLoding ? (
+                  <Rate disabled defaultValue={quizScore} allowHalf />
+                ) : (
+                  <Spin />
+                )}
                 <p className="text-[#EABF28]">
-                  {quiz.difficulty === null
-                    ? "N.A."
-                    : quiz.difficulty > 0 && quiz.difficulty < 2
-                      ? "Fácil"
-                      : quiz.difficulty >= 2 && quiz.difficulty < 4
-                        ? "Médio"
-                        : "Difícil"}
+                  {quizScore === 0
+                    ? "N. A."
+                    : quizScore <= 1
+                      ? "Muito Fácil"
+                      : quizScore <= 2
+                        ? "Fácil"
+                        : quizScore <= 3
+                          ? "Médio"
+                          : quizScore <= 4
+                            ? "Difícil"
+                            : quizScore <= 5
+                              ? "Muito Difícil"
+                              : "Erro"}{" "}
                 </p>
               </div>
             </div>

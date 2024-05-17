@@ -1,5 +1,5 @@
 import { Avatar, Layout, Typography } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "../../styles/layout.css";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
@@ -14,13 +14,16 @@ import { selectCurrentUser } from "../../redux/slices/authSlice";
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 
-const LayoutComponent = ({ children }) => {
+const LayoutComponent = ({ children, quizName }) => {
   const user = useSelector(selectCurrentUser);
+  const { exerciseId } = useParams();
 
   const location = useLocation();
   const titles = {
     "/forum": "Fórum",
-    "/pratice": "Praticar",
+    "/exercises": "Exercícios",
+    "/exercises/create": "Criar Questionário",
+    "/exercise/": quizName,
     "/login": "Entrar",
     "/register": "Registrar",
     "/contact": "Contato",
@@ -30,7 +33,11 @@ const LayoutComponent = ({ children }) => {
   useEffect(() => {
     const title = titles[location.pathname];
     document.title = title ? `${title} - ${APP_NAME}` : APP_NAME;
-  }, [location]);
+    if (location.pathname === "/exercise/" + exerciseId && quizName) {
+      document.title = `${quizName} - ${APP_NAME}`;
+    }
+  }, [location, quizName]);
+
   return (
     <Layout>
       <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] bg-transparent">

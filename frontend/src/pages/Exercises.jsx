@@ -91,6 +91,7 @@ function Exercises() {
                 <Button
                   type="primary"
                   className="bg-secondary hover:!bg-[#FF63A6]"
+                  onClick={() => navigate("/forum")}
                 >
                   Fórum
                 </Button>

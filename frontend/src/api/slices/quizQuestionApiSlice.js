@@ -3,12 +3,12 @@ import { apiSlice } from "../apiSlice";
 export const quizQuestionApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getQuizQuestions: builder.query({
-      query: (filter, options, quizId) => {
+      query: (filter, options) => {
         const params = new URLSearchParams({
           ...filter,
           ...options,
         }).toString();
-        return `/quiz-questions?quizId=${quizId}&${params}`;
+        return `/quiz-questions?${params}`;
       },
     }),
     getQuizQuestion: builder.query({

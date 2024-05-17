@@ -3,10 +3,10 @@ const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
-const createQuizFeedback = async (quizFeedbackBody, quizId, userId) => {
-  return prisma.quizDifficultyFeedback.create({
+const createQuizAttempt = async (quizAttemptBody, quizId, userId) => {
+  return prisma.quizAttempt.create({
     data: {
-      ...quizFeedbackBody,
+      ...quizAttemptBody,
       quiz: {
         connect: { id: quizId },
       },
@@ -17,8 +17,8 @@ const createQuizFeedback = async (quizFeedbackBody, quizId, userId) => {
   });
 };
 
-const queryQuizFeedbacks = async (filter, options) => {
-  return prisma.quizDifficultyFeedback.findMany({
+const queryQuizAttempts = async (filter, options) => {
+  return prisma.quizAttempt.findMany({
     where: {
       quizId: filter.quizId,
       userId: filter.userId,
@@ -30,26 +30,44 @@ const queryQuizFeedbacks = async (filter, options) => {
     include: {
       quiz: true,
       user: true,
+      QuizQuestionAnswer: true,
     },
   });
 };
 
-const deleteQuizFeedback = async (quizFeedbackId, user) => {
-  const quizFeedback = await prisma.quizDifficultyFeedback.findFirst({
-    where: { id: quizFeedbackId },
+const getQuizScore = async (quizId) => {
+  const quizAttempts = await prisma.quizAttempt.findMany({
+    where: { quizId },
   });
 
-  if (user.role !== 'admin' && user.id !== quizFeedback.userId) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem acesso a este recurso.');
+  if (quizAttempts.length === 0) {
+    return null; // ou qualquer valor padrão
   }
 
-  return prisma.quizDifficultyFeedback.delete({
-    where: { id: quizFeedbackId },
+  const scores = quizAttempts.map((attempt) => attempt.score);
+
+  const sum = scores.reduce((a, b) => a + b, 0);
+
+  return sum / scores.length;
+};
+
+const deleteQuizAttempt = async (quizAttemptId, user) => {
+  const quizAttempt = await prisma.quizAttempt.findFirst({
+    where: { id: quizAttemptId },
+  });
+
+  if (user.role !== 'admin' && user.id !== quizAttempt.userId) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem acesso à este recurso.');
+  }
+
+  return prisma.quizAttempt.delete({
+    where: { id: quizAttemptId },
   });
 };
 
 module.exports = {
-  createQuizFeedback,
-  queryQuizFeedbacks,
-  deleteQuizFeedback,
+  createQuizAttempt,
+  getQuizScore,
+  queryQuizAttempts,
+  deleteQuizAttempt,
 };

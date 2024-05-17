@@ -22,7 +22,7 @@ Table User {
   Quiz Quiz [not null]
   QuizRelation quizRelation [not null]
   QuizQuestionAnswer QuizQuestionAnswer [not null]
-  QuizDifficultyFeedback QuizDifficultyFeedback [not null]
+  QuizAttempt QuizAttempt [not null]
 }
 
 Table Achievement {
@@ -81,14 +81,13 @@ Table Quiz {
   title String [not null]
   description String [not null]
   subject Subject [not null]
-  difficulty Int
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
   Question quizQuestion [not null]
   QuizRelation quizRelation [not null]
-  QuizDifficultyFeedback QuizDifficultyFeedback [not null]
+  QuizAttempt QuizAttempt [not null]
 }
 
 Table quizRelation {
@@ -119,15 +118,16 @@ Table quizQuestion {
 
 Table QuizQuestionAnswer {
   id String [pk]
-  createdAt DateTime [default: `now()`, not null]
   choice Choice [not null]
   quizQuestionId String [not null]
   userId String [not null]
+  quizAttemptId String [not null]
   quizQuestion quizQuestion [not null]
   user User [not null]
+  quizAttempt QuizAttempt [not null]
 }
 
-Table QuizDifficultyFeedback {
+Table QuizAttempt {
   id String [pk]
   quiz Quiz [not null]
   user User [not null]
@@ -135,7 +135,7 @@ Table QuizDifficultyFeedback {
   userId String [not null]
   score Int [not null, default: 0]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  QuizQuestionAnswer QuizQuestionAnswer [not null]
 }
 
 Table Report {
@@ -251,9 +251,11 @@ Ref: QuizQuestionAnswer.quizQuestionId > quizQuestion.id
 
 Ref: QuizQuestionAnswer.userId > User.id
 
-Ref: QuizDifficultyFeedback.quizId > Quiz.id
+Ref: QuizQuestionAnswer.quizAttemptId > QuizAttempt.id
 
-Ref: QuizDifficultyFeedback.userId > User.id
+Ref: QuizAttempt.quizId > Quiz.id
+
+Ref: QuizAttempt.userId > User.id
 
 Ref: Report.userId > User.id
 

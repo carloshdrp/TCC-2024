@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
-const createQuizFeedback = {
+const createQuizAttempt = {
   body: Joi.object().keys({
     score: Joi.number(),
   }),
@@ -10,9 +10,15 @@ const createQuizFeedback = {
   }),
 };
 
-const getQuizFeedbacks = {
-  query: Joi.object().keys({
+const getQuizScore = {
+  params: Joi.object().keys({
     quizId: Joi.string().required().custom(objectId),
+  }),
+};
+
+const getQuizAttempts = {
+  query: Joi.object().keys({
+    quizId: Joi.string().custom(objectId),
     userId: Joi.string().custom(objectId),
     score: Joi.number(),
     shortBy: Joi.string(),
@@ -21,14 +27,15 @@ const getQuizFeedbacks = {
   }),
 };
 
-const deleteQuizFeedback = {
+const deleteQuizAttempt = {
   params: Joi.object().keys({
-    quizFeedbackId: Joi.string().custom(objectId),
+    quizAttemptId: Joi.string().custom(objectId),
   }),
 };
 
 module.exports = {
-  createQuizFeedback,
-  getQuizFeedbacks,
-  deleteQuizFeedback,
+  createQuizAttempt,
+  getQuizScore,
+  getQuizAttempts,
+  deleteQuizAttempt,
 };

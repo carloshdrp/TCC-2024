@@ -1,32 +1,39 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { quizFeedbackService } = require('../services');
+const { quizAttemptService } = require('../services');
 const { pick } = require('../utils');
 
-const createQuizFeedback = catchAsync(async (req, res) => {
+const createQuizAttempt = catchAsync(async (req, res) => {
   const { quizId } = req.query;
   const { id: userId } = req.user;
-  const quizFeedback = await quizFeedbackService.createQuizFeedback(req.body, quizId, userId);
-  res.status(httpStatus.CREATED).send(quizFeedback);
+  const quizAttempt = await quizAttemptService.createQuizAttempt(req.body, quizId, userId);
+  res.status(httpStatus.CREATED).send(quizAttempt);
 });
 
-const getQuizFeedbacks = catchAsync(async (req, res) => {
+const getQuizScore = catchAsync(async (req, res) => {
+  const { quizId } = req.params;
+  const score = await quizAttemptService.getQuizScore(quizId);
+  res.send({ score });
+});
+
+const getQuizAttempts = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['quizId', 'userId', 'score']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const result = await quizFeedbackService.queryQuizFeedbacks(filter, options);
+  const result = await quizAttemptService.queryQuizAttempts(filter, options);
   res.send(result);
 });
 
-const deleteQuizFeedback = catchAsync(async (req, res) => {
-  const { quizFeedbackId } = req.params;
+const deleteQuizAttempt = catchAsync(async (req, res) => {
+  const { quizAttemptId } = req.params;
   const { user } = req;
 
-  await quizFeedbackService.deleteQuizFeedback(quizFeedbackId, user);
+  await quizAttemptService.deleteQuizAttempt(quizAttemptId, user);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 module.exports = {
-  createQuizFeedback,
-  getQuizFeedbacks,
-  deleteQuizFeedback,
+  createQuizAttempt,
+  getQuizScore,
+  getQuizAttempts,
+  deleteQuizAttempt,
 };
