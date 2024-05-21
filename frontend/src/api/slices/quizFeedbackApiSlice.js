@@ -17,16 +17,21 @@ export const quizFeedbackApiSlice = apiSlice.injectEndpoints({
     }),
 
     createQuizFeedback: builder.mutation({
-      query: ({ quizId, feedback }) => ({
+      query: ({ quizId, score }) => ({
         url: `/quiz/feedback/?quizId=${quizId}`,
         method: "POST",
-        body: feedback,
+        body: { score },
       }),
     }),
 
     getQuizFeedback: builder.query({
       query: (quizId) => `/quiz/feedback/?quizId=${quizId}`,
     }),
+
+    getQuizFeedbackById: builder.query({
+      query: (feedbackId) => `/quiz/feedback/${feedbackId}`,
+    }),
+
     deleteQuizFeedback: builder.mutation({
       query: ({ feedbackId }) => ({
         url: `/quiz/feedback/${feedbackId}`,
@@ -41,5 +46,6 @@ export const {
   useCreateQuizFeedbackMutation,
   useGetQuizzesFeedbacksQuery,
   useGetQuizFeedbackQuery,
+  useGetQuizFeedbackByIdQuery,
   useDeleteQuizFeedbackMutation,
 } = quizFeedbackApiSlice;

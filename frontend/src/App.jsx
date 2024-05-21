@@ -19,6 +19,7 @@ import DeleteConfirm from "./components/Forum/DeleteConfirm.jsx";
 import ExerciseCreate from "./pages/ExerciseCreate.jsx";
 import ExerciseLanding from "./pages/ExerciseLanding.jsx";
 import ExercisePractice from "./pages/ExercisePractice.jsx";
+import ExerciseResult from "./components/Quiz/ExerciseResult.jsx";
 
 function App() {
   const location = useLocation();
@@ -58,6 +59,10 @@ function App() {
           <Route
             path="exercise/:exerciseId/practice"
             element={<ExercisePractice />}
+          />
+          <Route
+            path="exercises/result/:attemptId"
+            element={<ExerciseResult />}
           />
 
           <Route path="logout" element={<Logout />} />

@@ -17,8 +17,9 @@ router
   .post(validate(quizAttemptValidation.createQuizAttempt), auth(), quizAttemptController.createQuizAttempt);
 
 router
-  .route('/feedback/:quizFeedbackId')
-  .delete(validate(quizAttemptValidation.deleteQuizAttempt), auth(), quizAttemptController.deleteQuizAttempt);
+  .route('/feedback/:quizAttemptId')
+  .delete(validate(quizAttemptValidation.deleteQuizAttempt), auth(), quizAttemptController.deleteQuizAttempt)
+  .get(validate(quizAttemptValidation.getQuizAttemptById), auth(), quizAttemptController.getQuizAttemptById);
 
 router
   .route('/feedback/:quizId/score')

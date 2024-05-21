@@ -3,12 +3,15 @@ const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
-const createQuizQuestionAnswer = async (quizQuestionAnswerBody, questionId, userId) => {
+const createQuizQuestionAnswer = async (quizQuestionAnswerBody, questionId, attemptId, userId) => {
   return prisma.quizQuestionAnswer.create({
     data: {
       ...quizQuestionAnswerBody,
       quizQuestion: {
         connect: { id: questionId },
+      },
+      quizAttempt: {
+        connect: { id: attemptId },
       },
       user: {
         connect: { id: userId },
@@ -45,6 +48,7 @@ const listQuizQuestionAnswer = async (filter, options) => {
       quizQuestionId: filter.quizQuestionId,
       userId: filter.userId,
       choice: filter.choice,
+      quizAttemptId: filter.attemptId,
     },
     take: options.limit,
     skip: options.skip,

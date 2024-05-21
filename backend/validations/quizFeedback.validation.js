@@ -21,9 +21,15 @@ const getQuizAttempts = {
     quizId: Joi.string().custom(objectId),
     userId: Joi.string().custom(objectId),
     score: Joi.number(),
-    shortBy: Joi.string(),
+    sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+  }),
+};
+
+const getQuizAttemptById = {
+  params: Joi.object().keys({
+    quizAttemptId: Joi.string().custom(objectId),
   }),
 };
 
@@ -37,5 +43,6 @@ module.exports = {
   createQuizAttempt,
   getQuizScore,
   getQuizAttempts,
+  getQuizAttemptById,
   deleteQuizAttempt,
 };

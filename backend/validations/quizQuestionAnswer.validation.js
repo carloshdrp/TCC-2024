@@ -7,6 +7,7 @@ const createQuizQuestionAnswer = {
   }),
   query: Joi.object().keys({
     questionId: Joi.string().required().custom(objectId),
+    attemptId: Joi.string().required().custom(objectId),
   }),
 };
 
@@ -15,6 +16,7 @@ const getQuizQuestionAnswers = {
     questionId: Joi.string().custom(objectId),
     userId: Joi.string().custom(objectId),
     choice: Joi.string(),
+    attemptId: Joi.string().custom(objectId),
   }),
 };
 

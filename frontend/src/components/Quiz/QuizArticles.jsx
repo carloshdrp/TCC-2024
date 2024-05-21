@@ -22,7 +22,11 @@ import {
 } from "../../redux/slices/quizCreateSlice.js";
 import { useDeleteQuizQuestionMutation } from "../../api/slices/quizQuestionApiSlice.js";
 import { useDeleteQuizRelationMutation } from "../../api/slices/quizRelationApiSlice.js";
-import { useGetQuizzesFeedbacksQuery } from "../../api/slices/quizFeedbackApiSlice.js";
+import {
+  useDeleteQuizFeedbackMutation,
+  useGetQuizzesFeedbacksQuery,
+} from "../../api/slices/quizFeedbackApiSlice.js";
+import HistoryArticles from "./HistoryArticles.jsx";
 
 const QuizArticles = ({ menuTab, searchTitle }) => {
   const userState = useSelector(selectCurrentUser);
@@ -36,7 +40,11 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
     ...(searchTitle ? { title: searchTitle } : {}),
     sortBy: "desc",
   };
-  if (menuTab !== undefined && menuTab !== "Seus questionários") {
+  if (
+    menuTab !== undefined &&
+    menuTab !== "Seus questionários" &&
+    menuTab !== "Seu histórico"
+  ) {
     filter.subject = menuTab;
   }
 
@@ -57,7 +65,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
     isLoading: ratingLoading,
   } = useGetRatingByRateableTypeQuery("QUIZ");
 
-  const { data: quizzesFeedbacks, isLoading: quizzesFeedbacksLoding } =
+  const { data: quizzesFeedbacks, isLoading: quizzesFeedbacksLoading } =
     useGetQuizzesFeedbacksQuery();
 
   const [quizId, setQuizId] = useState({});
@@ -65,16 +73,21 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
   const [deleteQuiz] = useDeleteQuizMutation();
   const [deleteQuizQuestion] = useDeleteQuizQuestionMutation();
   const [deleteQuizRelation] = useDeleteQuizRelationMutation();
+  const [deleteQuizFeedback] = useDeleteQuizFeedbackMutation();
 
   useEffect(() => {
     refreshRating();
-  }, [refreshRating]);
+  }, [refreshRating, ratingData]);
 
   useEffect(() => {
     refetch();
   }, [refetch, quizId]);
 
   const handleDeleteQuiz = async (quiz) => {
+    const quizFeedbacks = quizzesFeedbacks.filter(
+      (feedback) => feedback.quizId === quiz.id,
+    );
+
     try {
       await deleteQuizRelation(quiz.id);
 
@@ -84,6 +97,12 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
             quizId: quiz.id,
             quizQuestionId: question.id,
           }),
+        ),
+      );
+
+      await Promise.all(
+        quizFeedbacks.map((feedback) =>
+          deleteQuizFeedback({ feedbackId: feedback.id }),
         ),
       );
 
@@ -121,7 +140,9 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
   } else if (quizzesError) {
     content = <p>Erro: {quizzesError.data.message}</p>;
   } else if (quizzesData) {
-    if (quizzesData.length > 0) {
+    if (menuTab === "Seu histórico") {
+      content = <HistoryArticles />;
+    } else if (quizzesData.length > 0) {
       content = quizzesData.map((quiz) => {
         const subject = subjects.find(
           (item) => item.text === normalizeSubject(quiz.subject),
@@ -149,11 +170,18 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
         if (feedbacksForQuiz?.length === 0) {
           quizScore = 0;
         } else {
-          quizScore =
-            feedbacksForQuiz?.reduce(
-              (acc, feedback) => acc + feedback.score,
-              0,
-            ) / feedbacksForQuiz?.length;
+          const filteredFeedbacks = feedbacksForQuiz?.filter(
+            (feedback) => feedback.score !== 0,
+          );
+          if (filteredFeedbacks?.length === 0) {
+            quizScore = 0;
+          } else {
+            quizScore =
+              filteredFeedbacks?.reduce(
+                (acc, feedback) => acc + feedback.score,
+                0,
+              ) / filteredFeedbacks?.length;
+          }
         }
 
         const showConfirm = () => {
@@ -226,14 +254,14 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                {quizzesFeedbacks && !quizzesFeedbacksLoding ? (
+                {quizzesFeedbacks && !quizzesFeedbacksLoading ? (
                   <Rate disabled defaultValue={quizScore} allowHalf />
                 ) : (
                   <Spin />
                 )}
                 <p className="text-[#EABF28]">
                   {quizScore === 0
-                    ? "N. A."
+                    ? "N.A."
                     : quizScore <= 1
                       ? "Muito Fácil"
                       : quizScore <= 2
@@ -242,9 +270,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
                           ? "Médio"
                           : quizScore <= 4
                             ? "Difícil"
-                            : quizScore <= 5
-                              ? "Muito Difícil"
-                              : "Erro"}{" "}
+                            : "Muito Difícil"}
                 </p>
               </div>
             </div>

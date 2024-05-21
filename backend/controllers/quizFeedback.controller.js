@@ -23,6 +23,12 @@ const getQuizAttempts = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getQuizAttemptById = catchAsync(async (req, res) => {
+  const { quizAttemptId } = req.params;
+  const quizAttempt = await quizAttemptService.getQuizAttemptById(quizAttemptId);
+  res.send(quizAttempt);
+});
+
 const deleteQuizAttempt = catchAsync(async (req, res) => {
   const { quizAttemptId } = req.params;
   const { user } = req;
@@ -35,5 +41,6 @@ module.exports = {
   createQuizAttempt,
   getQuizScore,
   getQuizAttempts,
+  getQuizAttemptById,
   deleteQuizAttempt,
 };

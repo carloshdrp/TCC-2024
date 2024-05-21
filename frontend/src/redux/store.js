@@ -6,7 +6,7 @@ import authReducer from "./slices/authSlice";
 import forumNavigatorReducer from "./slices/forumNavigatorSlice";
 import quizCreateReducer from "./slices/quizCreateSlice";
 import quizMenuReducer from "./slices/quizMenuSlice";
-import quizPracticeReducer from "./slices/quizPraticeSlice";
+import quizPracticeReducer from "./slices/quizPracticeSlice.js";
 
 const persistConfig = {
   key: "authData",

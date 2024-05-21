@@ -42,7 +42,12 @@ import {
 } from "../redux/slices/quizCreateSlice.js";
 import { useDeleteQuizQuestionMutation } from "../api/slices/quizQuestionApiSlice.js";
 import { useDeleteQuizRelationMutation } from "../api/slices/quizRelationApiSlice.js";
-import { useGetQuizScoreQuery } from "../api/slices/quizFeedbackApiSlice.js";
+import {
+  useDeleteQuizFeedbackMutation,
+  useGetQuizFeedbackQuery,
+  useGetQuizScoreQuery,
+} from "../api/slices/quizFeedbackApiSlice.js";
+import { clearQuizPractice } from "../redux/slices/quizPracticeSlice.js";
 
 const ExerciseLanding = () => {
   const { exerciseId } = useParams();
@@ -59,9 +64,12 @@ const ExerciseLanding = () => {
     refetch: refreshScore,
   } = useGetQuizScoreQuery(exerciseId);
 
+  const { data: quizFeedbacks } = useGetQuizFeedbackQuery(exerciseId);
+
   const [deleteQuiz] = useDeleteQuizMutation();
   const [deleteQuizQuestion] = useDeleteQuizQuestionMutation();
   const [deleteQuizRelation] = useDeleteQuizRelationMutation();
+  const [deleteQuizFeedback] = useDeleteQuizFeedbackMutation();
   const [deleteRating] = useDeleteRatingMutation();
   const [createRating] = useCreateRatingMutation();
   const {
@@ -169,6 +177,12 @@ const ExerciseLanding = () => {
               quizId: quiz.id,
               quizQuestionId: question.id,
             }),
+          ),
+        );
+
+        await Promise.all(
+          quizFeedbacks.map((feedback) =>
+            deleteQuizFeedback({ feedbackId: feedback.id }),
           ),
         );
 
@@ -280,7 +294,7 @@ const ExerciseLanding = () => {
             <div className="flex items-center gap-1">
               <Rate disabled defaultValue={score} allowHalf />
               <p className="text-[#EABF28]">
-                {score === null
+                {score === 0
                   ? "N.A."
                   : score <= 1
                     ? "Muito Fácil"
@@ -377,7 +391,10 @@ const ExerciseLanding = () => {
         <Button
           type="primary"
           className="w-full mt-2 h-10 font-medium text-lg"
-          onClick={() => navigate("practice")}
+          onClick={() => {
+            dispatch(clearQuizPractice());
+            navigate("practice");
+          }}
         >
           Começar questionário
         </Button>

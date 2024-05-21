@@ -13,7 +13,7 @@ import {
   getQuizQuestions,
   setCurrentStep,
   setQuizId,
-} from "../redux/slices/quizPraticeSlice.js";
+} from "../redux/slices/quizPracticeSlice.js";
 import ExerciseFeedback from "../components/Quiz/ExerciseFeedback.jsx";
 
 const ExercisePractice = () => {
@@ -119,8 +119,6 @@ const ExercisePractice = () => {
       <>
         {currentStep === quizLength + 1 ? (
           <ExerciseFeedback />
-        ) : currentStep === quizLength + 2 ? (
-          <h2>oi</h2>
         ) : (
           <>
             <Progress

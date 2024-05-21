@@ -1,19 +1,63 @@
-import { Button, Result } from "antd";
+import { Button, notification, Result } from "antd";
 import { Angry, Annoyed, Frown, Laugh, Smile } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearQuizPractice,
   getCurrentStep,
-  setCurrentStep,
+  getQuizId,
+  getQuizQuestions,
   setScore,
-} from "../../redux/slices/quizPraticeSlice.js";
+} from "../../redux/slices/quizPracticeSlice.js";
 import { useNavigate } from "react-router-dom";
+import { useCreateQuizFeedbackMutation } from "../../api/slices/quizFeedbackApiSlice.js";
+import { useCreateQuizQuestionAnswerMutation } from "../../api/slices/quizQuestionAnswersApiSlice.js";
+import { useEffect, useState } from "react";
 
 const ExerciseFeedback = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const quizId = useSelector(getQuizId);
+  const quizQuestions = useSelector(getQuizQuestions);
   const currentStep = useSelector(getCurrentStep);
+
+  const [score, setScoreState] = useState(0);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      handleNext();
+      setShouldNavigate(false);
+    }
+  }, [score]);
+
+  const [createQuizFeedback, { data: feedbackData }] =
+    useCreateQuizFeedbackMutation();
+  const [createQuizQuestionAnswer] = useCreateQuizQuestionAnswerMutation();
+
+  useEffect(() => {
+    if (feedbackData) {
+      const createQuizQuestionAnswerF = async () => {
+        try {
+          Object.values(quizQuestions).forEach((question) => {
+            createQuizQuestionAnswer({
+              choice: question.choice,
+              quizQuestionId: question.quizQuestionId,
+              quizAttemptId: feedbackData.id,
+            });
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      createQuizQuestionAnswerF().then(() => {
+        notification.success({
+          title: "Respostas salvas",
+          message: "Suas respostas foram salvas com sucesso!",
+        });
+      });
+    }
+  }, [feedbackData]);
 
   const handleCancel = () => {
     dispatch(clearQuizPractice());
@@ -21,7 +65,27 @@ const ExerciseFeedback = () => {
   };
 
   const handleNext = () => {
-    dispatch(setCurrentStep(currentStep + 1));
+    handlePublish().then((quizAttempt) => {
+      navigate(`/exercises/result/${quizAttempt.data.id}`);
+      dispatch(clearQuizPractice());
+    });
+  };
+
+  const handleScoreChange = (newScore) => {
+    setScoreState(newScore);
+    setShouldNavigate(true);
+  };
+
+  const handlePublish = async () => {
+    try {
+      console.log("scoreState:", score);
+      if (score === 0) setScoreState(undefined);
+      dispatch(setScore(score));
+      // score não está sendo passado corretamente!
+      return await createQuizFeedback({ quizId, score });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -54,9 +118,7 @@ const ExerciseFeedback = () => {
                   justifyContent: "center",
                 }}
                 icon={<Angry size={40} />}
-                onClick={() => {
-                  dispatch(setScore(5));
-                }}
+                onClick={() => handleScoreChange(5)}
               />
               <p>Muito Difícil</p>
             </div>
@@ -73,9 +135,7 @@ const ExerciseFeedback = () => {
                   justifyContent: "center",
                 }}
                 icon={<Frown size={40} />}
-                onClick={() => {
-                  dispatch(setScore(4));
-                }}
+                onClick={() => handleScoreChange(4)}
               />
               <p>Difícil</p>
             </div>
@@ -92,9 +152,7 @@ const ExerciseFeedback = () => {
                   justifyContent: "center",
                 }}
                 icon={<Annoyed size={40} />}
-                onClick={() => {
-                  dispatch(setScore(3));
-                }}
+                onClick={() => handleScoreChange(3)}
               />
               <p>Médio</p>
             </div>
@@ -111,9 +169,7 @@ const ExerciseFeedback = () => {
                   justifyContent: "center",
                 }}
                 icon={<Smile size={40} />}
-                onClick={() => {
-                  dispatch(setScore(2));
-                }}
+                onClick={() => handleScoreChange(2)}
               />
               <p>Fácil</p>
             </div>
@@ -130,9 +186,7 @@ const ExerciseFeedback = () => {
                   justifyContent: "center",
                 }}
                 icon={<Laugh size={40} />}
-                onClick={() => {
-                  dispatch(setScore(1));
-                }}
+                onClick={() => handleScoreChange(1)}
               />
               <p>Muito Fácil</p>
             </div>

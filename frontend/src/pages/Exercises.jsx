@@ -117,7 +117,7 @@ function Exercises() {
 
           <QuizArticles
             menuTab={
-              menuTab === "Seus questionários"
+              menuTab === "Seus questionários" || menuTab === "Seu histórico"
                 ? menuTab
                 : reverseNormalizeSubject(menuTab)
             }

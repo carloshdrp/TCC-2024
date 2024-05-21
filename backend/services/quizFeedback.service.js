@@ -41,14 +41,27 @@ const getQuizScore = async (quizId) => {
   });
 
   if (quizAttempts.length === 0) {
-    return null; // ou qualquer valor padrão
+    return null;
   }
 
-  const scores = quizAttempts.map((attempt) => attempt.score);
+  const scores = quizAttempts.map((attempt) => attempt.score).filter((score) => score !== 0);
+
+  if (scores.length === 0) {
+    return null;
+  }
 
   const sum = scores.reduce((a, b) => a + b, 0);
 
   return sum / scores.length;
+};
+
+const getQuizAttemptById = async (quizAttemptId) => {
+  return prisma.quizAttempt.findFirst({
+    where: { id: quizAttemptId },
+    include: {
+      quiz: true,
+    },
+  });
 };
 
 const deleteQuizAttempt = async (quizAttemptId, user) => {
@@ -69,5 +82,6 @@ module.exports = {
   createQuizAttempt,
   getQuizScore,
   queryQuizAttempts,
+  getQuizAttemptById,
   deleteQuizAttempt,
 };

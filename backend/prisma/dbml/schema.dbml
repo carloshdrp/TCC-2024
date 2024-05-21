@@ -133,7 +133,7 @@ Table QuizAttempt {
   user User [not null]
   quizId String [not null]
   userId String [not null]
-  score Int [not null, default: 0]
+  score Int
   createdAt DateTime [default: `now()`, not null]
   QuizQuestionAnswer QuizQuestionAnswer [not null]
 }

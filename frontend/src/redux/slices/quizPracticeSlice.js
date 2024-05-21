@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   quizId: null,
-  score: 0,
+  score: null,
   currentStep: 1,
   quizQuestions: {},
 };
@@ -26,7 +26,7 @@ const quizPracticeSlice = createSlice({
     },
     clearQuizPractice(state) {
       state.quizId = null;
-      state.score = 0;
+      state.score = null;
       state.currentStep = 1;
       state.quizQuestions = {};
     },
