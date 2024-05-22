@@ -296,7 +296,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
                   <Dot opacity="50%" />
                   <p>{formattedDate}</p>
                 </div>
-                {ratingCount >= 1 ? (
+                {ratingCount > 1 ? (
                   <p>{ratingCount} Curtidas</p>
                 ) : (
                   <p>{ratingCount} Curtida</p>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Spin, Dropdown } from "antd";
+import { Avatar, Button, Dropdown, Spin } from "antd";
 import { UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetForumQuestionsQuery } from "../../api/slices/forumApiSlice";
@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 export const ForumArticle = ({ selectedTab, searchTitle }) => {
   const navigate = useNavigate();
   const userData = useSelector(selectCurrentUser);
+
   const filter = {
     tagName: selectedTab,
     ...(searchTitle ? { title: searchTitle } : {}),
@@ -69,7 +70,7 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
           ratingCount = <Spin />;
         } else if (ratingData) {
           ratingCount = ratingData.filter(
-            (rating) => rating.rateableId === question.id
+            (rating) => rating.rateableId === question.id,
           ).length;
         }
 

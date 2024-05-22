@@ -21,7 +21,7 @@ import { ptBR } from "date-fns/locale";
 import {
   useCreateRatingMutation,
   useDeleteRatingMutation,
-  useGetRatingByRateableTypeQuery,
+  useGetRatingByRateableIdQuery,
 } from "../api/slices/ratingApiSlice.js";
 import { useEffect, useState } from "react";
 import { API_AVATAR } from "../config/index.js";
@@ -76,7 +76,7 @@ const ExerciseLanding = () => {
     data: ratingData,
     refetch: refreshRating,
     isLoading: ratingLoading,
-  } = useGetRatingByRateableTypeQuery("QUIZ");
+  } = useGetRatingByRateableIdQuery(exerciseId);
 
   useEffect(() => {
     refreshRating();

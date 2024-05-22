@@ -2,7 +2,7 @@ import ConfettiExplosion from "react-confetti-explosion";
 import { useDispatch, useSelector } from "react-redux";
 import { getQuizId } from "../../redux/slices/quizPracticeSlice.js";
 import { useNavigate, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetQuizFeedbackByIdQuery } from "../../api/slices/quizFeedbackApiSlice.js";
 import LayoutComponent from "../../pages/layout/LayoutComponent.jsx";
 import { useGetQuizQuestionAnswersQuery } from "../../api/slices/quizQuestionAnswersApiSlice.js";
@@ -12,6 +12,7 @@ import { ptBR } from "date-fns/locale";
 import { HomeOutlined } from "@ant-design/icons";
 import { setMenuTab } from "../../redux/slices/quizMenuSlice.js";
 import { selectCurrentUser } from "../../redux/slices/authSlice.js";
+import { ExternalLink } from "lucide-react";
 
 const ExerciseResult = () => {
   const confettiConfig = {
@@ -138,7 +139,16 @@ const ExerciseResult = () => {
         <Breadcrumb items={topMenu} />
 
         <div className="flex justify-between items-center">
-          <h1 className="m-0">Resultados do quiz: {attemptData.quiz.title}</h1>
+          <h1 className="m-0">
+            Resultados do quiz:{" "}
+            <span
+              className="hover:underline hover:cursor-pointer relative"
+              onClick={() => navigate(`/exercise/${attemptData.quiz.id}`)}
+            >
+              {attemptData.quiz.title}
+              <ExternalLink size="12" className="top-1 ml-1 absolute" />
+            </span>
+          </h1>
           <p>{formattedDate}</p>
         </div>
         {questionsLoading ? (
