@@ -3,13 +3,19 @@ const { questionValidation } = require('../validations');
 const { questionController } = require('../controllers');
 const validate = require('../middlewares/validate');
 const auth = require('../middlewares/auth');
+const pointsMiddleware = require('../middlewares/points');
 
 const router = express.Router();
 
 router
   .route('/')
   .get(questionController.getQuestions)
-  .post(validate(questionValidation.createQuestion), auth(), questionController.createQuestion);
+  .post(
+    validate(questionValidation.createQuestion),
+    auth(),
+    pointsMiddleware.setPoints('createQuestion'),
+    questionController.createQuestion,
+  );
 
 router
   .route('/:questionId')
@@ -24,6 +30,7 @@ router
     validate(questionValidation.deleteQuestion),
     questionController.attachQuestion,
     auth('manageQuestions'),
+    pointsMiddleware.setPoints('deleteQuestion'),
     questionController.deleteQuestion,
   );
 

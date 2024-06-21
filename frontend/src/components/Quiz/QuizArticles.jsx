@@ -111,7 +111,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
       notification.success({
         message: "Questionário deletado com sucesso!",
         description:
-          "O questionário e as questões associadas a ele foram apagadas.",
+          "O questionário e as questões associadas a ele foram apagadas. Você perdeu 2 pontos.",
       });
 
       setQuizId({});

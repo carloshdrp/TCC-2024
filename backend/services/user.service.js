@@ -104,6 +104,10 @@ const getLeague = async (userId) => {
   return league;
 };
 
+const getUserCount = async () => {
+  return prisma.user.count();
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -113,4 +117,5 @@ module.exports = {
   deleteUserById,
   getRanking,
   getLeague,
+  getUserCount,
 };

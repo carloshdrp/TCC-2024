@@ -11,5 +11,4 @@ module.exports.quizQuestionValidation = require('./quizQuestion.validation');
 module.exports.quizRelationValidation = require('./quizRelation.validation');
 module.exports.quizQuestionAnswerValidation = require('./quizQuestionAnswer.validation');
 module.exports.quizAttemptValidation = require('./quizFeedback.validation');
-module.exports.pointsValidation = require('./points.validation');
 module.exports.reportsValidation = require('./reports.validation');

@@ -51,6 +51,11 @@ const getLeague = catchAsync(async (req, res) => {
   res.send(league);
 });
 
+const getUserCount = catchAsync(async (req, res) => {
+  const count = await userService.getUserCount();
+  res.send({ count });
+});
+
 const attachUser = catchAsync(async (req, res, next) => {
   const user = await userService.getUserById(req.params.userId);
   if (!user) {
@@ -69,5 +74,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getLeague,
+  getUserCount,
   attachUser,
 };

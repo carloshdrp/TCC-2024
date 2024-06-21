@@ -167,7 +167,7 @@ const ExerciseResult = () => {
           <>
             <header className="mb-4 text-lg">
               <p>
-                <b>Sua avaliação:</b> {difficulty}
+                <b>Avaliação de dificuldade:</b> {difficulty}
               </p>
               <p className="mt-0.5">
                 <b>Respostas certas:</b>{" "}

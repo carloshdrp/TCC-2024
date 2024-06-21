@@ -60,7 +60,7 @@ const QuizReview = () => {
 
           notification.success({
             message: "Questionário publicado com sucesso!",
-            description: "Você será redirecionado para a página de exercícios.",
+            description: "Você recebeu 2 pontos por isso.",
           });
         } catch (error) {
           throw new Error(error.message);

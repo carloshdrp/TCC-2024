@@ -76,6 +76,44 @@ const deleteQuizById = async (quizId, userId) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para deletar este quiz');
   }
 
+  const quizQuestionAnswers = await prisma.quizQuestionAnswer.findMany({
+    where: {
+      quizQuestion: {
+        quizId,
+      },
+    },
+  });
+
+  if (quizQuestionAnswers.length > 0) {
+    await prisma.quizQuestionAnswer.deleteMany({
+      where: {
+        quizQuestion: {
+          quizId,
+        },
+      },
+    });
+  }
+
+  const quizAttempts = await prisma.quizAttempt.findMany({
+    where: {
+      quizId,
+    },
+  });
+
+  if (quizAttempts.length > 0) {
+    await prisma.quizAttempt.deleteMany({
+      where: {
+        quizId,
+      },
+    });
+  }
+
+  await prisma.quizQuestion.deleteMany({
+    where: {
+      quizId,
+    },
+  });
+
   await prisma.quiz.delete({
     where: { id: quizId },
   });

@@ -94,13 +94,23 @@ function Profile() {
             <p className="text-4xl font-semibold ">{userData.name}</p>
             <UserLeague leagueSize="medium" userId={userData.id} />
             <div className="flex items-center gap-1">
-              <img src={coin} alt="coin" className="w-5 h-5" />
-              <CountUp
-                end={userData.points}
-                duration="2"
-                className="text-lg font-black text-yellow-500"
-              />
-              <p> {userData.points === 1 ? "Ponto total" : "Pontos totais"}</p>
+              {userData.role === "ADMIN" ? (
+                <p className="text-red-400">
+                  Os pontos não estão disponíveis para administradores
+                </p>
+              ) : (
+                <>
+                  <img src={coin} alt="coin" className="w-5 h-5" />
+                  <CountUp
+                    end={userData.points}
+                    duration="2"
+                    className="text-lg font-black text-yellow-500"
+                  />
+                  <p>
+                    {userData.points === 1 ? "Ponto total" : "Pontos totais"}
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-col justify-between gap-2">

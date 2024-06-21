@@ -1,30 +1,30 @@
-import { useGetAnswersByQuestionIdQuery } from "../api/slices/answersApiSlice";
+import {
+  useDeleteAnswerMutation,
+  useGetAnswersByQuestionIdQuery,
+  useUpdateAnswerMutation,
+} from "../api/slices/answersApiSlice";
 import { selectCurrentUser } from "../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
-  Spin,
-  Dropdown,
   Avatar,
   Button,
+  Dropdown,
   Form,
   Input,
   notification,
+  Spin,
 } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
-import { UserRound, ThumbsUp, AlertOctagon } from "lucide-react";
+import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
 import UserLeague from "./UserLeague";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { API_AVATAR } from "../config";
 import { motion } from "framer-motion";
 import {
-  useUpdateAnswerMutation,
-  useDeleteAnswerMutation,
-} from "../api/slices/answersApiSlice";
-import {
-  useDeleteRatingMutation,
   useCreateRatingMutation,
+  useDeleteRatingMutation,
   useGetRatingByRateableTypeQuery,
 } from "../api/slices/ratingApiSlice";
 import PropTypes from "prop-types";
@@ -101,11 +101,20 @@ const QuestionAnswers = ({ questionId, refreshAnswers }) => {
               label: "Deletar",
               danger: true,
               onClick: () => {
-                deleteAnswer(answer.id).then(() => {
-                  notification.success({
-                    message: "Resposta deletada com sucesso!",
+                if (answer.user.points < 1) {
+                  notification.error({
+                    message: "Você não pode deletar essa resposta!",
+                    description:
+                      "Você precisa ter no mínimo 1 ponto para completar esta ação.",
                   });
-                });
+                } else {
+                  deleteAnswer(answer.id).then(() => {
+                    notification.success({
+                      message: "Resposta deletada com sucesso!",
+                      description: "Foi descontado 1 ponto de sua conta.",
+                    });
+                  });
+                }
               },
             },
           ];
@@ -121,7 +130,8 @@ const QuestionAnswers = ({ questionId, refreshAnswers }) => {
 
           const rating = ratingData?.find(
             (rating) =>
-              rating.userId === userState?.id && rating.rateableId === answer.id
+              rating.userId === userState?.id &&
+              rating.rateableId === answer.id,
           );
 
           const handleLike = () => {
@@ -166,7 +176,7 @@ const QuestionAnswers = ({ questionId, refreshAnswers }) => {
             ratingCount = <Spin />;
           } else if (ratingData) {
             ratingCount = ratingData.filter(
-              (rating) => rating.rateableId === answer.id
+              (rating) => rating.rateableId === answer.id,
             ).length;
           }
 

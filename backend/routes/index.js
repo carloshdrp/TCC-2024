@@ -10,7 +10,6 @@ const answerRoute = require('./answer.route');
 const quizRoute = require('./quiz.route');
 const quizQuestionRoute = require('./quizQuestion.route');
 const quizRelationRoute = require('./quizRelation.route');
-const pointsRoute = require('./points.route');
 const reportsRoute = require('./reports.route');
 
 const router = express.Router();
@@ -59,10 +58,6 @@ const routes = [
   {
     path: '/quiz-relations',
     route: quizRelationRoute,
-  },
-  {
-    path: '/points',
-    route: pointsRoute,
   },
   {
     path: '/reports',

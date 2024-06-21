@@ -1,7 +1,7 @@
 import { MessageSquareText, Users } from "lucide-react";
 import { useGetForumQuestionsQuery } from "../../api/slices/forumApiSlice.js";
 import { Spin } from "antd";
-import { useGetUserQuery } from "../../api/slices/profileApiSlice.js";
+import { useGetCountQuery } from "../../api/slices/profileApiSlice.js";
 
 export const ForumStatisticWidgets = () => {
   const {
@@ -10,7 +10,7 @@ export const ForumStatisticWidgets = () => {
     isLoading: questionLoading,
   } = useGetForumQuestionsQuery();
 
-  const { data: usersData, isLoading: usersLoading } = useGetUserQuery();
+  const { data: usersData, isLoading: usersLoading } = useGetCountQuery();
 
   let content;
   if (questionLoading || usersLoading) {
@@ -26,7 +26,6 @@ export const ForumStatisticWidgets = () => {
   } else if (questionError) {
     content = <p>Erro: {questionError}</p>;
   } else if (questionsData && usersData) {
-    let userCount = usersData ? usersData.length : 0;
     let questionCount = questionsData ? questionsData.length : 0;
 
     content = (
@@ -56,7 +55,7 @@ export const ForumStatisticWidgets = () => {
           </div>
           <div className="flex flex-col">
             <p className="text-xl font-medium text-text">Usuários</p>
-            <p>{userCount}</p>
+            <p>{usersData.count}</p>
           </div>
         </div>
       </div>

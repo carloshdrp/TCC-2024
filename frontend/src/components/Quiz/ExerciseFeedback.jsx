@@ -54,6 +54,7 @@ const ExerciseFeedback = () => {
         notification.success({
           title: "Respostas salvas",
           message: "Suas respostas foram salvas com sucesso!",
+          description: "Você ganhou 1 ponto por completar o questionário!",
         });
       });
     }

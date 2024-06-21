@@ -1,12 +1,12 @@
 import LayoutComponent from "./layout/LayoutComponent";
 import {
+  Button,
   Form,
   Input,
-  Button,
   notification,
-  Spin,
   Popconfirm,
   Select,
+  Spin,
 } from "antd";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
@@ -76,6 +76,7 @@ export const ForumAskCreate = () => {
 
       notification.success({
         message: "Pergunta criada com sucesso",
+        description: "Foi descontado 1 ponto de sua conta.",
       });
       navigate("/forum");
     } catch (error) {

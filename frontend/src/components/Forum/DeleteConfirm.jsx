@@ -1,10 +1,12 @@
-import { useGetForumQuestionQuery } from "../../api/slices/forumApiSlice";
+import {
+  useDeleteForumQuestionMutation,
+  useGetForumQuestionQuery,
+} from "../../api/slices/forumApiSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, notification, Result } from "antd";
+import { Button, notification, Result, Spin } from "antd";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
-import { useDeleteForumQuestionMutation } from "../../api/slices/forumApiSlice";
 import LayoutComponent from "../../pages/layout/LayoutComponent";
 
 const DeleteConfirm = () => {
@@ -39,7 +41,7 @@ const DeleteConfirm = () => {
       await deleteForumQuestion(questionId);
       notification.success({
         message: "Pergunta deletada com sucesso!",
-        description: "A pergunta foi deletada com sucesso.",
+        description: "Você foi reembolsado com +1 ponto.",
       });
       navigate("/forum");
     } catch (error) {
@@ -52,28 +54,36 @@ const DeleteConfirm = () => {
     }
   };
 
-  return (
-    <LayoutComponent>
-      <Result
-        status="warning"
-        title="Você tem certeza?"
-        subTitle="Todos os dados serão deletados e não poderão ser recuperados."
-        extra={[
-          <Button
-            type="primary"
-            key="back"
-            className="w-1/5 "
-            onClick={() => navigate(`/forum/${questionId}`)}
-          >
-            Voltar
-          </Button>,
-          <Button danger key="confirm" onClick={handleDelete}>
-            Confirmar
-          </Button>,
-        ]}
-      />
-    </LayoutComponent>
-  );
+  let content;
+
+  if (questionData.loading) {
+    content = <Spin fullscreen />;
+  } else if (questionData.data) {
+    content = (
+      <LayoutComponent>
+        <Result
+          status="warning"
+          title="Você tem certeza?"
+          subTitle="Todos os dados serão deletados e não poderão ser recuperados. Você vai receber os pontos gastos de volta."
+          extra={[
+            <Button
+              type="primary"
+              key="back"
+              className="w-1/5 "
+              onClick={() => navigate(`/forum/${questionId}`)}
+            >
+              Voltar
+            </Button>,
+            <Button danger key="confirm" onClick={handleDelete}>
+              Confirmar
+            </Button>,
+          ]}
+        />
+      </LayoutComponent>
+    );
+  }
+
+  return content;
 };
 
 export default DeleteConfirm;

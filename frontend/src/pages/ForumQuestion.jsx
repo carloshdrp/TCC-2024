@@ -1,15 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  Breadcrumb,
-  Spin,
   Avatar,
+  Badge,
+  Breadcrumb,
   Button,
   Dropdown,
+  Form,
+  Input,
   notification,
-  Badge,
+  Spin,
 } from "antd";
-import { HomeOutlined, EllipsisOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { EllipsisOutlined, HomeOutlined } from "@ant-design/icons";
 import LayoutComponent from "./layout/LayoutComponent";
 import { useGetForumQuestionQuery } from "../api/slices/forumApiSlice";
 import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
@@ -18,16 +19,15 @@ import UserLeague from "../components/UserLeague";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  useDeleteRatingMutation,
   useCreateRatingMutation,
+  useDeleteRatingMutation,
   useGetRatingByRateableIdQuery,
 } from "../api/slices/ratingApiSlice";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
 import { useEffect, useState } from "react";
 import QuestionAnswers from "../components/QuestionAnswers";
-import { motion, AnimatePresence } from "framer-motion";
-import { Form, Input } from "antd";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   useCreateAnswerMutation,
   useGetAnswersByQuestionIdQuery,
@@ -75,6 +75,7 @@ export const ForumQuestion = () => {
       setIsExpanded(false);
       notification.success({
         message: "Resposta adicionada com sucesso!",
+        description: "Foi adicionado 1 ponto à sua conta!",
       });
     } catch (error) {
       notification.error({

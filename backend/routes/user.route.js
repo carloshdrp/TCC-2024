@@ -11,6 +11,8 @@ router
   .post(validate(userValidation.createUser), auth('manageUsers'), userController.createUser)
   .get(validate(userValidation.getUsers), auth('getUsers'), userController.getUsers);
 
+router.route('/count').get(userController.getUserCount);
+
 router
   .route('/:userId')
   .get(validate(userValidation.getUser), userController.attachUser, auth('getUsers'), userController.getUser)
