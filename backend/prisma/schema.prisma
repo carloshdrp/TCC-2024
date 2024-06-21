@@ -61,16 +61,21 @@ model Achievement {
   title       String
   image       String
   description String
+  goal        Int
 
   UserAchievements UserAchievements[]
 }
 
 model UserAchievements {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String      @db.ObjectId
-  achievementId String      @db.ObjectId
-  user          User        @relation(fields: [userId], references: [id])
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String @db.ObjectId
+  achievementId String @db.ObjectId
+
+  progress  Int     @default(0)
+  completed Boolean @default(false)
+
+  user        User        @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
 
   @@unique([userId, achievementId])
 }
@@ -215,11 +220,15 @@ enum Subject {
 
 // Denúncias:
 model Report {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  reportedBy User     @relation(fields: [userId], references: [id])
-  userId     String   @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reportedBy User   @relation(fields: [userId], references: [id])
+  userId     String @db.ObjectId
+
+  reason Reason
 
   reportableId   String         @db.ObjectId
   reportableType ReportableType
@@ -231,6 +240,14 @@ enum ReportableType {
   QUESTION
   ANSWER
   QUIZ
+}
+
+enum Reason {
+  SPAM
+  INAPROPRIADO
+  OFENSIVO
+  LINKS
+  OUTRO
 }
 
 // Avaliações:

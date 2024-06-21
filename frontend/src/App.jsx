@@ -20,6 +20,7 @@ import ExerciseCreate from "./pages/ExerciseCreate.jsx";
 import ExerciseLanding from "./pages/ExerciseLanding.jsx";
 import ExercisePractice from "./pages/ExercisePractice.jsx";
 import ExerciseResult from "./components/Quiz/ExerciseResult.jsx";
+import Manage from "./pages/Manage.jsx";
 
 function App() {
   const location = useLocation();
@@ -41,6 +42,8 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoutes />}>
+          <Route path="manage" element={<Manage />} />
+
           <Route path="profile" element={<Profile />} />
           <Route path="profile/edit" element={<ProfileEdit />} />
 

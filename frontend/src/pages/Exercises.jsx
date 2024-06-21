@@ -41,6 +41,10 @@ function Exercises() {
     }
   }, [dispatch, refetch, userState?.id, userData]);
 
+  useEffect(() => {
+    setSearchTitle(null);
+  }, [menuTab]);
+
   const { data: quizzesData } = useGetQuizzesQuery();
 
   const handleRandomQuiz = async () => {
@@ -62,14 +66,15 @@ function Exercises() {
           <div className="flex justify-between items-center">
             <h1 className="p-0 m-0 font-extrabold">{menuTab}</h1>
 
-            <Search
-              placeholder="Pesquisar questionário"
-              allowClear
-              onSearch={onSearch}
-              style={{
-                width: 400,
-              }}
-            />
+            {menuTab === "Seus questionários" ||
+            menuTab === "Seu histórico" ? null : (
+              <Search
+                placeholder="Pesquisar questionário"
+                allowClear
+                onSearch={onSearch}
+                style={{ width: 400 }}
+              />
+            )}
           </div>
           {menuTab === "Descobrir" && (
             <div className="flex gap-[10px]">

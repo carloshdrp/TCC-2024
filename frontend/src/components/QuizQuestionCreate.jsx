@@ -1,16 +1,17 @@
-import { Button, Dropdown, Form, Input, notification } from "antd";
+import { Button, Dropdown, Form, Input, notification, Tooltip } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addQuestion,
-  getQuestion,
-  setStep,
-  removeQuestion,
-  updateQuestion,
   getEditing,
+  getQuestion,
+  removeQuestion,
+  setStep,
+  updateQuestion,
 } from "../redux/slices/quizCreateSlice.js";
 import { useHandleCancel } from "../utils/quiz/handleCancel.js";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 const QuizQuestionCreate = () => {
   const [form] = Form.useForm();
@@ -57,16 +58,7 @@ const QuizQuestionCreate = () => {
     <>
       <div className="grid grid-cols-12 gap-4 text-text">
         <div className="col-span-4 bg-white p-[10px] flex flex-col gap-[10px] rounded-[10px]">
-          <div className="flex justify-between">
-            <p className="text-2xl font-extrabold">Questões</p>
-            <Button
-              onClick={() => {
-                dispatch(setStep(0));
-              }}
-            >
-              Voltar
-            </Button>
-          </div>
+          <p className="text-2xl font-extrabold">Questões</p>
 
           {question.map((item, index) => {
             const handleRemove = () => {
@@ -93,15 +85,13 @@ const QuizQuestionCreate = () => {
                 label: "Deletar",
                 danger: true,
                 onClick: () => {
-                  if (editing) {
-                    const updatedQuestion = {
-                      ...question[index],
-                      deleted: true,
-                    };
-                    dispatch(
-                      updateQuestion({ index, question: updatedQuestion }),
-                    );
-                  }
+                  const updatedQuestion = {
+                    ...question[index],
+                    deleted: true,
+                  };
+                  dispatch(
+                    updateQuestion({ index, question: updatedQuestion }),
+                  );
                 },
               },
             ];
@@ -218,6 +208,11 @@ const QuizQuestionCreate = () => {
               />
             </Form.Item>
 
+            <p className="opacity-80 text-sm">
+              Tenha em mente que a ordem de exibição das respostas é alterada
+              aleatóriamente em cada questão.
+            </p>
+
             <Form.Item>
               <Button type="primary" className="w-full mt-4" htmlType="submit">
                 {editQuestion ? "Atualizar" : "Adicionar"} questão
@@ -226,21 +221,40 @@ const QuizQuestionCreate = () => {
           </Form>
         </div>
         <div className="col-span-full">
-          <Button
-            type="primary"
-            style={
-              question.filter((item) => !item.deleted).length !== 0 && {
-                background: "rgb(255, 64, 129, 1)",
-              }
+          <Tooltip
+            title={
+              question.filter((item) => !item.deleted).length === 0
+                ? "Você precisa adicionar ao menos uma questão para continuar!"
+                : ""
             }
-            disabled={question.filter((item) => !item.deleted).length === 0}
-            className="w-full"
+            placement="topLeft"
+          >
+            <Button
+              type="primary"
+              style={
+                question.filter((item) => !item.deleted).length !== 0 && {
+                  background: "rgb(255, 64, 129, 1)",
+                }
+              }
+              disabled={question.filter((item) => !item.deleted).length === 0}
+              className="w-full"
+              onClick={() => {
+                if (question.filter((item) => !item.deleted).length === 0)
+                  return;
+                dispatch(setStep(2));
+              }}
+            >
+              Revisar questionário
+            </Button>
+          </Tooltip>
+          <Button
+            className="w-full mt-2 pr-2 flex items-center justify-center"
             onClick={() => {
-              if (question.filter((item) => !item.deleted).length === 0) return;
-              dispatch(setStep(2));
+              dispatch(setStep(0));
             }}
           >
-            Revisar questionário
+            <ArrowLeft size="16" />
+            Voltar
           </Button>
           <Button danger onClick={handleCancel} className="w-full mt-2 pr-2">
             Cancelar

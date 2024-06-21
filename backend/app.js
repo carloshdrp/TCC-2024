@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
-const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:4173'];
 const corsOptions = {
   origin(origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {

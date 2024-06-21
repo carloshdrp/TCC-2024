@@ -5,19 +5,20 @@ import {
   useGetUsersQuery,
   useRemoveUserMutation,
 } from "../api/slices/profileApiSlice";
-import { UserRound, Archive } from "lucide-react";
+import { Archive, UserRound } from "lucide-react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Avatar, Button, Spin, Modal, notification } from "antd";
+import { Avatar, Button, Modal, notification, Spin } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
-import UserRanking from "../components/UserRanking.jsx";
 import ProfileForumActivities from "../components/Profile/ProfileForumActivities.jsx";
 
 import coin from "../assets/coin.png";
 import { useNavigate } from "react-router-dom";
-import { QuestionsOverview } from "../components/QuestionsOverview.jsx";
+import { QuickAccess } from "../components/Profile/QuickAccess.jsx";
 import { API_AVATAR } from "../config/index.js";
 import { useEffect } from "react";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice.js";
+import QuizActivities from "../components/Profile/QuizActivities.jsx";
+import CountUp from "react-countup";
 
 const { confirm } = Modal;
 
@@ -82,7 +83,7 @@ function Profile() {
   } else if (userData) {
     content = (
       <>
-        <header className="flex gap-3 p-3 bg-white shadow-md rounded-xl text-text">
+        <header className="flex gap-3 p-3  rounded-xl text-text">
           <Avatar
             shape="square"
             size={150}
@@ -92,20 +93,21 @@ function Profile() {
           <div className="flex flex-col justify-between w-full">
             <p className="text-4xl font-semibold ">{userData.name}</p>
             <UserLeague leagueSize="medium" userId={userData.id} />
-            <UserRanking />
             <div className="flex items-center gap-1">
               <img src={coin} alt="coin" className="w-5 h-5" />
-              <span className="text-lg font-black text-yellow-500">
-                {userData.points}
-              </span>
-              <p>Pontos totais</p>
+              <CountUp
+                end={userData.points}
+                duration="2"
+                className="text-lg font-black text-yellow-500"
+              />
+              <p> {userData.points === 1 ? "Ponto total" : "Pontos totais"}</p>
             </div>
           </div>
           <div className="flex flex-col justify-between gap-2">
             <Button type="primary" onClick={() => navigate("edit")}>
               Editar Perfil
             </Button>
-            <Button type="default" onClick={() => navigate("/logout")}>
+            <Button className="bg-white" onClick={() => navigate("/logout")}>
               Sair da Conta
             </Button>
             <Button type="link" danger onClick={showConfirm}>
@@ -114,8 +116,18 @@ function Profile() {
           </div>
         </header>
 
-        <h2 className="text-text">Suas conquistas</h2>
-        <div className="grid items-center justify-center w-full grid-flow-col bg-white rounded-lg shadow-md min-h-32">
+        {userData.role === "ADMIN" && (
+          <Button
+            type="primary"
+            className="w-full"
+            onClick={() => navigate("/manage")}
+          >
+            Painel de administração
+          </Button>
+        )}
+
+        <h2 className="text-text m-0 mt-4">Suas conquistas</h2>
+        <div className="grid items-center justify-center w-full grid-flow-col bg-white rounded-lg min-h-32">
           <div className="flex flex-col items-center justify-center p-2">
             <Archive size={96} opacity="70%" strokeWidth={1.5} />
             <p className="opacity-70">
@@ -126,31 +138,18 @@ function Profile() {
 
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
-            <h2>Atividades no Fórum</h2>
+            <h2 className="m-0 mt-4">Atividades no Fórum</h2>
             <ProfileForumActivities userId={user.id} />
           </div>
 
           <div className="w-1/2">
-            <h2>Atividades no Questionário</h2>
-            <div className="grid grid-flow-col p-2 text-center bg-white rounded-lg shadow-md">
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questionários Criados</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-              <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10">
-                <h3 className="m-0">Questionários Realizados</h3>
-                <p className="text-4xl font-black "> 0</p>
-              </div>
-              <div>
-                <h3 className="m-0">Avaliações</h3>
-                <p className="text-4xl font-black"> 0</p>
-              </div>
-            </div>
+            <h2 className="m-0 mt-4">Atividades no Questionário</h2>
+            <QuizActivities userId={user.id} />
           </div>
         </div>
 
-        <h2 className="text-text">Suas questões no fórum</h2>
-        <QuestionsOverview />
+        <h2 className="text-text m-0 mt-4">Acesso rápido</h2>
+        <QuickAccess />
       </>
     );
   }

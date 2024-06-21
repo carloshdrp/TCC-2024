@@ -8,6 +8,15 @@ export const answersApiSlice = apiSlice.injectEndpoints({
     getAnswer: builder.query({
       query: (id) => `/answers/${id}`,
     }),
+    getAnswers: builder.query({
+      query: (filter, options) => {
+        const params = new URLSearchParams({
+          ...filter,
+          ...options,
+        }).toString();
+        return `/answers?${params}`;
+      },
+    }),
     createAnswer: builder.mutation({
       query: (answer) => ({
         url: "/answers",
@@ -33,6 +42,7 @@ export const answersApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetAnswersByQuestionIdQuery,
+  useGetAnswersQuery,
   useGetAnswerQuery,
   useCreateAnswerMutation,
   useUpdateAnswerMutation,

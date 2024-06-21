@@ -11,3 +11,5 @@ module.exports.quizQuestionService = require('./quizQuestion.service');
 module.exports.quizRelationService = require('./quizRelation.service');
 module.exports.quizQuestionAnswerService = require('./quizQuestionAnswer.service');
 module.exports.quizAttemptService = require('./quizFeedback.service');
+module.exports.pointsService = require('./points.service');
+module.exports.reportsService = require('./reports.service');

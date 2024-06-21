@@ -21,7 +21,7 @@ const createAnswer = catchAsync(async (req, res) => {
 });
 
 const getAnswers = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['content']);
+  const filter = pick(req.query, ['content', 'userId']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   try {
     const result = await answerService.queryAnswers(filter, options);

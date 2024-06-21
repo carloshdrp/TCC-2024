@@ -30,6 +30,7 @@ Table Achievement {
   title String [not null]
   image String [not null]
   description String [not null]
+  goal Int [not null]
   UserAchievements UserAchievements [not null]
 }
 
@@ -37,6 +38,8 @@ Table UserAchievements {
   id String [pk]
   userId String [not null]
   achievementId String [not null]
+  progress Int [not null, default: 0]
+  completed Boolean [not null, default: false]
   user User [not null]
   achievement Achievement [not null]
 
@@ -144,6 +147,7 @@ Table Report {
   updatedAt DateTime [not null]
   reportedBy User [not null]
   userId String [not null]
+  reason Reason [not null]
   reportableId String [not null]
   reportableType ReportableType [not null]
 }
@@ -212,6 +216,14 @@ Enum ReportableType {
   QUESTION
   ANSWER
   QUIZ
+}
+
+Enum Reason {
+  SPAM
+  INAPROPRIADO
+  OFENSIVO
+  LINKS
+  OUTRO
 }
 
 Enum RateableType {

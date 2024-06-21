@@ -41,13 +41,11 @@ const LayoutComponent = ({ children, quizName }) => {
   return (
     <Layout>
       <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] bg-transparent">
-        <div>
-          <Title level={2}>
-            <Link to="/" style={{ color: "#333" }}>
-              🚀 {APP_NAME}
-            </Link>
-          </Title>
-        </div>
+        <Title level={2} className="m-0 !mb-0 text-text">
+          <Link to="/" style={{ color: "#333" }}>
+            🚀 {APP_NAME}
+          </Link>
+        </Title>
 
         <div id="nav-container">
           <Link to="/">

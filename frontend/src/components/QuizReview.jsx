@@ -7,7 +7,7 @@ import {
   setEditing,
   setStep,
 } from "../redux/slices/quizCreateSlice";
-import { Pencil } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { normalizeSubject } from "../utils/normalizeSubject";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -229,6 +229,15 @@ const QuizReview = () => {
         isLoading={processing}
       >
         {editing ? "Atualizar questionário" : "Publicar questionário"}
+      </Button>
+      <Button
+        className="w-full mt-2 pr-2 flex items-center justify-center"
+        onClick={() => {
+          dispatch(setStep(1));
+        }}
+      >
+        <ArrowLeft size="16" />
+        Voltar
       </Button>
       <Button danger onClick={handleCancel} className="w-full mt-2">
         Cancelar

@@ -6,13 +6,13 @@ import { useEffect, useState } from "react";
 import { useGetQuizFeedbackByIdQuery } from "../../api/slices/quizFeedbackApiSlice.js";
 import LayoutComponent from "../../pages/layout/LayoutComponent.jsx";
 import { useGetQuizQuestionAnswersQuery } from "../../api/slices/quizQuestionAnswersApiSlice.js";
-import { Breadcrumb, Collapse, notification, Spin } from "antd";
+import { Breadcrumb, Button, Collapse, notification, Spin } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { HomeOutlined } from "@ant-design/icons";
 import { setMenuTab } from "../../redux/slices/quizMenuSlice.js";
 import { selectCurrentUser } from "../../redux/slices/authSlice.js";
-import { ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
 const ExerciseResult = () => {
   const confettiConfig = {
@@ -212,6 +212,13 @@ const ExerciseResult = () => {
             </Collapse>
           </>
         ) : null}
+        <Button
+          onClick={() => navigate("/exercises")}
+          className="flex items-center gap-2 mt-4"
+        >
+          <ArrowLeft size="16" />
+          Voltar
+        </Button>
 
         {quizIdState && <ConfettiExplosion {...confettiConfig} />}
       </>
