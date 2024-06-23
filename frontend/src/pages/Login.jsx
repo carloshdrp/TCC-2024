@@ -12,7 +12,7 @@ function Login() {
           <h2 className="m-0 mt-[25px] text-6xl">🚀 </h2>
           <p className="m-0 text-3xl font-semibold">Bem vindo de volta</p>
           <p className="m-0 ">É um prazer vê-lo novamente 👋</p>
-          {<LoginComponent />}
+          <LoginComponent />
         </div>
         <Link to="/register" className="z-10 mt-2">
           Ainda não tem uma conta? Registre-se!

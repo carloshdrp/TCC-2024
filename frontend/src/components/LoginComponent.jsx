@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input } from "antd";
 import { useLoginUserMutation } from "../api/slices/authApiSlice.js";
 import { clearAuthError, setUser } from "../redux/slices/authSlice";
 import ErrorNotification from "./ErrorNotification.jsx";
@@ -11,15 +11,22 @@ const LoginComponent = () => {
   const authError = useSelector((state) => state.auth.error);
   const [loginUser, { isLoading, isError, error }] = useLoginUserMutation();
 
+  const [stayConnected, setStayConnected] = useState(false);
+
   const onFinish = async (values) => {
     try {
-      const response = await loginUser(values).unwrap();
+      const loginData = {
+        email: values.email,
+        password: values.password,
+      };
+      const response = await loginUser({ loginData }).unwrap();
       const { user, tokens } = response;
       dispatch(
         setUser({
           user,
           accessToken: tokens.access.token,
           refreshToken: tokens.refresh.token,
+          stayConnected,
         }),
       );
     } catch (err) {
@@ -70,11 +77,20 @@ const LoginComponent = () => {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full mt-2 mb-[20px]"
+            className="w-full mt-2"
             loading={isLoading || authStatus === "loading"}
           >
             Entrar
           </Button>
+        </Form.Item>
+        <Form.Item>
+          <Checkbox
+            className="mb-[20px]"
+            checked={stayConnected}
+            onChange={(e) => setStayConnected(e.target.checked)}
+          >
+            Permanecer conectado
+          </Checkbox>
         </Form.Item>
       </Form>
     </>

@@ -11,12 +11,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     loginUser: builder.mutation({
-      query: (loginData) => ({
+      query: ({ loginData, stayConnected }) => ({
         url: "/auth/login",
         method: "POST",
-        body: loginData,
+        body: { ...loginData, stayConnected },
       }),
     }),
+
     logoutUser: builder.mutation({
       query: (refreshToken) => ({
         url: "/auth/logout",

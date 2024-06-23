@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   accessToken: null,
   refreshToken: null,
+  stayConnected: false,
 };
 
 const authSlice = createSlice({
@@ -14,10 +15,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      const { user, accessToken, refreshToken } = action.payload;
+      const { user, accessToken, refreshToken, stayConnected } = action.payload;
       state.user = user;
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
+      state.stayConnected = stayConnected;
     },
     updateUserState(state, action) {
       if (action.payload) {

@@ -20,7 +20,9 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
   if (result?.error?.status === 401) {
     const refreshToken = api.getState().auth.refreshToken;
-    if (refreshToken) {
+    const stayConnected = api.getState().auth.stayConnected;
+
+    if (refreshToken && stayConnected) {
       try {
         const refreshResult = await baseQuery(
           {
@@ -33,8 +35,10 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         );
 
         if (refreshResult?.data) {
+          const { auth } = api.getState();
           api.dispatch(
             setUser({
+              ...auth,
               accessToken: refreshResult.data.access.token,
               refreshToken: refreshResult.data.refresh.token,
             }),
