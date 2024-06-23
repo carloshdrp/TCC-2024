@@ -1,43 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import * as authServices from "../../api/services/authServices";
-
-export const loginUser = createAsyncThunk(
-  "auth/loginUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await authServices.loginUser(userData);
-      return response;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data);
-      } else {
-        return rejectWithValue("Erro ao realizar login");
-      }
-    }
-  }
-);
-
-export const registerUser = createAsyncThunk(
-  "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await authServices.registerUser(userData);
-      return response.data;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data);
-      } else {
-        return rejectWithValue("Erro ao realizar cadastro");
-      }
-    }
-  }
-);
+import { createSlice } from "@reduxjs/toolkit";
+import { authApiSlice } from "../../api/slices/authApiSlice.js";
 
 const initialState = {
   user: null,
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
-  token: null,
+  accessToken: null,
+  refreshToken: null,
 };
 
 const authSlice = createSlice({
@@ -45,10 +14,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      const { user, token } = action.payload;
-
+      const { user, accessToken, refreshToken } = action.payload;
       state.user = user;
-      state.token = token;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
     },
     updateUserState(state, action) {
       if (action.payload) {
@@ -59,9 +28,8 @@ const authSlice = createSlice({
     },
     logoutUser(state) {
       state.user = null;
-      state.token = null;
-
-      authServices.logoutUser();
+      state.accessToken = null;
+      state.refreshToken = null;
     },
     clearAuthError(state) {
       state.error = null;
@@ -69,28 +37,41 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addMatcher(authApiSlice.endpoints.loginUser.matchPending, (state) => {
         state.status = "loading";
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.user = action.payload.user;
-        state.token = action.payload.tokens.access.token;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-      .addCase(registerUser.pending, (state) => {
+      .addMatcher(
+        authApiSlice.endpoints.loginUser.matchFulfilled,
+        (state, action) => {
+          state.status = "succeeded";
+          state.user = action.payload.user;
+          state.accessToken = action.payload.tokens.access.token;
+          state.refreshToken = action.payload.tokens.refresh.token;
+        },
+      )
+      .addMatcher(
+        authApiSlice.endpoints.loginUser.matchRejected,
+        (state, action) => {
+          state.status = "failed";
+          state.error = action.payload;
+        },
+      )
+      .addMatcher(authApiSlice.endpoints.registerUser.matchPending, (state) => {
         state.status = "loading";
       })
-      .addCase(registerUser.fulfilled, (state) => {
-        state.status = "succeeded";
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      });
+      .addMatcher(
+        authApiSlice.endpoints.registerUser.matchFulfilled,
+        (state) => {
+          state.status = "succeeded";
+        },
+      )
+      .addMatcher(
+        authApiSlice.endpoints.registerUser.matchRejected,
+        (state, action) => {
+          state.status = "failed";
+          state.error = action.payload;
+        },
+      );
   },
 });
 
@@ -100,4 +81,5 @@ export const { setUser, updateUserState, logoutUser, clearAuthError } =
 export default authSlice.reducer;
 
 export const selectCurrentUser = (state) => state.auth.user;
-export const selectCurrentToken = (state) => state.auth.token;
+export const selectCurrentAccessToken = (state) => state.auth.accessToken;
+export const selectCurrentRefreshToken = (state) => state.auth.refreshToken;

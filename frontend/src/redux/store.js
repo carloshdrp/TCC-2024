@@ -25,7 +25,11 @@ export const store = configureStore({
     quizPractice: quizPracticeReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }).concat(apiSlice.middleware),
   devTools: true,
 });
 

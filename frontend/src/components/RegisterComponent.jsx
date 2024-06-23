@@ -2,20 +2,23 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearAuthError,
-  registerUser,
-  selectCurrentToken,
+  selectCurrentAccessToken,
+  setUser,
 } from "../redux/slices/authSlice";
 import { UploadOutlined } from "@ant-design/icons";
-import { Form, Input, message, Upload, Button } from "antd";
+import { Button, Form, Input, message, Upload } from "antd";
 import ErrorNotification from "./ErrorNotification.jsx";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice";
 import { useNavigate } from "react-router-dom";
 import ImgCrop from "antd-img-crop";
+import { useRegisterUserMutation } from "../api/slices/authApiSlice.js";
 
 const RegisterComponent = () => {
-  const token = useSelector(selectCurrentToken);
+  const token = useSelector(selectCurrentAccessToken);
   const [deleteAvatar] = useDeleteAvatarMutation();
   const [serverFile, setServerFile] = useState(null);
+  const [registerUser, { isLoading, isError, error }] =
+    useRegisterUserMutation();
 
   const props = {
     name: "avatar",
@@ -31,7 +34,6 @@ const RegisterComponent = () => {
         message.error(`${file.name} deve ser PNG ou JPG!`);
       }
 
-      console.log(file.size);
       const isLt5M = file.size / 1024 / 1024 < 5;
       if (!isLt5M) {
         isAccept = false;
@@ -70,12 +72,20 @@ const RegisterComponent = () => {
   const onFinish = async (values) => {
     try {
       values.avatar = serverFile;
-      await dispatch(registerUser(values));
+      const response = await registerUser(values).unwrap();
+      const { user, tokens } = response;
+      dispatch(
+        setUser({
+          user,
+          accessToken: tokens.access.token,
+          refreshToken: tokens.refresh.token,
+        }),
+      );
       message.success("Registro realizado com sucesso!");
       navigate("/login");
-    } catch (error) {
+    } catch (err) {
       message.error(
-        "Ocorreu um erro ao registrar. Por favor, tente novamente."
+        "Ocorreu um erro ao registrar. Por favor, tente novamente.",
       );
     }
   };
@@ -88,7 +98,7 @@ const RegisterComponent = () => {
 
   return (
     <>
-      <ErrorNotification error={authError} />
+      <ErrorNotification error={authError || (isError && error.message)} />
 
       <Form
         name="register"
@@ -149,7 +159,7 @@ const RegisterComponent = () => {
             type="primary"
             htmlType="submit"
             className="w-full mt-2 mb-[20px]"
-            loading={authStatus === "loading"}
+            loading={isLoading || authStatus === "loading"}
           >
             Registrar
           </Button>

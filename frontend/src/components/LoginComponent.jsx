@@ -1,18 +1,30 @@
 import { useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
-import { clearAuthError, loginUser } from "../redux/slices/authSlice";
-import { Form, Input, Button } from "antd";
+import { Button, Form, Input } from "antd";
+import { useLoginUserMutation } from "../api/slices/authApiSlice.js";
+import { clearAuthError, setUser } from "../redux/slices/authSlice";
 import ErrorNotification from "./ErrorNotification.jsx";
 
 const LoginComponent = () => {
   const dispatch = useDispatch();
   const authStatus = useSelector((state) => state.auth.status);
   const authError = useSelector((state) => state.auth.error);
+  const [loginUser, { isLoading, isError, error }] = useLoginUserMutation();
 
-  const onFinish = (values) => {
-    dispatch(loginUser(values));
+  const onFinish = async (values) => {
+    try {
+      const response = await loginUser(values).unwrap();
+      const { user, tokens } = response;
+      dispatch(
+        setUser({
+          user,
+          accessToken: tokens.access.token,
+          refreshToken: tokens.refresh.token,
+        }),
+      );
+    } catch (err) {
+      console.error("Login error", err);
+    }
   };
 
   useEffect(() => {
@@ -20,11 +32,12 @@ const LoginComponent = () => {
       dispatch(clearAuthError());
     };
   }, [dispatch]);
+
   const [form] = Form.useForm();
 
   return (
     <>
-      <ErrorNotification error={authError} />
+      <ErrorNotification error={authError || (isError && error.message)} />
 
       <Form
         form={form}
@@ -58,7 +71,7 @@ const LoginComponent = () => {
             type="primary"
             htmlType="submit"
             className="w-full mt-2 mb-[20px]"
-            loading={authStatus === "loading"}
+            loading={isLoading || authStatus === "loading"}
           >
             Entrar
           </Button>

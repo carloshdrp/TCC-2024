@@ -4,7 +4,7 @@ import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { useNavigate } from "react-router-dom";
 import { ForumNavigator } from "../components/Forum/ForumNavigator.jsx";
 import { ForumArticle } from "../components/Forum/ForumArticle.jsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getSearch,
   getSelectedTab,
@@ -14,11 +14,10 @@ import { ForumTrendingTopics } from "../components/Forum/ForumTrendingTopics.jsx
 import { ForumStatisticWidgets } from "../components/Forum/ForumStatisticWidgets.jsx";
 import {
   selectCurrentUser,
-  updateUserState,
   setUser,
+  updateUserState,
 } from "../redux/slices/authSlice.js";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice.js";
 
 function Forum() {

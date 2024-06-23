@@ -1,15 +1,20 @@
 import {
+  Button,
+  Col,
   Form,
   Input,
-  Button,
   notification,
+  Row,
   Spin,
   Upload,
-  Row,
-  Col,
 } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUserState, selectCurrentUser } from "../redux/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearAuthError,
+  selectCurrentAccessToken,
+  selectCurrentUser,
+  updateUserState,
+} from "../redux/slices/authSlice";
 import {
   useGetUsersQuery,
   useUpdateUserMutation,
@@ -17,7 +22,6 @@ import {
 import LayoutComponent from "./layout/LayoutComponent.jsx";
 import ScrollTop from "../components/ScrollTop.jsx";
 import { useEffect, useState } from "react";
-import { clearAuthError, selectCurrentToken } from "../redux/slices/authSlice";
 import { UploadOutlined } from "@ant-design/icons";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice";
 import ImgCrop from "antd-img-crop";
@@ -25,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 
 function ProfileEdit() {
   const user = useSelector(selectCurrentUser);
-  const token = useSelector(selectCurrentToken);
+  const token = useSelector(selectCurrentAccessToken);
   const [deleteAvatar] = useDeleteAvatarMutation();
   const [serverFile, setServerFile] = useState(null);
 
@@ -218,7 +222,7 @@ function ProfileEdit() {
                         }
                         if (value !== getFieldValue("new-password")) {
                           return Promise.reject(
-                            new Error("As senhas não correspondem!")
+                            new Error("As senhas não correspondem!"),
                           );
                         }
                         return Promise.resolve();

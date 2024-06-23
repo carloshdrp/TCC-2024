@@ -149,12 +149,12 @@ function Profile() {
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
             <h2 className="m-0 mt-4">Atividades no Fórum</h2>
-            <ProfileForumActivities userId={user.id} />
+            <ProfileForumActivities userId={user?.id} />
           </div>
 
           <div className="w-1/2">
             <h2 className="m-0 mt-4">Atividades no Questionário</h2>
-            <QuizActivities userId={user.id} />
+            <QuizActivities userId={user?.id} />
           </div>
         </div>
 
