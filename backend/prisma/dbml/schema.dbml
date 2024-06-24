@@ -7,7 +7,7 @@ Table User {
   email String [unique, not null]
   name String [not null]
   password String [not null]
-  role Role [not null, default: 'USER']
+  role Role [not null, default: 'INICIANTE']
   avatar String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -176,8 +176,8 @@ Table Token {
 
 Enum Role {
   ADMIN
-  VERIFIED
-  USER
+  ESTUDIOSO
+  INICIANTE
 }
 
 Enum League {

@@ -245,7 +245,6 @@ const ExerciseLanding = () => {
 
     const handleLike = () => {
       setProcessingLike(true);
-      console.log(rating);
 
       if (rating) {
         deleteRating({ id: rating.id, userId: userState.id }).then(() => {

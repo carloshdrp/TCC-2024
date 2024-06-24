@@ -2,6 +2,7 @@
 const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
+const { recalculateUserLeague } = require('./badges.service');
 
 const createAnswer = async (answerBody, userId, questionId) => {
   const answer = await prisma.answer.create({
@@ -76,18 +77,22 @@ const updateAnswerById = async (answerId, updateBody, userId) => {
 };
 
 const deleteAnswerById = async (answerId) => {
-  const ratings = await prisma.rating.findMany({
-    where: { rateableId: answerId },
+  const answer = await prisma.answer.findUnique({
+    where: { id: answerId },
+    select: { userId: true },
   });
-  if (ratings.length > 0) {
-    await prisma.rating.deleteMany({
-      where: { rateableId: answerId },
-    });
+
+  if (!answer) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Resposta não encontrada');
   }
 
-  return prisma.answer.delete({
-    where: { id: answerId },
-  });
+  await prisma.$transaction([
+    prisma.rating.deleteMany({ where: { rateableId: answerId } }),
+    prisma.report.deleteMany({ where: { reportableId: answerId } }),
+    prisma.answer.delete({ where: { id: answerId } }),
+  ]);
+
+  await recalculateUserLeague(answer.userId);
 };
 
 module.exports = {

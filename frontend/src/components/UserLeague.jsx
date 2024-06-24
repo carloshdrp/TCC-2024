@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { useGetLeagueQuery } from "../api/slices/profileApiSlice";
 import topaz from "../assets/Leagues/topaz.png";
 import ruby from "../assets/Leagues/ruby.png";
@@ -8,11 +6,7 @@ import ametist from "../assets/Leagues/ametist.png";
 import diamond from "../assets/Leagues/diamond.png";
 
 export default function UserLeague({ leagueSize, userId }) {
-  const { data: userData, refetch, isLoading } = useGetLeagueQuery(userId);
-
-  useEffect(() => {
-    refetch();
-  }, [userId, refetch]);
+  const { data: userData, isLoading } = useGetLeagueQuery(userId);
 
   const sizeToClass = {
     small: "h-4 w-4",

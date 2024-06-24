@@ -49,7 +49,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
   }
 
   if (menuTab === "Seus questionários") {
-    filter.userId = userState.id;
+    filter.userId = userState?.id;
   }
 
   const {
@@ -315,7 +315,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
         </p>
       ) : menuTab === "Seus questionários" ? (
         <p className="mt-1">Você ainda não criou nenhum questionário! 😢</p>
-      ) : userState.role === "VERIFIED" || userState.role === "ADMIN" ? (
+      ) : userState?.role === "ESTUDIOSO" || userState?.role === "ADMIN" ? (
         <p className="mt-1">
           Seja o primeiro a criar um questionário para esta matéria! 😉
         </p>

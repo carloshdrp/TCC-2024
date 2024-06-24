@@ -2,6 +2,7 @@
 const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
+const { recalculateUserLeague } = require('./badges.service');
 
 const createQuestion = async (questionBody, authorId, tagId) => {
   const question = await prisma.question.create({
@@ -82,27 +83,23 @@ const updateQuestionById = async (userId, questionId, updateBody) => {
 };
 
 const deleteQuestionById = async (questionId) => {
-  const answer = await prisma.answer.findMany({
-    where: { questionId },
-  });
-  if (answer.length > 0) {
-    await prisma.answer.deleteMany({
-      where: { questionId },
-    });
-  }
-
-  const ratings = await prisma.rating.findMany({
-    where: { rateableId: questionId },
-  });
-  if (ratings.length > 0) {
-    await prisma.rating.deleteMany({
-      where: { rateableId: questionId },
-    });
-  }
-
-  return prisma.question.delete({
+  const question = await prisma.question.findUnique({
     where: { id: questionId },
+    select: { userId: true },
   });
+
+  if (!question) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Pergunta não encontrada');
+  }
+
+  await prisma.$transaction([
+    prisma.answer.deleteMany({ where: { questionId } }),
+    prisma.rating.deleteMany({ where: { rateableId: questionId } }),
+    prisma.report.deleteMany({ where: { reportableId: questionId } }),
+    prisma.question.delete({ where: { id: questionId } }),
+  ]);
+
+  await recalculateUserLeague(question.userId);
 };
 
 module.exports = {

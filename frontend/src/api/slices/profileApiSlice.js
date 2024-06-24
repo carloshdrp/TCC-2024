@@ -14,9 +14,14 @@ export const profileApiSlice = apiSlice.injectEndpoints({
       query: () => `/users/count`,
       keepUnusedDataFor: 5,
     }),
+    getLikeCount: builder.query({
+      query: (userId) => `/ratings/user/${userId}/received`,
+      keepUnusedDataFor: 5,
+    }),
     getLeague: builder.query({
       query: (userId) => `/users/league/${userId}`,
       keepUnusedDataFor: 5,
+      providesTags: ["League"],
     }),
     updateUser: builder.mutation({
       query: ({ id, ...data }) => ({
@@ -38,6 +43,7 @@ export const {
   useGetUsersQuery,
   useGetUserQuery,
   useGetCountQuery,
+  useGetLikeCountQuery,
   useGetLeagueQuery,
   useUpdateUserMutation,
   useRemoveUserMutation,

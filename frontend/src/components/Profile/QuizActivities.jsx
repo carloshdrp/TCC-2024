@@ -60,7 +60,7 @@ const ProfileForumActivities = ({ userId }) => {
             className="text-3xl font-medium text-text"
           />
         </div>
-        <div className="border-0 border-r-2 border-solqqid border-r-black border-opacity-10 flex flex-col justify-between">
+        <div className="border-0 border-r-2 border-solid border-r-black border-opacity-10 flex flex-col justify-between">
           <h3 className="m-0">Realizados</h3>
           <CountUp
             end={answersData.length}

@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
+const { recalculateUserLeague } = require('./badges.service');
 
 const createQuiz = async (quizBody, authorId) => {
   return prisma.quiz.create({
@@ -70,67 +71,28 @@ const updateQuizById = async (userId, quizId, updateBody) => {
 };
 
 const deleteQuizById = async (quizId) => {
-  const quizQuestionAnswers = await prisma.quizQuestionAnswer.findMany({
-    where: {
-      quizQuestion: {
-        quizId,
-      },
-    },
-  });
-  if (quizQuestionAnswers.length > 0) {
-    await prisma.quizQuestionAnswer.deleteMany({
-      where: {
-        quizQuestion: {
-          quizId,
-        },
-      },
-    });
-  }
-
-  const quizAttempts = await prisma.quizAttempt.findMany({
-    where: {
-      quizId,
-    },
-  });
-  if (quizAttempts.length > 0) {
-    await prisma.quizAttempt.deleteMany({
-      where: {
-        quizId,
-      },
-    });
-  }
-
-  const quizRelations = await prisma.quizRelation.findMany({
-    where: {
-      quizId,
-    },
-  });
-  if (quizRelations.length > 0) {
-    await prisma.quizRelation.deleteMany({
-      where: {
-        quizId,
-      },
-    });
-  }
-
-  const ratings = await prisma.rating.findMany({
-    where: { rateableId: quizId },
-  });
-  if (ratings.length > 0) {
-    await prisma.rating.deleteMany({
-      where: { rateableId: quizId },
-    });
-  }
-
-  await prisma.quizQuestion.deleteMany({
-    where: {
-      quizId,
-    },
-  });
-
-  await prisma.quiz.delete({
+  const quiz = await prisma.quiz.findUnique({
     where: { id: quizId },
+    select: { userId: true },
   });
+
+  if (!quiz) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Quiz não encontrado');
+  }
+
+  await prisma.$transaction([
+    prisma.quizQuestionAnswer.deleteMany({
+      where: { quizQuestion: { quizId } },
+    }),
+    prisma.quizAttempt.deleteMany({ where: { quizId } }),
+    prisma.quizRelation.deleteMany({ where: { quizId } }),
+    prisma.rating.deleteMany({ where: { rateableId: quizId } }),
+    prisma.report.deleteMany({ where: { reportableId: quizId } }),
+    prisma.quizQuestion.deleteMany({ where: { quizId } }),
+    prisma.quiz.delete({ where: { id: quizId } }),
+  ]);
+
+  await recalculateUserLeague(quiz.userId);
 };
 
 module.exports = {

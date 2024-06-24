@@ -1,6 +1,6 @@
 const allRoles = {
-  USER: [],
-  VERIFIED: ['manageAnswers'],
+  INICIANTE: [],
+  ESTUDIOSO: ['manageAnswers'],
   ADMIN: ['getUsers', 'manageUsers', 'manageQuestions', 'manageComments', 'manageTags', 'managePoints', 'manageReports'],
 };
 

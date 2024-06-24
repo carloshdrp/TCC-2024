@@ -129,6 +129,54 @@ const getRatingByRateableType = async (rateableType) => {
   return rating;
 };
 
+const getUserReceivedRatings = async (userId) => {
+  await userValidator(userId);
+
+  const [questionRatingsCount, answerRatingsCount, quizRatingsCount] = await Promise.all([
+    prisma.rating.count({
+      where: {
+        rateableType: 'QUESTION',
+        rateableId: {
+          in: await prisma.question
+            .findMany({
+              where: { userId },
+              select: { id: true },
+            })
+            .then((questions) => questions.map((q) => q.id)),
+        },
+      },
+    }),
+    prisma.rating.count({
+      where: {
+        rateableType: 'ANSWER',
+        rateableId: {
+          in: await prisma.answer
+            .findMany({
+              where: { userId },
+              select: { id: true },
+            })
+            .then((answers) => answers.map((a) => a.id)),
+        },
+      },
+    }),
+    prisma.rating.count({
+      where: {
+        rateableType: 'QUIZ',
+        rateableId: {
+          in: await prisma.quiz
+            .findMany({
+              where: { userId },
+              select: { id: true },
+            })
+            .then((quizzes) => quizzes.map((q) => q.id)),
+        },
+      },
+    }),
+  ]);
+
+  return questionRatingsCount + answerRatingsCount + quizRatingsCount;
+};
+
 const deleteRatingById = async (userId, ratingId) => {
   const rating = await getRatingById(ratingId);
 
@@ -154,5 +202,6 @@ module.exports = {
   getRatingByUserId,
   getRatingByRateableId,
   getRatingByRateableType,
+  getUserReceivedRatings,
   deleteRatingById,
 };

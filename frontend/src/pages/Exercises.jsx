@@ -28,8 +28,9 @@ function Exercises() {
   const dispatch = useDispatch();
   const onSearch = (value) => setSearchTitle(value);
 
-  const { data: userData, refetch } = useGetUsersQuery(userState?.id);
-
+  const { data: userData, refetch } = useGetUsersQuery(userState?.id, {
+    skip: !userState,
+  });
   useEffect(() => {
     if (userState?.id) {
       refetch().then(() => {
@@ -120,7 +121,7 @@ function Exercises() {
             </div>
           )}
 
-          {(userData?.role === "ADMIN" || userData?.role === "VERIFIED") && (
+          {(userData?.role === "ADMIN" || userData?.role === "ESTUDIOSO") && (
             <Badge.Ribbon
               text={
                 <p>

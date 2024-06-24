@@ -4,7 +4,7 @@ import LayoutComponent from "./layout/LayoutComponent.jsx";
 import { useNavigate } from "react-router-dom";
 import { ForumNavigator } from "../components/Forum/ForumNavigator.jsx";
 import { ForumArticle } from "../components/Forum/ForumArticle.jsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   getSearch,
   getSelectedTab,
@@ -18,19 +18,20 @@ import { useGetUsersQuery } from "../api/slices/profileApiSlice.js";
 
 function Forum() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const selectedTab = useSelector(getSelectedTab);
   const userState = useSelector(selectCurrentUser);
   const searchTitle = useSelector(getSearch);
 
-  const { data: userData, refetch } = useGetUsersQuery(userState.id, {
+  const { data: userData, refetch } = useGetUsersQuery(userState?.id, {
     skip: !userState,
   });
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    if (userState) {
+      refetch();
+    }
+  }, [refetch, userState]);
 
   const topMenu = [
     {

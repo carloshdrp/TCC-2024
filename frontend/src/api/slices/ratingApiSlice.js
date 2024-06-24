@@ -29,6 +29,7 @@ export const ratingApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: rating,
       }),
+      invalidatesTags: ["League"],
     }),
     deleteRating: builder.mutation({
       query: ({ id, userId }) => ({
@@ -36,6 +37,7 @@ export const ratingApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: { userId },
       }),
+      invalidatesTags: ["League"],
     }),
   }),
 });
