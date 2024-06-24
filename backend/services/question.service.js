@@ -81,10 +81,23 @@ const updateQuestionById = async (userId, questionId, updateBody) => {
   });
 };
 
-const deleteQuestionById = async (questionId, userId) => {
-  const question = await getQuestionById(questionId);
-  if (question.userId !== userId) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para acessar este recurso!');
+const deleteQuestionById = async (questionId) => {
+  const answer = await prisma.answer.findMany({
+    where: { questionId },
+  });
+  if (answer.length > 0) {
+    await prisma.answer.deleteMany({
+      where: { questionId },
+    });
+  }
+
+  const ratings = await prisma.rating.findMany({
+    where: { rateableId: questionId },
+  });
+  if (ratings.length > 0) {
+    await prisma.rating.deleteMany({
+      where: { rateableId: questionId },
+    });
   }
 
   return prisma.question.delete({

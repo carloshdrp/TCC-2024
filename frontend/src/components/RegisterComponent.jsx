@@ -6,7 +6,7 @@ import {
   setUser,
 } from "../redux/slices/authSlice";
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Upload } from "antd";
+import { Button, Form, Input, message, notification, Upload } from "antd";
 import ErrorNotification from "./ErrorNotification.jsx";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +81,10 @@ const RegisterComponent = () => {
           refreshToken: tokens.refresh.token,
         }),
       );
-      message.success("Registro realizado com sucesso!");
+      notification.success({
+        message: "Registrado com sucesso!",
+        description: "Bem-vindo ao Genius!",
+      });
       navigate("/login");
     } catch (err) {
       message.error(

@@ -70,6 +70,110 @@ const updateUserById = async (userId, updateBody) => {
 };
 
 const deleteUserById = async (userId) => {
+  const tokens = await prisma.token.findMany({
+    where: { userId },
+  });
+  if (tokens.length > 0) {
+    await prisma.token.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const achievements = await prisma.userAchievements.findMany({
+    where: { userId },
+  });
+  if (achievements.length > 0) {
+    await prisma.userAchievements.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const answer = await prisma.answer.findMany({
+    where: { userId },
+  });
+  if (answer.length > 0) {
+    await prisma.answer.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const questions = await prisma.question.findMany({
+    where: { userId },
+    include: {
+      Answer: true,
+    },
+  });
+
+  if (questions.length > 0) {
+    await Promise.all(
+      questions.map(async (question) => {
+        if (question.Answer.length > 0) {
+          await prisma.answer.deleteMany({
+            where: { questionId: question.id },
+          });
+        }
+      }),
+    );
+
+    await prisma.question.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const report = await prisma.report.findMany({
+    where: { userId },
+  });
+  if (report.length > 0) {
+    await prisma.report.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const rating = await prisma.rating.findMany({
+    where: { userId },
+  });
+  if (rating.length > 0) {
+    await prisma.rating.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const quizRelation = await prisma.quizRelation.findMany({
+    where: { userId },
+  });
+  if (quizRelation.length > 0) {
+    await prisma.quizRelation.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const quizQuestionAnswer = await prisma.quizQuestionAnswer.findMany({
+    where: { userId },
+  });
+  if (quizQuestionAnswer.length > 0) {
+    await prisma.quizQuestionAnswer.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const quizAttempt = await prisma.quizAttempt.findMany({
+    where: { userId },
+  });
+  if (quizAttempt.length > 0) {
+    await prisma.quizAttempt.deleteMany({
+      where: { userId },
+    });
+  }
+
+  const quiz = await prisma.quiz.findMany({
+    where: { userId },
+  });
+  if (quiz.length > 0) {
+    await prisma.quiz.deleteMany({
+      where: { userId },
+    });
+  }
+
   await prisma.user.delete({
     where: { id: userId },
   });

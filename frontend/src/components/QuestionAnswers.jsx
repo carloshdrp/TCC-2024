@@ -16,7 +16,7 @@ import {
   Spin,
 } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
-import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
+import { ThumbsUp, UserRound } from "lucide-react";
 import UserLeague from "./UserLeague";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -28,6 +28,7 @@ import {
   useGetRatingByRateableTypeQuery,
 } from "../api/slices/ratingApiSlice";
 import PropTypes from "prop-types";
+import ReportButton from "./Report/ReportButton.jsx";
 
 const QuestionAnswers = ({ questionId, refreshAnswers }) => {
   const userState = useSelector(selectCurrentUser);
@@ -290,17 +291,12 @@ const QuestionAnswers = ({ questionId, refreshAnswers }) => {
 
               <div className="flex flex-row items-center justify-between w-full">
                 <div className="flex justify-between">
-                  <Button
-                    type="link"
-                    danger
-                    disabled={userState?.id === answer.userId}
-                    className="flex gap-[5px] items-start p-0"
-                  >
-                    <div className="flex items-center justify-center w-6 h-6 bg-red-200 rounded-full">
-                      <AlertOctagon size={16} />
-                    </div>
-                    <p>Reportar essa resposta</p>
-                  </Button>
+                  <ReportButton
+                    type="ANSWER"
+                    resourceId={answer.id}
+                    userId={userState.id}
+                    resourceOnwerId={answer.userId}
+                  />
                 </div>
                 <div className="flex flex-col justify-end gap-[10px] items-end w-full">
                   <div className="flex gap-[5px] items-center">

@@ -5,7 +5,13 @@ import {
   useGetUsersQuery,
   useRemoveUserMutation,
 } from "../api/slices/profileApiSlice";
-import { Archive, UserRound } from "lucide-react";
+import {
+  Archive,
+  Edit3Icon,
+  LogOut,
+  Trash2Icon,
+  UserRound,
+} from "lucide-react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Avatar, Button, Modal, notification, Spin } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
@@ -114,13 +120,27 @@ function Profile() {
             </div>
           </div>
           <div className="flex flex-col justify-between gap-2">
-            <Button type="primary" onClick={() => navigate("edit")}>
+            <Button
+              type="primary"
+              onClick={() => navigate("edit")}
+              className="flex items-center justify-center gap-2"
+            >
+              <Edit3Icon size={16} />
               Editar Perfil
             </Button>
-            <Button className="bg-white" onClick={() => navigate("/logout")}>
+            <Button
+              onClick={() => navigate("/logout")}
+              className="flex items-center justify-center gap-2"
+            >
+              <LogOut size={16} />
               Sair da Conta
             </Button>
-            <Button type="link" danger onClick={showConfirm}>
+            <Button
+              danger
+              onClick={showConfirm}
+              className="flex items-center justify-center gap-2"
+            >
+              <Trash2Icon size={16} />
               Excluir Conta
             </Button>
           </div>
@@ -136,7 +156,9 @@ function Profile() {
           </Button>
         )}
 
-        <h2 className="text-text m-0 mt-4">Suas conquistas</h2>
+        <h2 className="text-text m-0 mt-4" id="conquistas">
+          Suas conquistas
+        </h2>
         <div className="grid items-center justify-center w-full grid-flow-col bg-white rounded-lg min-h-32">
           <div className="flex flex-col items-center justify-center p-2">
             <Archive size={96} opacity="70%" strokeWidth={1.5} />
@@ -148,7 +170,7 @@ function Profile() {
 
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
-            <h2 className="m-0 mt-4">Atividades no Fórum</h2>
+            <h2 className="m-0 mt-4">Atividades no fórum</h2>
             <ProfileForumActivities userId={user?.id} />
           </div>
 

@@ -25,7 +25,7 @@ import {
 } from "../api/slices/ratingApiSlice.js";
 import { useEffect, useState } from "react";
 import { API_AVATAR } from "../config/index.js";
-import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
+import { ThumbsUp, UserRound } from "lucide-react";
 import {
   EllipsisOutlined,
   ExclamationCircleFilled,
@@ -48,6 +48,7 @@ import {
   useGetQuizScoreQuery,
 } from "../api/slices/quizFeedbackApiSlice.js";
 import { clearQuizPractice } from "../redux/slices/quizPracticeSlice.js";
+import ReportButton from "../components/Report/ReportButton.jsx";
 
 const ExerciseLanding = () => {
   const { exerciseId } = useParams();
@@ -341,17 +342,12 @@ const ExerciseLanding = () => {
           </div>
 
           <div className="flex justify-between">
-            <Button
-              type="link"
-              danger
-              disabled={userState?.id === quiz.userId}
-              className="flex gap-[5px] items-start p-0"
-            >
-              <div className="flex items-center justify-center w-6 h-6 bg-red-200 rounded-full">
-                <AlertOctagon size={16} />
-              </div>
-              <p>Reportar esse questionário</p>
-            </Button>
+            <ReportButton
+              type="QUIZ"
+              resourceId={quiz.id}
+              userId={userState.id}
+              resourceOnwerId={quiz.userId}
+            />
             <div className="flex gap-[5px] items-center">
               {userState && userState.id !== quiz.userId && (
                 <Button

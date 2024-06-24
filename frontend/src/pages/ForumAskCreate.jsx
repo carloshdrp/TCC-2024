@@ -16,6 +16,7 @@ import { useGetUsersQuery } from "../api/slices/profileApiSlice";
 import { MoveLeft } from "lucide-react";
 import { useCreateForumQuestionMutation } from "../api/slices/forumApiSlice";
 import { useGetTagsQuery } from "../api/slices/tagsApiSlice";
+import coin from "../assets/coin.png";
 
 export const ForumAskCreate = () => {
   const [form] = Form.useForm();
@@ -51,7 +52,7 @@ export const ForumAskCreate = () => {
   }, [userState, refetch]);
 
   useEffect(() => {
-    if (userState.points < 1) {
+    if (userData?.points < 1) {
       notification.error({
         message: "Você não pode acessar este recurso!",
         description:
@@ -60,7 +61,7 @@ export const ForumAskCreate = () => {
 
       navigate("/forum");
     }
-  }, [userState, navigate]);
+  }, [userData]);
 
   const onFinish = async (values) => {
     try {
@@ -112,7 +113,10 @@ export const ForumAskCreate = () => {
     <LayoutComponent>
       <div className="flex items-end justify-between mb-3 text-text">
         <p className="text-4xl font-bold ">Faça sua pergunta</p>
-        <p>Pontos disponíveis: {content}</p>
+        <p className="flex items-center">
+          Pontos disponíveis: <b>{content}</b>
+          <img src={coin} alt="coin" className="w-4 h-4" />
+        </p>
       </div>
 
       <Form
@@ -149,7 +153,10 @@ export const ForumAskCreate = () => {
             },
           ]}
         >
-          <Input.TextArea placeholder="Digite uma descrição detalhada para a sua pergunta" />
+          <Input.TextArea
+            placeholder="Digite uma descrição detalhada para a sua pergunta"
+            showCount
+          />
         </Form.Item>
 
         <Form.Item label="Categoria" required>

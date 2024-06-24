@@ -315,10 +315,12 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
         </p>
       ) : menuTab === "Seus questionários" ? (
         <p className="mt-1">Você ainda não criou nenhum questionário! 😢</p>
-      ) : (
+      ) : userState.role === "VERIFIED" || userState.role === "ADMIN" ? (
         <p className="mt-1">
           Seja o primeiro a criar um questionário para esta matéria! 😉
         </p>
+      ) : (
+        <p>Não foi possível encontrar um questionário nessa categoria 😢</p>
       );
     }
   }

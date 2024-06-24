@@ -12,11 +12,7 @@ import {
 import { ForumAchievements } from "../components/Forum/ForumAchievements.jsx";
 import { ForumTrendingTopics } from "../components/Forum/ForumTrendingTopics.jsx";
 import { ForumStatisticWidgets } from "../components/Forum/ForumStatisticWidgets.jsx";
-import {
-  selectCurrentUser,
-  setUser,
-  updateUserState,
-} from "../redux/slices/authSlice.js";
+import { selectCurrentUser } from "../redux/slices/authSlice.js";
 import { useEffect } from "react";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice.js";
 
@@ -28,19 +24,13 @@ function Forum() {
   const userState = useSelector(selectCurrentUser);
   const searchTitle = useSelector(getSearch);
 
-  const { data: userData, refetch } = useGetUsersQuery(userState?.id);
+  const { data: userData, refetch } = useGetUsersQuery(userState.id, {
+    skip: !userState,
+  });
 
   useEffect(() => {
-    if (userState?.id) {
-      refetch().then(() => {
-        if (userData) {
-          dispatch(updateUserState(userData));
-        } else {
-          dispatch(setUser(null));
-        }
-      });
-    }
-  }, [dispatch, refetch, userState?.id, userData]);
+    refetch();
+  }, [refetch]);
 
   const topMenu = [
     {
@@ -65,10 +55,10 @@ function Forum() {
         <Breadcrumb items={topMenu} className="col-span-4" />
         <div className="flex flex-col w-full col-span-3 row-span-3 gap-5 min-h-[calc(100vh-180px)]">
           <ForumNavigator />
-          {userState && (
+          {userData && (
             <Tooltip
               title={
-                userState.points < 1
+                userData.points < 1
                   ? "Você precisa de pelo menos 1 ponto para criar uma pergunta"
                   : ""
               }
@@ -78,12 +68,12 @@ function Forum() {
                 type="primary"
                 onClick={() => navigate("ask")}
                 style={
-                  userState.points >= 1
+                  userData.points >= 1
                     ? { background: "rgb(255, 64, 129, 1)" }
                     : true
                 }
                 className="font-medium"
-                disabled={userState.points < 1}
+                disabled={userData.points < 1}
               >
                 Criar uma pergunta
               </Button>

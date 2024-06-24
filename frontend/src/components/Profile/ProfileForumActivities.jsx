@@ -60,10 +60,7 @@ const ProfileForumActivities = ({ userId }) => {
           />
         </div>
         <div className="flex flex-col justify-between">
-          <h3 className="m-0">
-            {" "}
-            {filteredRatingData.length === 1 ? "Curtida" : "Curtidas"}
-          </h3>
+          <h3 className="m-0">Curtidas Fornecidas</h3>
           <CountUp
             end={filteredRatingData.length}
             duration="2"

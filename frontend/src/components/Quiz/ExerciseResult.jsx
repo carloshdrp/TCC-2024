@@ -71,7 +71,11 @@ const ExerciseResult = () => {
 
   let content;
   if (loading) {
-    content = <p>Carregando...</p>;
+    content = (
+      <Spin tip="Carregando resultado..." className="bg-white rounded-lg">
+        <div className="h-20 " />
+      </Spin>
+    );
   } else if (attemptError) {
     content = (
       <>
@@ -167,7 +171,7 @@ const ExerciseResult = () => {
           <>
             <header className="mb-4 text-lg">
               <p>
-                <b>Avaliação de dificuldade:</b> {difficulty}
+                <b>Avaliação:</b> {difficulty}
               </p>
               <p className="mt-0.5">
                 <b>Respostas certas:</b>{" "}

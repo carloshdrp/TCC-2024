@@ -6,7 +6,7 @@ export const ForumAchievements = () => {
     <div className="bg-white w-full h-fit p-[10px] rounded-[10px] flex flex-col gap-[10px]">
       <div className="flex items-center justify-between text-text">
         <p className="text-3xl font-medium mb-[10px]">Conquistas</p>
-        <Link to="/profile" className="text-text">
+        <Link to="/profile/#conquistas" className="text-text">
           Ver todas
         </Link>
       </div>

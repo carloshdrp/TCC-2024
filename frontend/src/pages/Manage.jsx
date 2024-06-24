@@ -10,18 +10,13 @@ const Manage = () => {
   const navigate = useNavigate();
 
   const user = useSelector(selectCurrentUser);
-  const {
-    data: userData,
-    error,
-    isLoading,
-    refetch,
-  } = useGetUsersQuery(user.id);
+  const { data: userData } = useGetUsersQuery(user.id);
 
   useEffect(() => {
     if (userData?.role !== "ADMIN") {
       navigate("/");
     }
-  }, [userData]);
+  }, [navigate, userData]);
 
   return (
     <LayoutComponent>

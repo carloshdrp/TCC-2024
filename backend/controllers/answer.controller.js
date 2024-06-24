@@ -61,8 +61,7 @@ const updateAnswer = catchAsync(async (req, res) => {
 
 const deleteAnswer = catchAsync(async (req, res) => {
   try {
-    const userId = req.user.id;
-    await answerService.deleteAnswerById(req.params.answerId, userId);
+    await answerService.deleteAnswerById(req.params.answerId);
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error) {
     throw new ApiError(httpStatus.BAD_REQUEST, error.message);

@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice.js";
 import { useGetQuizzesQuery } from "../api/slices/quizApiSlice.js";
+import coin from "../assets/coin.png";
 
 const { Search } = Input;
 
@@ -83,9 +84,24 @@ function Exercises() {
                   Questionário aleatório
                 </h2>
                 <p className="mb-[50px]">Ideal para uma revisão geral</p>
-                <Button type="primary" onClick={handleRandomQuiz}>
-                  Começar
-                </Button>
+                <Badge.Ribbon
+                  text={
+                    <p>
+                      +1 <img src={coin} alt="coin" className="w-3 h-3" />
+                    </p>
+                  }
+                  className="mt-1 text-sm"
+                  color="gold"
+                  style={{ top: "-1px" }}
+                >
+                  <Button
+                    type="primary"
+                    onClick={handleRandomQuiz}
+                    className="w-full"
+                  >
+                    Começar
+                  </Button>
+                </Badge.Ribbon>
               </div>
 
               <div className="flex flex-col bg-[url('./assets/bg-discovery-card-2.png')] bg-center bg-repeat-round w-full p-[20px] text-white rounded-[10px]">
@@ -106,7 +122,11 @@ function Exercises() {
 
           {(userData?.role === "ADMIN" || userData?.role === "VERIFIED") && (
             <Badge.Ribbon
-              text="+2 pontos"
+              text={
+                <p>
+                  +2 <img src={coin} alt="coin" className="w-3 h-3" />
+                </p>
+              }
               className="mt-1 text-sm"
               color="gold"
             >

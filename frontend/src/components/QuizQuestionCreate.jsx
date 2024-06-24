@@ -24,6 +24,20 @@ const QuizQuestionCreate = () => {
 
   const onFinish = async (values) => {
     setEditQuestion(false);
+
+    const fieldValues = Object.values(values);
+    const hasDuplicates = fieldValues.some(
+      (value, index) => fieldValues.indexOf(value) !== index,
+    );
+
+    if (hasDuplicates) {
+      notification.error({
+        message: "Erro ao criar questão!",
+        description: "As alternativas não podem ter o mesmo valor.",
+      });
+      return;
+    }
+
     try {
       const existingQuestionIndex = question.findIndex(
         (q) => q.id === questionId,

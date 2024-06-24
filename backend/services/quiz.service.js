@@ -69,13 +69,7 @@ const updateQuizById = async (userId, quizId, updateBody) => {
   });
 };
 
-const deleteQuizById = async (quizId, userId) => {
-  const quiz = await getQuizById(quizId);
-
-  if (quiz.userId !== userId) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para deletar este quiz');
-  }
-
+const deleteQuizById = async (quizId) => {
   const quizQuestionAnswers = await prisma.quizQuestionAnswer.findMany({
     where: {
       quizQuestion: {
@@ -83,7 +77,6 @@ const deleteQuizById = async (quizId, userId) => {
       },
     },
   });
-
   if (quizQuestionAnswers.length > 0) {
     await prisma.quizQuestionAnswer.deleteMany({
       where: {
@@ -99,12 +92,33 @@ const deleteQuizById = async (quizId, userId) => {
       quizId,
     },
   });
-
   if (quizAttempts.length > 0) {
     await prisma.quizAttempt.deleteMany({
       where: {
         quizId,
       },
+    });
+  }
+
+  const quizRelations = await prisma.quizRelation.findMany({
+    where: {
+      quizId,
+    },
+  });
+  if (quizRelations.length > 0) {
+    await prisma.quizRelation.deleteMany({
+      where: {
+        quizId,
+      },
+    });
+  }
+
+  const ratings = await prisma.rating.findMany({
+    where: { rateableId: quizId },
+  });
+  if (ratings.length > 0) {
+    await prisma.rating.deleteMany({
+      where: { rateableId: quizId },
     });
   }
 

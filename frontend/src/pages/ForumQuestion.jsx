@@ -13,7 +13,7 @@ import {
 import { EllipsisOutlined, HomeOutlined } from "@ant-design/icons";
 import LayoutComponent from "./layout/LayoutComponent";
 import { useGetForumQuestionQuery } from "../api/slices/forumApiSlice";
-import { AlertOctagon, ThumbsUp, UserRound } from "lucide-react";
+import { ThumbsUp, UserRound } from "lucide-react";
 import { API_AVATAR } from "../config";
 import UserLeague from "../components/UserLeague";
 import { formatDistanceToNow } from "date-fns";
@@ -32,6 +32,8 @@ import {
   useCreateAnswerMutation,
   useGetAnswersByQuestionIdQuery,
 } from "../api/slices/answersApiSlice";
+import ReportButton from "../components/Report/ReportButton.jsx";
+import coin from "../assets/coin.png";
 
 export const ForumQuestion = () => {
   const { questionId } = useParams();
@@ -226,17 +228,13 @@ export const ForumQuestion = () => {
               </div>
             </div>
             <div className="flex justify-between">
-              <Button
-                type="link"
-                danger
-                disabled={userState?.id === questionData.userId}
-                className="flex gap-[5px] items-start p-0"
-              >
-                <div className="flex items-center justify-center w-6 h-6 bg-red-200 rounded-full">
-                  <AlertOctagon size={16} />
-                </div>
-                <p>Reportar essa pergunta</p>
-              </Button>
+              <ReportButton
+                type="QUESTION"
+                resourceId={questionData.id}
+                userId={userState.id}
+                resourceOnwerId={questionData.userId}
+              />
+
               <div className="flex gap-[5px] items-center">
                 {userState && userState.id !== questionData.userId && (
                   <Button
@@ -285,7 +283,11 @@ export const ForumQuestion = () => {
             !answerData.some((answer) => answer.userId === userState?.id) && (
               <div className="flex flex-col">
                 <Badge.Ribbon
-                  text="+1 ponto"
+                  text={
+                    <p>
+                      +1 <img src={coin} alt="coin" className="w-3 h-3" />
+                    </p>
+                  }
                   className="-mt-1 text-sm"
                   color="gold"
                 >

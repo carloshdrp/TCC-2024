@@ -5,7 +5,7 @@ import {
   useGetQuizzesFeedbacksQuery,
 } from "../../api/slices/quizFeedbackApiSlice.js";
 import { selectCurrentUser } from "../../redux/slices/authSlice.js";
-import { Button, Empty, Modal, notification } from "antd";
+import { Button, Empty, Modal, notification, Spin } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -39,7 +39,11 @@ const HistoryArticles = () => {
 
   let content;
   if (attemptsLoading) {
-    content = <p>Carregando...</p>;
+    content = (
+      <Spin tip="Carregando..." className="bg-white rounded-lg">
+        <div className="h-20 " />
+      </Spin>
+    );
   } else if (attemptsData) {
     if (attemptsData.length === 0) {
       content = (
