@@ -47,7 +47,7 @@ const badgeProgress = async (ownerId) => {
   const totalRatings = questionRatings + answerRatings + quizRatings;
 
   const newLeague = Object.entries(badgesConfig.leagues).reduce(
-    (league, [key, threshold]) => (totalRatings > threshold ? key : league),
+    (league, [key, threshold]) => (totalRatings >= threshold ? key : league),
     'Topaz',
   );
 

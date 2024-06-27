@@ -73,6 +73,14 @@ function About() {
           </section>
 
           <section
+            id="recursos"
+            className="min-h-screen bg-white flex flex-col items-center justify-center"
+          >
+            <p className="text-4xl font-bold">Níveis de acesso</p>
+            <p>iniciante / estudioso / adm</p>
+          </section>
+
+          <section
             id="explorar"
             className="min-h-screen bg-white flex flex-col items-center justify-center"
           >
