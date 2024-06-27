@@ -4,7 +4,7 @@ const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 const createQuizQuestion = async (quizQuestionBody, quizId) => {
-  const quizQuestion = await prisma.quizQuestion.create({
+  return await prisma.quizQuestion.create({
     data: {
       ...quizQuestionBody,
       quiz: {
@@ -12,12 +12,10 @@ const createQuizQuestion = async (quizQuestionBody, quizId) => {
       },
     },
   });
-
-  return quizQuestion;
 };
 
 const queryQuizQuestions = async (filter, options) => {
-  const quizQuestions = await prisma.quizQuestion.findMany({
+  return await prisma.quizQuestion.findMany({
     where: {
       quizId: filter.quizId,
     },
@@ -28,8 +26,6 @@ const queryQuizQuestions = async (filter, options) => {
       quiz: true,
     },
   });
-
-  return quizQuestions;
 };
 
 const getQuizQuestionById = async (quizQuestionId) => {

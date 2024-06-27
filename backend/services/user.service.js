@@ -23,14 +23,12 @@ const createUser = async (userBody) => {
 };
 
 const queryUsers = async (filter, options) => {
-  const users = await prisma.user.findMany({
+  return await prisma.user.findMany({
     where: filter,
     skip: options.skip,
     take: options.limit,
     orderBy: options.sort,
   });
-
-  return users;
 };
 
 const getUserById = async (id) => {
@@ -59,8 +57,7 @@ const updateUserById = async (userId, updateBody) => {
   }
 
   if (updateData.password) {
-    const hashedPassword = await bcrypt.hash(updateData.password, 10);
-    updateData.password = hashedPassword;
+    updateData.password = await bcrypt.hash(updateData.password, 10);
   }
 
   return prisma.user.update({
@@ -194,18 +191,14 @@ const getRanking = async (userId) => {
 
   usersWithTotal.sort((a, b) => b.total - a.total);
 
-  const userRanking = usersWithTotal.findIndex((user) => user.id === userId) + 1;
-
-  return userRanking;
+  return usersWithTotal.findIndex((user) => user.id === userId) + 1;
 };
 
 const getLeague = async (userId) => {
-  const league = await prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: { id: userId },
     select: { league: true },
   });
-
-  return league;
 };
 
 const getUserCount = async () => {

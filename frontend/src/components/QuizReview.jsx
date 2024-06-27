@@ -10,7 +10,6 @@ import {
 import { ArrowLeft, Pencil } from "lucide-react";
 import { normalizeSubject } from "../utils/normalizeSubject";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   useCreateQuizMutation,
   useUpdateQuizMutation,
@@ -40,7 +39,6 @@ const QuizReview = () => {
   const [deleteQuizQuestion] = useDeleteQuizQuestionMutation();
   const [createQuizRelation] = useCreateQuizRelationMutation();
 
-  const navigate = useNavigate();
   const handleCancel = useHandleCancel();
 
   const [processing, setProcessing] = useState(false);

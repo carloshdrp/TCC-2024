@@ -17,7 +17,7 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
 };
 
 const saveToken = async (token, userId, expires, type, blackListed = false) => {
-  const tokenDoc = await prisma.token.create({
+  return prisma.token.create({
     data: {
       token,
       userId,
@@ -26,7 +26,6 @@ const saveToken = async (token, userId, expires, type, blackListed = false) => {
       blackListed,
     },
   });
-  return tokenDoc;
 };
 
 const verifyToken = async (token, type) => {

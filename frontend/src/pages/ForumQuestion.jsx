@@ -231,7 +231,7 @@ export const ForumQuestion = () => {
               <ReportButton
                 type="QUESTION"
                 resourceId={questionData.id}
-                userId={userState.id}
+                userId={userState?.id}
                 resourceOnwerId={questionData.userId}
               />
 

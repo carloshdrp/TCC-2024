@@ -46,9 +46,14 @@ function Profile() {
     error,
     isLoading,
     refetch,
-  } = useGetUsersQuery(user.id);
+  } = useGetUsersQuery(user?.id, {
+    skip: !user,
+  });
 
-  const { data: likeCount } = useGetLikeCountQuery(user.id);
+  const { data: likeCount } = useGetLikeCountQuery(user?.id, {
+    skip: !user,
+  });
+
   const navigate = useNavigate();
 
   const [removeUser] = useRemoveUserMutation();
@@ -91,8 +96,10 @@ function Profile() {
   };
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    if (user) {
+      refetch();
+    }
+  }, [refetch, user]);
 
   let content;
   if (isLoading) {

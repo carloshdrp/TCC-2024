@@ -4,15 +4,13 @@ const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 const createTag = async (tagBody) => {
-  const tag = await prisma.tags.create({
+  return await prisma.tags.create({
     data: tagBody,
   });
-
-  return tag;
 };
 
 const queryTags = async (filter, options) => {
-  const tags = await prisma.tags.findMany({
+  return await prisma.tags.findMany({
     where: filter,
     take: options.limit,
     skip: options.skip,
@@ -21,8 +19,6 @@ const queryTags = async (filter, options) => {
       Question: true,
     },
   });
-
-  return tags;
 };
 
 const getTagById = async (tagId) => {

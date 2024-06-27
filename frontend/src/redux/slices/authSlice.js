@@ -26,12 +26,16 @@ const authSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
       } else {
         state.user = null;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.stayConnected = null;
       }
     },
     logoutUser(state) {
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.stayConnected = null;
     },
     clearAuthError(state) {
       state.error = null;

@@ -44,7 +44,7 @@ const ReportButton = ({ type, userId, resourceId, resourceOnwerId }) => {
       <Button
         type="link"
         danger
-        disabled={userId === resourceOnwerId}
+        disabled={userId === resourceOnwerId || !userId}
         className="flex gap-[5px] items-start p-0"
         onClick={showModal}
       >

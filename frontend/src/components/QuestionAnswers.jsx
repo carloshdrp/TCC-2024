@@ -290,14 +290,12 @@ const QuestionAnswers = ({ questionId, refreshAnswers }) => {
               )}
 
               <div className="flex flex-row items-center justify-between w-full">
-                <div className="flex justify-between">
-                  <ReportButton
-                    type="ANSWER"
-                    resourceId={answer.id}
-                    userId={userState.id}
-                    resourceOnwerId={answer.userId}
-                  />
-                </div>
+                <ReportButton
+                  type="ANSWER"
+                  resourceId={answer.id}
+                  userId={userState?.id}
+                  resourceOnwerId={answer.userId}
+                />
                 <div className="flex flex-col justify-end gap-[10px] items-end w-full">
                   <div className="flex gap-[5px] items-center">
                     {userState && userState.id !== answer.userId && (

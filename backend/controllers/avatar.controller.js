@@ -14,7 +14,6 @@ const deleteAvatar = async (req, res) => {
 
   fs.unlink(filePath, (err) => {
     if (err) {
-      console.error(err);
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Erro ao excluir o arquivo');
     } else {
       res.status(httpStatus.OK).send('Arquivo excluído com sucesso!');

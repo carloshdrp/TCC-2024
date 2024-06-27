@@ -3,7 +3,6 @@ import { Angry, Annoyed, Frown, Laugh, Smile } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearQuizPractice,
-  getCurrentStep,
   getQuizId,
   getQuizQuestions,
   setScore,
@@ -19,7 +18,6 @@ const ExerciseFeedback = () => {
 
   const quizId = useSelector(getQuizId);
   const quizQuestions = useSelector(getQuizQuestions);
-  const currentStep = useSelector(getCurrentStep);
 
   const [score, setScoreState] = useState(0);
   const [shouldNavigate, setShouldNavigate] = useState(false);

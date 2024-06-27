@@ -26,7 +26,7 @@ const LayoutComponent = ({ children, quizName }) => {
     "/exercise/": quizName,
     "/login": "Entrar",
     "/register": "Registrar",
-    "/contact": "Contato",
+    "/about": "Conhecer",
     "/profile": "Perfil",
   };
 
@@ -77,8 +77,8 @@ const LayoutComponent = ({ children, quizName }) => {
               Entrar
             </Link>
           )}
-          <Link to="/contact" className="btn-nav hover:text-primary">
-            Contato
+          <Link to="/about" className="btn-nav hover:text-primary">
+            Recursos
             <div className="btn-nav-icon">
               <ArrowUpRight size="16" color="white" className="absolute" />
             </div>
@@ -91,7 +91,9 @@ const LayoutComponent = ({ children, quizName }) => {
         exit={{ x: -100, opacity: 0 }}
         transition={{ duration: 0.45, ease: "easeInOut" }}
       >
-        <Content className="px-[90px] min-h-screen">{children}</Content>
+        <Content className="px-[90px] min-h-[calc(100vh-200px)]">
+          {children}
+        </Content>
       </motion.div>
 
       <Footer className="px-[90px] text-center">{APP_NAME} • 2024</Footer>

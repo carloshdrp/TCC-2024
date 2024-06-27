@@ -21,6 +21,7 @@ import ExerciseLanding from "./pages/ExerciseLanding.jsx";
 import ExercisePractice from "./pages/ExercisePractice.jsx";
 import ExerciseResult from "./components/Quiz/ExerciseResult.jsx";
 import Manage from "./pages/Manage.jsx";
+import About from "./pages/About.jsx";
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,8 @@ function App() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route index element={<Home />} />
+        <Route path="/about" element={<About />} />
+
         <Route path="*" element={<NotFound />} />
 
         <Route path="forum" element={<Forum />} />

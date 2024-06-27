@@ -7,6 +7,16 @@ import { motion } from "framer-motion";
 import ScrollTop from "../components/ScrollTop.jsx";
 
 function Home() {
+  const bounceTransition = {
+    y: {
+      duration: 0.8,
+      ease: "easeOut",
+      times: [0, 0.2, 0.5, 0.8, 1],
+      repeat: Infinity,
+      repeatDelay: 1,
+    },
+  };
+
   return (
     <LayoutComponent>
       <div className="h-[calc(100vh-128px)] flex flex-col items-center gap-[60px] justify-center text-center bg-home">
@@ -47,15 +57,22 @@ function Home() {
           </motion.span>
         </h2>
         <p className="text-lg  w-[620px] z-10 my-0">
-          Explore diversas atividades interativas e divertidas para enriquecer
-          seu processo de aprendizagem e desenvolvimento pessoal.
+          Fóruns por competências, questionários e desafios à sua disposição!
+          Aprenda, colabore e evolua em uma comunidade de estudantes.
         </p>
-        <Link to="/register" className="btn-home">
-          <p className="text-white">Inicie sua jornada</p>
-          <div className="icon-container w-[20px] h-[20px] bg-background relative flex items-center justify-center rounded-full">
-            <ArrowUpRight size="16" className="icon text-primary" />
-          </div>
-        </Link>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{ y: [0, -10, 0] }}
+          transition={bounceTransition}
+          whileHover={{ y: 0, transition: { duration: 0.2 } }}
+        >
+          <Link to="/register" className="btn-home">
+            <p className="text-white">Inicie sua jornada</p>
+            <div className="icon-container w-[20px] h-[20px] bg-background relative flex items-center justify-center rounded-full">
+              <ArrowUpRight size="16" className="icon text-primary" />
+            </div>
+          </Link>
+        </motion.div>
       </div>
       <ScrollTop />
     </LayoutComponent>

@@ -5,7 +5,7 @@ const ApiError = require('../utils/ApiError');
 const { recalculateUserLeague } = require('./badges.service');
 
 const createQuestion = async (questionBody, authorId, tagId) => {
-  const question = await prisma.question.create({
+  return await prisma.question.create({
     data: {
       ...questionBody,
       user: {
@@ -16,12 +16,10 @@ const createQuestion = async (questionBody, authorId, tagId) => {
       },
     },
   });
-
-  return question;
 };
 
 const queryQuestions = async (filter, options) => {
-  const questions = await prisma.question.findMany({
+  return await prisma.question.findMany({
     where: {
       title: {
         contains: filter.title,
@@ -41,8 +39,6 @@ const queryQuestions = async (filter, options) => {
       user: true,
     },
   });
-
-  return questions;
 };
 
 const getQuestionById = async (questionId) => {
