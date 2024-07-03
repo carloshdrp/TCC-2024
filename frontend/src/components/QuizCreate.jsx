@@ -1,12 +1,15 @@
-import { Form, Input, Button, Select, notification } from "antd";
+import { Button, Form, Input, notification, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuiz, setStep, getQuiz } from "../redux/slices/quizCreateSlice.js";
+import { getQuiz, setQuiz, setStep } from "../redux/slices/quizCreateSlice.js";
 import { useHandleCancel } from "../utils/quiz/handleCancel.js";
+import { getMenuTab } from "../redux/slices/quizMenuSlice.js";
 
 const QuizCreate = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
+
+  const menuTab = useSelector(getMenuTab);
 
   const quizData = useSelector(getQuiz);
 
@@ -123,6 +126,13 @@ const QuizCreate = () => {
             showSearch
             placeholder="Selecione a matéria do questionário"
             options={subjects}
+            defaultValue={
+              menuTab !== "Descobrir" &&
+              menuTab !== "Seus questionários" &&
+              menuTab !== "Seu histórico"
+                ? menuTab
+                : null
+            }
           />
         </Form.Item>
         <Form.Item>

@@ -4,9 +4,14 @@ const { questionService, answerService, quizService, reportsService } = require(
 const { pick, ApiError } = require('../utils');
 
 const queryReports = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['reason', 'userId', 'reportableId', 'reportableType']);
+  const filter = pick(req.query, ['reason', 'userId', 'reportableId', 'reportableType', 'status']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await reportsService.queryReports(filter, options);
+  res.send(result);
+});
+
+const queryReportsByUserId = catchAsync(async (req, res) => {
+  const result = await reportsService.queryReports({ userId: req.params.userId }, { sortBy: 'desc' });
   res.send(result);
 });
 
@@ -14,6 +19,7 @@ const createReport = catchAsync(async (req, res) => {
   const report = await reportsService.createReport(
     req.user.id,
     req.body.reason,
+    req.body.description,
     req.body.reportableId,
     req.body.reportableType,
   );
@@ -38,13 +44,14 @@ const createReport = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(report);
 });
 
-const deleteReport = catchAsync(async (req, res) => {
-  await reportsService.deleteReport(req.body.reportId);
-  res.status(httpStatus.NO_CONTENT).send();
+const updateReportStatus = catchAsync(async (req, res) => {
+  const report = await reportsService.updateReportStatus(req.params.reportId, req.body.status, req.body.message);
+  res.send(report);
 });
 
 module.exports = {
   queryReports,
+  queryReportsByUserId,
   createReport,
-  deleteReport,
+  updateReportStatus,
 };

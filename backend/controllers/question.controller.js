@@ -23,7 +23,8 @@ const getQuestion = catchAsync(async (req, res) => {
 });
 
 const updateQuestion = catchAsync(async (req, res) => {
-  const { userId, tags, ...updateBody } = req.body;
+  const { tags, ...updateBody } = req.body;
+  const { userId } = req.user;
   const question = await questionService.updateQuestionById(userId, req.params.questionId, updateBody, tags);
   res.send(question);
 });

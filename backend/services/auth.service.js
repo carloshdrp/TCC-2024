@@ -35,22 +35,20 @@ const logout = async (refreshToken) => {
 };
 
 const refreshAuth = async (refreshToken) => {
-  try {
-    const refreshTokenDoc = await tokenService.verifyToken(refreshToken, tokenTypes.REFRESH);
-    const user = await userService.getUserById(refreshTokenDoc.userId);
-    if (!user) {
-      throw new Error();
-    }
-    await prisma.token.delete({
-      where: {
-        id: refreshTokenDoc.id,
-      },
-    });
+  const refreshTokenDoc = await tokenService.verifyToken(refreshToken, tokenTypes.REFRESH);
+  const user = await userService.getUserById(refreshTokenDoc.userId);
 
-    return tokenService.generateAuthTokens(user);
-  } catch (error) {
+  if (!user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Não autorizado');
   }
+
+  await prisma.token.delete({
+    where: {
+      id: refreshTokenDoc.id,
+    },
+  });
+
+  return tokenService.generateAuthTokens(user);
 };
 
 module.exports = {

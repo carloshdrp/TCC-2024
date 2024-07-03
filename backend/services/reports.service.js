@@ -10,6 +10,7 @@ const queryReports = async (filter, options) => {
       reportedBy: {
         id: filter.userId,
       },
+      status: filter.status,
       reportableId: filter.reportableId,
       reportableType: filter.reportableType,
     },
@@ -22,32 +23,37 @@ const queryReports = async (filter, options) => {
   });
 };
 
-const createReport = async (userId, reason, reportableId, reportableType) => {
+const createReport = async (userId, reason, description, reportableId, reportableType) => {
   return prisma.report.create({
     data: {
       reportedBy: {
         connect: { id: userId },
       },
       reason,
+      description,
       reportableId,
       reportableType,
     },
   });
 };
 
-const deleteReport = async (reportId) => {
-  const report = await queryReports({ reportId }, {});
+const updateReportStatus = async (reportId, status, message) => {
+  const report = await prisma.report.findUnique({
+    where: { id: reportId },
+  });
+
   if (!report) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Denúncia não encontrada');
   }
 
-  return prisma.report.delete({
+  return prisma.report.update({
     where: { id: reportId },
+    data: { status, message },
   });
 };
 
 module.exports = {
   queryReports,
   createReport,
-  deleteReport,
+  updateReportStatus,
 };

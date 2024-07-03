@@ -24,7 +24,7 @@ export const ForumStatisticWidgets = () => {
       </Spin>
     );
   } else if (questionError) {
-    content = <p>Erro: {questionError}</p>;
+    content = <p>Erro</p>;
   } else if (questionsData && usersData) {
     let questionCount = questionsData ? questionsData.length : 0;
 

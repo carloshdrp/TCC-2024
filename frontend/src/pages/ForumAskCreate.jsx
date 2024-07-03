@@ -15,30 +15,27 @@ import { useEffect, useState } from "react";
 import { useGetUsersQuery } from "../api/slices/profileApiSlice";
 import { MoveLeft } from "lucide-react";
 import { useCreateForumQuestionMutation } from "../api/slices/forumApiSlice";
-import { useGetTagsQuery } from "../api/slices/tagsApiSlice";
 import coin from "../assets/coin.png";
+import tags from "../utils/tags.json";
 
 export const ForumAskCreate = () => {
   const [form] = Form.useForm();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [tagId, setTagId] = useState(0);
   const [createForumQuestion, { isLoading }] = useCreateForumQuestionMutation();
-  const { isLoading: tagsLoading, data: tags } = useGetTagsQuery();
 
   const userState = useSelector(selectCurrentUser);
   const navigate = useNavigate();
 
   let tagOptions = [];
 
-  if (!tagsLoading) {
-    tagOptions = Object.values(tags).map((tag) => {
-      return {
-        label: tag.name,
-        key: tag.id,
-        value: tag.name,
-      };
-    });
-  }
+  tagOptions = tags.map((tag) => {
+    return {
+      label: tag.name,
+      key: tag.id,
+      value: tag.name,
+    };
+  });
 
   const {
     data: userData,
@@ -68,10 +65,12 @@ export const ForumAskCreate = () => {
       let defaultTagId = tagId;
 
       if (tagId === 0) {
-        defaultTagId = tagOptions[0].key;
+        defaultTagId = tagOptions[0].value;
       }
 
-      values.tagId = defaultTagId;
+      values.tag = defaultTagId;
+
+      console.log(values);
 
       await createForumQuestion(values);
 
@@ -101,11 +100,7 @@ export const ForumAskCreate = () => {
   if (isFetching) {
     content = <Spin />;
   } else if (error) {
-    content = (
-      <LayoutComponent>
-        <p>Erro: {error}</p>
-      </LayoutComponent>
-    );
+    content = <p>Erro</p>;
   } else if (userData) {
     content = userData.points;
   }
@@ -139,7 +134,7 @@ export const ForumAskCreate = () => {
             },
           ]}
         >
-          <Input placeholder="Digite o título" />
+          <Input placeholder="Digite o título" showCount />
         </Form.Item>
         <Form.Item
           name="description"
@@ -160,16 +155,14 @@ export const ForumAskCreate = () => {
         </Form.Item>
 
         <Form.Item label="Categoria" required>
-          {!tagsLoading && (
-            <Select
-              style={{ width: "100%" }}
-              placeholder="Tags"
-              showSearch
-              options={tagOptions}
-              defaultValue={tagOptions[0].value}
-              onChange={(_, { key }) => setTagId(key)}
-            />
-          )}
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Tags"
+            showSearch
+            options={tagOptions}
+            defaultValue={tagOptions[0].value}
+            onChange={(_, { key }) => setTagId(key)}
+          />
         </Form.Item>
         <Form.Item>
           <Button

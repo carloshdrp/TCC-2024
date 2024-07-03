@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Button, Form, Modal, notification, Select } from "antd";
+import { Button, Form, Input, Modal, notification, Select } from "antd";
 import { AlertOctagon } from "lucide-react";
 import { useCreateReportMutation } from "../../api/slices/reportApiSlice.js";
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 const ReportButton = ({ type, userId, resourceId, resourceOnwerId }) => {
   const [open, setOpen] = useState(false);
@@ -98,6 +99,12 @@ const ReportButton = ({ type, userId, resourceId, resourceOnwerId }) => {
               <Option value="LINKS">Divulgação</Option>
               <Option value="OUTRO">Outro</Option>
             </Select>
+          </Form.Item>
+          <Form.Item name="description" label="Descrição">
+            <TextArea
+              placeholder="Descreva o motivo da denúncia (opcional)"
+              rows={4}
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -139,6 +139,10 @@ const RegisterComponent = () => {
               min: 8,
               message: "A senha deve ter no mínimo 8 caracteres!",
             },
+            {
+              pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+              message: "A senha deve conter no mínimo 1 letra e 1 número!",
+            },
           ]}
         >
           <Input.Password placeholder="Digite sua senha" />

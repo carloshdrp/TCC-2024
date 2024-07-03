@@ -23,7 +23,7 @@ const createUser = async (userBody) => {
 };
 
 const queryUsers = async (filter, options) => {
-  return await prisma.user.findMany({
+  return prisma.user.findMany({
     where: filter,
     skip: options.skip,
     take: options.limit,
@@ -195,7 +195,7 @@ const getRanking = async (userId) => {
 };
 
 const getLeague = async (userId) => {
-  return await prisma.user.findUnique({
+  return prisma.user.findUnique({
     where: { id: userId },
     select: { league: true },
   });

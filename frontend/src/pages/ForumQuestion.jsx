@@ -116,15 +116,15 @@ export const ForumQuestion = () => {
       {
         onClick: () => navigate("/forum"),
         href: null,
-        title: questionData.tag.name,
+        title: questionData.tag,
       },
       {
         href: null,
-        title: questionData.id,
+        title: questionData.title,
       },
     ];
 
-    const rating = ratingData?.data.find(
+    const rating = ratingData?.data?.find(
       (rating) => rating.userId === userState?.id,
     );
 
@@ -337,13 +337,14 @@ export const ForumQuestion = () => {
                           ]}
                         >
                           <Input.TextArea
+                            showCount
                             placeholder="Digite uma resposta detalhada"
                             className="bg-white"
                           />
                         </Form.Item>
                         <Form.Item>
                           <Button
-                            className="w-full "
+                            className="w-full mt-4"
                             loading={isLoading}
                             htmlType="submit"
                           >

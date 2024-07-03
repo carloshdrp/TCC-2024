@@ -22,59 +22,72 @@ import ExercisePractice from "./pages/ExercisePractice.jsx";
 import ExerciseResult from "./components/Quiz/ExerciseResult.jsx";
 import Manage from "./pages/Manage.jsx";
 import About from "./pages/About.jsx";
+import { ConfigProvider } from "antd";
+import theme from "./styles/theme.json";
 
 function App() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route index element={<Home />} />
-        <Route path="/about" element={<About />} />
+    <ConfigProvider theme={theme}>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route index element={<Home />} />
+          <Route path="/about" element={<About />} />
 
-        <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
 
-        <Route path="forum" element={<Forum />} />
-        <Route path="forum/:questionId" element={<ForumQuestion />} />
+          <Route path="forum" element={<Forum />} />
+          <Route path="forum/:questionId" element={<ForumQuestion />} />
 
-        <Route path="exercises" element={<Exercises />} />
+          <Route path="exercises" element={<Exercises />} />
 
-        <Route element={<PublicRoutes />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
+          <Route element={<PublicRoutes />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
 
-        <Route element={<PrivateRoutes />}>
-          <Route path="manage" element={<Manage />} />
+          <Route element={<PrivateRoutes />}>
+            <Route path="manage" element={<Manage />} />
 
-          <Route path="profile" element={<Profile />} />
-          <Route path="profile/edit" element={<ProfileEdit />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<ProfileEdit />} />
 
-          <Route path="forum/ask" element={<ForumAskCreate />} />
-          <Route
-            path="forum/:questionId/edit"
-            element={<ForumQuestionEdit />}
-          />
-          <Route path="forum/:questionId/delete" element={<DeleteConfirm />} />
-          <Route path="forum/:questionId/answer" element={<ForumAskCreate />} />
-          <Route path="answer/:answerId/edit" element={<ForumQuestionEdit />} />
-          <Route path="answer/:answerId/delete" element={<DeleteConfirm />} />
+            <Route path="forum/ask" element={<ForumAskCreate />} />
+            <Route
+              path="forum/:questionId/edit"
+              element={<ForumQuestionEdit />}
+            />
+            <Route
+              path="forum/:questionId/delete"
+              element={<DeleteConfirm />}
+            />
+            <Route
+              path="forum/:questionId/answer"
+              element={<ForumAskCreate />}
+            />
+            <Route
+              path="answer/:answerId/edit"
+              element={<ForumQuestionEdit />}
+            />
+            <Route path="answer/:answerId/delete" element={<DeleteConfirm />} />
 
-          <Route path="exercises/create" element={<ExerciseCreate />} />
-          <Route path="exercise/:exerciseId" element={<ExerciseLanding />} />
-          <Route
-            path="exercise/:exerciseId/practice"
-            element={<ExercisePractice />}
-          />
-          <Route
-            path="exercises/result/:attemptId"
-            element={<ExerciseResult />}
-          />
+            <Route path="exercises/create" element={<ExerciseCreate />} />
+            <Route path="exercise/:exerciseId" element={<ExerciseLanding />} />
+            <Route
+              path="exercise/:exerciseId/practice"
+              element={<ExercisePractice />}
+            />
+            <Route
+              path="exercises/result/:attemptId"
+              element={<ExerciseResult />}
+            />
 
-          <Route path="logout" element={<Logout />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
+            <Route path="logout" element={<Logout />} />
+          </Route>
+        </Routes>
+      </AnimatePresence>
+    </ConfigProvider>
   );
 }
 

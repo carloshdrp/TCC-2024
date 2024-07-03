@@ -1,22 +1,21 @@
 const Joi = require('joi');
-const { objectId } = require('./custom.validation');
 
 const createRating = {
   body: Joi.object().keys({
-    rateableId: Joi.string().required().custom(objectId),
+    rateableId: Joi.string().required(),
     rateableType: Joi.string().required().valid('QUESTION', 'ANSWER', 'QUIZ'),
   }),
 };
 
 const getRating = {
   params: Joi.object().keys({
-    ratingId: Joi.string().required().custom(objectId),
+    ratingId: Joi.string().required(),
   }),
 };
 
 const getRatingByRateableId = {
   params: Joi.object().keys({
-    rateableId: Joi.string().required().custom(objectId),
+    rateableId: Joi.string().required(),
   }),
 };
 
@@ -28,20 +27,20 @@ const getRatingByRateableType = {
 
 const getRatingByUserId = {
   params: Joi.object().keys({
-    userId: Joi.string().required().custom(objectId),
+    userId: Joi.string().required(),
   }),
   query: Joi.object().keys({
-    rateableId: Joi.string().custom(objectId),
+    rateableId: Joi.string(),
     rateableType: Joi.string().valid('QUESTION', 'ANSWER', 'QUIZ'),
   }),
 };
 
 const deleteRating = {
   params: Joi.object().keys({
-    ratingId: Joi.string().required().custom(objectId),
+    ratingId: Joi.string().required(),
   }),
   body: Joi.object().keys({
-    userId: Joi.string().required().custom(objectId),
+    userId: Joi.string().required(),
   }),
 };
 

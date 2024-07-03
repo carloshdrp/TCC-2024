@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Geral"
+  },
+  {
+    "id": 2,
+    "name": "Linguagens"
+  },
+  {
+    "id": 3,
+    "name": "Redação"
+  },
+  {
+    "id": 4,
+    "name": "Matemática"
+  },
+  {
+    "id": 5,
+    "name": "Ciências Humanas"
+  },
+  {
+    "id": 6,
+    "name": "Ciências da Natureza"
+  }
+]

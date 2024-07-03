@@ -67,7 +67,7 @@ const createRating = async (userId, rateableId, rateableType) => {
 };
 
 const queryRatings = async (filter, options) => {
-  return await prisma.rating.findMany({
+  return prisma.rating.findMany({
     where: {
       rateableId: filter.rateableId,
       rateableType: filter.rateableType,
@@ -97,7 +97,7 @@ const getRatingById = async (ratingId) => {
 };
 
 const getRatingByUserId = async (userId, rateableId) => {
-  return await prisma.rating.findMany({
+  return prisma.rating.findMany({
     where: {
       ratedBy: { id: userId },
       rateableId,
@@ -106,7 +106,7 @@ const getRatingByUserId = async (userId, rateableId) => {
 };
 
 const getRatingByRateableId = async (rateableId) => {
-  return await prisma.rating.findMany({
+  return prisma.rating.findMany({
     where: {
       rateableId,
     },
@@ -114,7 +114,7 @@ const getRatingByRateableId = async (rateableId) => {
 };
 
 const getRatingByRateableType = async (rateableType) => {
-  return await prisma.rating.findMany({
+  return prisma.rating.findMany({
     where: {
       rateableType,
     },

@@ -5,7 +5,7 @@ const ApiError = require('../utils/ApiError');
 const { recalculateUserLeague } = require('./badges.service');
 
 const createAnswer = async (answerBody, userId, questionId) => {
-  return await prisma.answer.create({
+  return prisma.answer.create({
     data: {
       ...answerBody,
       user: {
@@ -19,7 +19,7 @@ const createAnswer = async (answerBody, userId, questionId) => {
 };
 
 const queryAnswers = async (filter, options) => {
-  return await prisma.answer.findMany({
+  return prisma.answer.findMany({
     where: filter,
     take: options.limit,
     skip: options.skip,
@@ -48,7 +48,7 @@ const getAnswerById = async (answerId) => {
 };
 
 const getAnswersByQuestionId = async (questionId) => {
-  return await prisma.answer.findMany({
+  return prisma.answer.findMany({
     where: { questionId },
     include: {
       user: true,
@@ -82,7 +82,6 @@ const deleteAnswerById = async (answerId) => {
 
   await prisma.$transaction([
     prisma.rating.deleteMany({ where: { rateableId: answerId } }),
-    prisma.report.deleteMany({ where: { reportableId: answerId } }),
     prisma.answer.delete({ where: { id: answerId } }),
   ]);
 

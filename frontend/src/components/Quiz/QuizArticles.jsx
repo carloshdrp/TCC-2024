@@ -319,8 +319,12 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
         <p className="mt-1">
           Seja o primeiro a criar um questionário para esta matéria! 😉
         </p>
+      ) : menuTab === "Descobrir" ? (
+        <p>Não existe nenhum questionário cadastrado na plataforma 😢</p>
       ) : (
-        <p>Não foi possível encontrar um questionário nessa categoria 😢</p>
+        <p className="mt-2">
+          Não foi possível encontrar um questionário nessa categoria 😢
+        </p>
       );
     }
   }

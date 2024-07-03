@@ -1,28 +1,27 @@
 const Joi = require('joi');
-const { objectId } = require('./custom.validation');
 
 const createQuizQuestionAnswer = {
   body: Joi.object().keys({
     choice: Joi.string().required(),
   }),
   query: Joi.object().keys({
-    questionId: Joi.string().required().custom(objectId),
-    attemptId: Joi.string().required().custom(objectId),
+    questionId: Joi.string().required(),
+    attemptId: Joi.string().required(),
   }),
 };
 
 const getQuizQuestionAnswers = {
   query: Joi.object().keys({
-    questionId: Joi.string().custom(objectId),
-    userId: Joi.string().custom(objectId),
+    questionId: Joi.string(),
+    userId: Joi.string(),
     choice: Joi.string(),
-    attemptId: Joi.string().custom(objectId),
+    attemptId: Joi.string(),
   }),
 };
 
 const deleteQuizQuestionAnswer = {
   params: Joi.object().keys({
-    quizQuestionAnswerId: Joi.string().custom(objectId),
+    quizQuestionAnswerId: Joi.string(),
   }),
 };
 

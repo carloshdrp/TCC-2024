@@ -26,10 +26,10 @@ export const ForumTrendingTopics = () => {
       </Spin>
     );
   } else if (questionError) {
-    content = <p>Erro: {questionError}</p>;
+    content = <p>Erro</p>;
   } else if (questionsData) {
     const tagCounts = questionsData.reduce((counts, question) => {
-      const tagName = question.tag.name;
+      const tagName = question.tag;
       if (!counts[tagName]) {
         counts[tagName] = 0;
       }

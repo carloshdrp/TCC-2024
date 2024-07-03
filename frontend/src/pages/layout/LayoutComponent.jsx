@@ -1,4 +1,4 @@
-import { Avatar, Layout, Typography } from "antd";
+import { Avatar, Layout, Spin, Typography } from "antd";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "../../styles/layout.css";
 import { motion } from "framer-motion";
@@ -37,6 +37,10 @@ const LayoutComponent = ({ children, quizName }) => {
       document.title = `${quizName} - ${APP_NAME}`;
     }
   }, [location, quizName]);
+
+  if (!children) {
+    return <Spin fullscreen />;
+  }
 
   return (
     <Layout>

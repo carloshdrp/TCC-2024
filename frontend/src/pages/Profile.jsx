@@ -16,7 +16,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Avatar, Button, Modal, notification, Spin } from "antd";
+import { Avatar, Button, Modal, notification, Spin, Table } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import ProfileForumActivities from "../components/Profile/ProfileForumActivities.jsx";
 
@@ -26,8 +26,10 @@ import { QuickAccess } from "../components/Profile/QuickAccess.jsx";
 import { API_AVATAR } from "../config/index.js";
 import { useEffect } from "react";
 import { useDeleteAvatarMutation } from "../api/slices/avatarApiSlice.js";
+import { useGetReportsByUserIdQuery } from "../api/slices/reportApiSlice.js";
 import QuizActivities from "../components/Profile/QuizActivities.jsx";
 import CountUp from "react-countup";
+import renderStatusBadge from "../components/Manage/RenderStatusBadge.jsx";
 
 const { confirm } = Modal;
 
@@ -38,6 +40,56 @@ function Profile() {
     { name: "Esmeralda", moreThan: 20, nextLeague: "Ametista" },
     { name: "Ametista", moreThan: 30, nextLeague: "Diamante" },
     { name: "Diamante", moreThan: 40, nextLeague: null },
+  ];
+
+  const columns = [
+    {
+      title: "Tipo",
+      dataIndex: "reportableType",
+      key: "reportableType",
+      render: (reportableType) =>
+        reportableType === "QUESTION"
+          ? "Pergunta"
+          : reportableType === "ANSWER"
+            ? "Resposta"
+            : reportableType === "QUIZ"
+              ? "Quiz"
+              : reportableType,
+    },
+    {
+      title: "Motivo",
+      dataIndex: "reason",
+      key: "reason",
+      render: (reason) =>
+        reason === "SPAM"
+          ? "Spam"
+          : reason === "INAPROPRIADO"
+            ? "Conteúdo inapropriado"
+            : reason === "OFENSIVO"
+              ? "Conteúdo ofensivo"
+              : reason === "LINKS"
+                ? "Links"
+                : "Outro",
+    },
+    {
+      title: "Descrição",
+      dataIndex: "description",
+      key: "description",
+      render: (description) => description || "Não fornecida",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => renderStatusBadge(status),
+    },
+    {
+      title: "Retorno",
+      dataIndex: "message",
+      key: "message",
+      render: (message, record) =>
+        record.status ? message || "Não fornecido" : "-",
+    },
   ];
 
   const user = useSelector(selectCurrentUser);
@@ -53,6 +105,20 @@ function Profile() {
   const { data: likeCount } = useGetLikeCountQuery(user?.id, {
     skip: !user,
   });
+
+  const {
+    data: userReports,
+    isLoading: isUserReportsLoading,
+    refetch: refetchReports,
+  } = useGetReportsByUserIdQuery(user?.id, {
+    skip: !user,
+  });
+
+  useEffect(() => {
+    if (user) {
+      refetchReports();
+    }
+  }, [refetchReports]);
 
   const navigate = useNavigate();
 
@@ -218,7 +284,7 @@ function Profile() {
           </span>
         </h2>
         <h2 className="text-text m-0 mt-4" id="conquistas">
-          Suas conquistas
+          Minhas conquistas
         </h2>
         <div className="grid items-center justify-center w-full grid-flow-col bg-white rounded-lg min-h-32">
           <div className="flex flex-col items-center justify-center p-2">
@@ -240,6 +306,23 @@ function Profile() {
             <QuizActivities userId={user?.id} />
           </div>
         </div>
+
+        <h2 className="text-text m-0 mt-4">Minhas denúncias:</h2>
+        {isUserReportsLoading ? (
+          <Spin />
+        ) : userReports?.length > 0 ? (
+          <Table
+            dataSource={userReports}
+            columns={columns}
+            rowKey="id"
+            pagination={{
+              pageSize: 4,
+              showSizeChanger: false,
+            }}
+          />
+        ) : (
+          <p>Você não realizou nenhuma denúncia.</p>
+        )}
 
         <h2 className="text-text m-0 mt-4">Acesso rápido</h2>
         <QuickAccess />

@@ -11,6 +11,11 @@ export const reportApiSlice = apiSlice.injectEndpoints({
         return `/reports?${params}`;
       },
     }),
+    getReportsByUserId: builder.query({
+      query: (userId) => {
+        return `/reports/user/${userId}`;
+      },
+    }),
     createReport: builder.mutation({
       query: (report) => ({
         url: "/reports",
@@ -18,11 +23,11 @@ export const reportApiSlice = apiSlice.injectEndpoints({
         body: report,
       }),
     }),
-    deleteReport: builder.mutation({
-      query: (reportId) => ({
-        url: `/reports`,
-        method: "DELETE",
-        body: { reportId },
+    updateReportStatus: builder.mutation({
+      query: ({ reportId, status, message }) => ({
+        url: `/reports/${reportId}`,
+        method: "PATCH",
+        body: { status, message },
       }),
     }),
   }),
@@ -30,6 +35,7 @@ export const reportApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetReportsQuery,
+  useGetReportsByUserIdQuery,
   useCreateReportMutation,
-  useDeleteReportMutation,
+  useUpdateReportStatusMutation,
 } = reportApiSlice;

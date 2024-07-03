@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const { Subject } = require('@prisma/client');
-const { objectId } = require('./custom.validation');
 
 const createQuiz = {
   body: Joi.object().keys({
@@ -15,7 +14,7 @@ const getQuizzes = {
   query: Joi.object().keys({
     title: Joi.string(),
     subject: Joi.string().valid(...Object.values(Subject)),
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string(),
     difficulty: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -25,26 +24,26 @@ const getQuizzes = {
 
 const getQuiz = {
   params: Joi.object().keys({
-    quizId: Joi.string().custom(objectId),
+    quizId: Joi.string(),
   }),
 };
 
 const updateQuiz = {
   params: Joi.object().keys({
-    quizId: Joi.required().custom(objectId),
+    quizId: Joi.required(),
   }),
   body: Joi.object().keys({
     title: Joi.string(),
     description: Joi.string(),
     subject: Joi.string().valid(...Object.values(Subject)),
     difficulty: Joi.string(),
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string(),
   }),
 };
 
 const deleteQuiz = {
   params: Joi.object().keys({
-    quizId: Joi.string().custom(objectId),
+    quizId: Joi.string(),
   }),
 };
 

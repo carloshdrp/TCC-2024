@@ -52,13 +52,12 @@ Table Question {
   id String [pk]
   title String [not null]
   description String [not null]
+  tag String [not null]
   locked Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
-  tag Tags [not null]
-  tagId String [not null]
   Answer Answer [not null]
 }
 
@@ -71,12 +70,6 @@ Table Answer {
   userId String [not null]
   question Question [not null]
   questionId String [not null]
-}
-
-Table Tags {
-  id String [pk]
-  name String [not null]
-  Question Question [not null]
 }
 
 Table Quiz {
@@ -148,6 +141,9 @@ Table Report {
   reportedBy User [not null]
   userId String [not null]
   reason Reason [not null]
+  description String
+  status ReportStatus [not null, default: 'PENDING']
+  message String
   reportableId String [not null]
   reportableType ReportableType [not null]
 }
@@ -212,6 +208,12 @@ Enum Subject {
   EDUCACAO_FISICA
 }
 
+Enum ReportStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 Enum ReportableType {
   QUESTION
   ANSWER
@@ -244,8 +246,6 @@ Ref: UserAchievements.userId > User.id
 Ref: UserAchievements.achievementId > Achievement.id
 
 Ref: Question.userId > User.id
-
-Ref: Question.tagId > Tags.id
 
 Ref: Answer.userId > User.id
 

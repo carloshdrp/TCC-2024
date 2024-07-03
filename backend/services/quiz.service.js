@@ -19,7 +19,6 @@ const queryQuizzes = async (filter, options) => {
     where: {
       title: {
         contains: filter.title,
-        mode: 'insensitive',
       },
       subject: {
         equals: filter.subject,
@@ -87,7 +86,6 @@ const deleteQuizById = async (quizId) => {
     prisma.quizAttempt.deleteMany({ where: { quizId } }),
     prisma.quizRelation.deleteMany({ where: { quizId } }),
     prisma.rating.deleteMany({ where: { rateableId: quizId } }),
-    prisma.report.deleteMany({ where: { reportableId: quizId } }),
     prisma.quizQuestion.deleteMany({ where: { quizId } }),
     prisma.quiz.delete({ where: { id: quizId } }),
   ]);

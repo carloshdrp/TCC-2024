@@ -2,11 +2,11 @@ import {
   useGetForumQuestionQuery,
   useUpdateForumQuestionMutation,
 } from "../api/slices/forumApiSlice";
-import { useGetTagsQuery } from "../api/slices/tagsApiSlice";
+import tags from "../utils/tags.json";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutComponent from "./layout/LayoutComponent";
-import { Form, Input, Button, Select, Spin, notification } from "antd";
-import { useState, useEffect } from "react";
+import { Button, Form, Input, notification, Select, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { MoveLeft } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../redux/slices/authSlice";
@@ -14,8 +14,7 @@ import { selectCurrentUser } from "../redux/slices/authSlice";
 const ForumQuestionEdit = () => {
   const [form] = Form.useForm();
   const { questionId } = useParams();
-  const { isLoading: tagsLoading, data: tags } = useGetTagsQuery();
-  const [tagId, setTagId] = useState(0);
+  const [tagName, setTagName] = useState(null);
   const userState = useSelector(selectCurrentUser);
   const [updateForumQuestion] = useUpdateForumQuestionMutation();
 
@@ -43,27 +42,23 @@ const ForumQuestionEdit = () => {
 
   let tagOptions = [];
 
-  if (!tagsLoading) {
-    tagOptions = Object.values(tags).map((tag) => {
-      return {
-        label: tag.name,
-        key: tag.id,
-        value: tag.name,
-      };
-    });
-  }
+  tagOptions = tags.map((tag) => {
+    return {
+      label: tag.name,
+      key: tag.id,
+      value: tag.name,
+    };
+  });
 
   const onFinish = async (values) => {
     try {
-      let defaultTagId = tagId;
+      values.tag = tagName ? tagName.label : questionData.data.tag;
 
-      if (tagId === 0) {
-        defaultTagId = questionData.data.tag.id;
-      }
-
-      values.tagId = defaultTagId;
-
-      await updateForumQuestion({ id: questionId, question: values });
+      await updateForumQuestion({
+        id: questionId,
+        question: values,
+        tag: values.tag,
+      });
 
       notification.success({
         message: "Pergunta editada com sucesso",
@@ -129,16 +124,17 @@ const ForumQuestionEdit = () => {
           </Form.Item>
 
           <Form.Item label="Categoria" required>
-            {!tagsLoading && (
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Tags"
-                showSearch
-                options={tagOptions}
-                defaultValue={questionData.data.tag.name}
-                onChange={(_, { key }) => setTagId(key)}
-              />
-            )}
+            <Select
+              style={{ width: "100%" }}
+              placeholder="Tags"
+              showSearch
+              options={tagOptions}
+              defaultValue={{
+                value: questionData.data.tag,
+              }}
+              labelInValue
+              onChange={(selectedOption) => setTagName(selectedOption)}
+            />
           </Form.Item>
           <Form.Item>
             <Button type="primary" className="w-full mt-2" htmlType="submit">

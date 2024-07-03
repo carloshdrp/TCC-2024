@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { password, objectId } = require('./custom.validation');
+const { password } = require('./custom.validation');
 
 const createUser = {
   body: Joi.object()
@@ -27,13 +27,13 @@ const getUsers = {
 
 const getUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string(),
   }),
 };
 
 const updateUser = {
   params: Joi.object().keys({
-    userId: Joi.required().custom(objectId).messages({
+    userId: Joi.required().messages({
       'any.required': 'O ID do usuário é obrigatório',
       'string.base': 'O ID do usuário deve ser uma string',
       'string.custom': 'O ID do usuário não é válido',
@@ -61,7 +61,7 @@ const updateUser = {
 
 const deleteUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string(),
   }),
 };
 

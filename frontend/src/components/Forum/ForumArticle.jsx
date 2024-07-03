@@ -55,7 +55,7 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
       </Spin>
     );
   } else if (questionError) {
-    content = <p>Erro: {questionError}</p>;
+    content = <p>Algo deu errado 😢</p>;
   } else if (questionsData) {
     if (questionsData.length > 0) {
       content = questionsData.map((question) => {
@@ -113,7 +113,7 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
 
               <div className="flex flex-row gap-1 ">
                 <span className="px-3 py-0.5 rounded-xl bg-text bg-opacity-15">
-                  {question.tag.name}
+                  {question.tag}
                 </span>
               </div>
               <div className="flex items-end justify-between text-text">

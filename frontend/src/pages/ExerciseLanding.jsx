@@ -115,7 +115,7 @@ const ExerciseLanding = () => {
     },
     {
       href: null,
-      title: quiz?.id,
+      title: quiz?.title,
     },
   ];
 
@@ -294,7 +294,7 @@ const ExerciseLanding = () => {
             <div className="flex items-center gap-1">
               <Rate disabled defaultValue={score} allowHalf />
               <p className="text-[#EABF28]">
-                {score === 0
+                {score === null
                   ? "N.A."
                   : score <= 1
                     ? "Muito Fácil"

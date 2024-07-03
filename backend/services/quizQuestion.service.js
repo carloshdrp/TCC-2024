@@ -4,7 +4,7 @@ const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 const createQuizQuestion = async (quizQuestionBody, quizId) => {
-  return await prisma.quizQuestion.create({
+  return prisma.quizQuestion.create({
     data: {
       ...quizQuestionBody,
       quiz: {
@@ -15,7 +15,7 @@ const createQuizQuestion = async (quizQuestionBody, quizId) => {
 };
 
 const queryQuizQuestions = async (filter, options) => {
-  return await prisma.quizQuestion.findMany({
+  return prisma.quizQuestion.findMany({
     where: {
       quizId: filter.quizId,
     },

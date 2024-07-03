@@ -1,8 +1,12 @@
-import { Avatar, Button, Drawer, notification, Spin, Table } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Avatar, Button, Drawer, Input, notification, Spin, Table } from "antd";
+import { Check, EyeIcon, UserRound, XIcon } from "lucide-react";
+
+import { useNavigate } from "react-router-dom";
+import { API_AVATAR } from "../../config/index.js";
 import {
-  useDeleteReportMutation,
   useGetReportsQuery,
+  useUpdateReportStatusMutation,
 } from "../../api/slices/reportApiSlice";
 import {
   useDeleteForumQuestionMutation,
@@ -17,13 +21,15 @@ import {
   useGetQuizQuery,
 } from "../../api/slices/quizApiSlice";
 import { useGetQuizQuestionsQuery } from "../../api/slices/quizQuestionApiSlice.js";
-import { EyeIcon, TrashIcon, UserRound, XIcon } from "lucide-react";
-import { API_AVATAR } from "../../config/index.js";
-import { useNavigate } from "react-router-dom";
+import renderStatusBadge from "./RenderStatusBadge.jsx";
 
 const Reports = () => {
-  const { data: reports, isLoading, refetch } = useGetReportsQuery();
-  const [deleteReport] = useDeleteReportMutation();
+  const {
+    data: reports,
+    isLoading,
+    refetch,
+  } = useGetReportsQuery({ sortBy: "desc" });
+  const [updateReportStatus] = useUpdateReportStatusMutation();
   const [deleteQuestion] = useDeleteForumQuestionMutation();
   const [deleteAnswer] = useDeleteAnswerMutation();
   const [deleteQuiz] = useDeleteQuizMutation();
@@ -31,6 +37,8 @@ const Reports = () => {
   const [selectedResourceId, setSelectedResourceId] = useState(null);
   const [selectedResourceType, setSelectedResourceType] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,123 +47,86 @@ const Reports = () => {
 
   const { data: question, isLoading: isQuestionLoading } =
     useGetForumQuestionQuery(selectedResourceId, {
-      skip: selectedResourceType !== "QUESTION",
+      skip:
+        selectedResourceType !== "QUESTION" ||
+        reports?.find((r) => r.id === selectedReport)?.status === "ACCEPTED",
     });
+
   const { data: answer, isLoading: isAnswerLoading } = useGetAnswerQuery(
     selectedResourceId,
     {
-      skip: selectedResourceType !== "ANSWER",
+      skip:
+        selectedResourceType !== "ANSWER" ||
+        reports?.find((r) => r.id === selectedReport)?.status === "ACCEPTED",
     },
   );
+
   const { data: quiz, isLoading: isQuizLoading } = useGetQuizQuery(
     selectedResourceId,
     {
-      skip: selectedResourceType !== "QUIZ",
+      skip:
+        selectedResourceType !== "QUIZ" ||
+        reports?.find((r) => r.id === selectedReport)?.status === "ACCEPTED",
     },
   );
 
   const { data: quizQuestions, isLoading: isQuizQuestionsLoading } =
     useGetQuizQuestionsQuery(
       { quizId: selectedResourceId },
-      {
-        skip: selectedResourceType !== "QUIZ",
-      },
+      { skip: selectedResourceType !== "QUIZ" },
     );
 
-  const handleViewResource = (reportableType, reportableId, reportId) => {
-    setSelectedResourceType(reportableType);
-    setSelectedResourceId(reportableId);
-    setSelectedReport(reportId);
-    setVisibleDrawer(true);
-  };
-
-  const handleDeleteResource = async (reportableType, reportableId) => {
-    if (reportableType === "QUESTION") {
-      try {
-        await deleteQuestion(reportableId);
-        await deleteReport(selectedReport);
-
-        notification.success({
-          message: "Pergunta deletada com sucesso!",
-          description: "A pergunta foi removida da plataforma.",
-        });
-      } catch (e) {
-        notification.error({
-          message: "Erro ao deletar pergunta!",
-        });
-      }
-    } else if (reportableType === "ANSWER") {
-      try {
-        await deleteAnswer(reportableId);
-        await deleteReport(selectedReport);
-
-        notification.success({
-          message: "Respostas deletada com sucesso!",
-          description: "A resposta foi removida da plataforma.",
-        });
-      } catch (e) {
-        notification.error({
-          message: "Erro ao deletar pergunta!",
-        });
-      }
-    } else if (reportableType === "QUIZ") {
-      try {
-        await deleteQuiz(reportableId);
-        await deleteReport(selectedReport);
-
-        notification.success({
-          message: "Questionário deletado com sucesso!",
-          description: "O questionário foi removido da plataforma.",
-        });
-      } catch (e) {
-        notification.error({
-          message: "Erro ao deletar questionário!",
-        });
-      }
-    }
-    refetch();
-    setVisibleDrawer(false);
-  };
-
-  const handleDeleteReport = async (reportId) => {
-    await deleteReport(reportId);
-    refetch();
-    setVisibleDrawer(false);
-    notification.success({
-      message: "Denúncia removida com sucesso!",
-      description: "O recurso denúnciado não foi deletado.",
-    });
-  };
-
-  const columns = [
-    {
-      title: "Motivo",
-      dataIndex: "reason",
-      key: "reason",
-      filters: [
+  const columnFilters = useMemo(
+    () => ({
+      reason: [
         { text: "Spam", value: "SPAM" },
         { text: "Conteúdo inapropriado", value: "INAPROPRIADO" },
         { text: "Conteúdo ofensivo", value: "OFENSIVO" },
         { text: "Divulgação", value: "LINKS" },
         { text: "Outro", value: "OUTRO" },
       ],
+      reportableType: [
+        { text: "Pergunta", value: "QUESTION" },
+        { text: "Resposta", value: "ANSWER" },
+        { text: "Quiz", value: "QUIZ" },
+      ],
+      status: [
+        { text: "Pendente", value: "PENDING" },
+        { text: "Aceita", value: "ACCEPTED" },
+        { text: "Rejeitada", value: "REJECTED" },
+      ],
+    }),
+    [],
+  );
+
+  const columns = [
+    {
+      title: "Motivo",
+      dataIndex: "reason",
+      key: "reason",
+      filters: columnFilters.reason,
       onFilter: (value, record) => record.reason === value,
+      render: (reason) =>
+        columnFilters.reason.find((filter) => filter.value === reason)?.text,
     },
     {
       title: "Tipo",
       dataIndex: "reportableType",
       key: "reportableType",
-      filters: [
-        { text: "Pergunta", value: "QUESTION" },
-        { text: "Resposta", value: "ANSWER" },
-        { text: "Quiz", value: "QUIZ" },
-      ],
+      filters: columnFilters.reportableType,
       onFilter: (value, record) => record.reportableType === value,
+      render: (reportableType) =>
+        columnFilters.reportableType.find(
+          (filter) => filter.value === reportableType,
+        )?.text,
     },
     {
-      title: "ID do recurso",
-      dataIndex: "reportableId",
-      key: "reportableId",
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      filters: columnFilters.status,
+      onFilter: (value, record) => record.status === value,
+      render: (status) => renderStatusBadge(status, columnFilters.status),
     },
     {
       title: "Denunciado por",
@@ -168,7 +139,7 @@ const Reports = () => {
       render: (_, report) => (
         <>
           <Button
-            className="flex items-center justify-center gap-2"
+            icon={<EyeIcon size={16} />}
             onClick={() =>
               handleViewResource(
                 report.reportableType,
@@ -177,186 +148,308 @@ const Reports = () => {
               )
             }
           >
-            <EyeIcon />
-            Analisar
+            Visualizar
           </Button>
         </>
       ),
     },
   ];
 
+  const handleViewResource = (reportableType, reportableId, reportId) => {
+    setSelectedResourceType(reportableType);
+    setSelectedResourceId(reportableId);
+    setSelectedReport(reportId);
+    setVisibleDrawer(true);
+  };
+
+  const handleUpdateReportStatus = async (reportId, status) => {
+    const updateData = {
+      reportId,
+      status,
+      message: feedbackMessage.trim().length > 0 ? feedbackMessage : undefined,
+    };
+
+    setIsActionLoading(true);
+    try {
+      await updateReportStatus(updateData);
+      notification.success({
+        message: "Status da denúncia atualizado com sucesso!",
+        description: "O usuário poderá acessar o retorno.",
+      });
+      refetch();
+      setVisibleDrawer(false);
+      setFeedbackMessage("");
+    } catch (e) {
+      notification.error({
+        message: "Erro ao atualizar o status da denúncia!",
+      });
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const deleteHandlers = {
+    QUESTION: deleteQuestion,
+    ANSWER: deleteAnswer,
+    QUIZ: deleteQuiz,
+  };
+
+  const handleDeleteResource = async (reportableType, reportableId) => {
+    const deleteHandler = deleteHandlers[reportableType];
+    if (deleteHandler) {
+      try {
+        await deleteHandler(reportableId);
+        await updateReportStatus({
+          reportId: selectedReport,
+          status: "ACCEPTED",
+        });
+        refetch();
+        setVisibleDrawer(false);
+      } catch (e) {
+        notification.error({
+          message: `Erro ao deletar ${reportableType.toLowerCase()}!`,
+        });
+      }
+    }
+  };
+
+  const resourceComponents = {
+    QUESTION: () => (
+      <>
+        {question ? (
+          <>
+            <div className="flex">
+              <Avatar
+                src={
+                  question.user?.avatar
+                    ? API_AVATAR + question.user.avatar
+                    : null
+                }
+                className="mr-1"
+                icon={
+                  question.user?.avatar ? null : (
+                    <UserRound size={20} strokeWidth={1.5} />
+                  )
+                }
+              />
+              <h3 className="m-0">
+                {question.user?.name || "Usuário desconhecido"}
+              </h3>
+            </div>
+
+            <p>Permissão: {question.user?.role || "N/A"}</p>
+            <p>Email: {question.user?.email || "N/A"}</p>
+
+            <h2 className="m-0 mt-2">Pergunta:</h2>
+
+            <p>{question.description || "Sem descrição"}</p>
+          </>
+        ) : (
+          <p>Pergunta não encontrada ou foi deletada.</p>
+        )}
+      </>
+    ),
+    ANSWER: () => (
+      <>
+        {answer ? (
+          <>
+            <div className="flex">
+              <Avatar
+                src={
+                  answer.user?.avatar ? API_AVATAR + answer.user.avatar : null
+                }
+                className="mr-1"
+                icon={
+                  answer.user?.avatar ? null : (
+                    <UserRound size={20} strokeWidth={1.5} />
+                  )
+                }
+              />
+              <h3 className="m-0">
+                {answer.user?.name || "Usuário desconhecido"}
+              </h3>
+            </div>
+            <p>Permissão: {answer.user?.role || "N/A"}</p>
+            <p>Email: {answer.user?.email || "N/A"}</p>
+            <h2 className="m-0 my-1">Resposta:</h2>
+            <p>{answer.description || "Sem descrição"}</p>
+          </>
+        ) : (
+          <p>Resposta não encontrada ou foi deletada.</p>
+        )}
+      </>
+    ),
+    QUIZ: () => (
+      <>
+        {quiz ? (
+          <>
+            <div className="flex">
+              <Avatar
+                src={quiz.user?.avatar ? API_AVATAR + quiz.user.avatar : null}
+                className="mr-1"
+                icon={
+                  quiz.user?.avatar ? null : (
+                    <UserRound size={20} strokeWidth={1.5} />
+                  )
+                }
+              />
+              <h3 className="m-0">
+                {quiz.user?.name || "Usuário desconhecido"}
+              </h3>
+            </div>
+            <p>Permissão: {quiz.user?.role || "N/A"}</p>
+            <p>Email: {quiz.user?.email || "N/A"}</p>
+
+            <h2 className="m-0 mt-2">Descrição do questionário:</h2>
+            <p>{quiz.description || "Sem descrição"}</p>
+            {quizQuestions && quizQuestions.length > 0 ? (
+              quizQuestions.map((question, index) => (
+                <div key={index} className="flex flex-col gap-1">
+                  <h3 className="m-0 mt-2">Questão {index + 1}</h3>
+                  <p>{question.description || "Sem descrição"}</p>
+                  <p className="bg-green-200 px-2 rounded">
+                    {question.correct || "N/A"}
+                  </p>
+                  <p className="bg-red-200 px-2 rounded">
+                    {question.wrong1 || "N/A"}
+                  </p>
+                  <p className="bg-red-200 px-2 rounded">
+                    {question.wrong2 || "N/A"}
+                  </p>
+                  <p className="bg-red-200 px-2 rounded">
+                    {question.wrong3 || "N/A"}
+                  </p>
+                  <p className="bg-red-200 px-2 rounded">
+                    {question.wrong4 || "N/A"}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>Nenhuma questão encontrada para este quiz.</p>
+            )}
+          </>
+        ) : (
+          <p>Quiz não encontrado ou foi deletado.</p>
+        )}
+      </>
+    ),
+  };
+
   return (
     <>
-      <Table dataSource={reports} loading={isLoading} columns={columns} />
+      <Table
+        columns={columns}
+        dataSource={reports}
+        loading={isLoading}
+        rowKey="id"
+      />
       <Drawer
-        title="Analisar denúncia"
+        title="Detalhes da Denúncia"
         placement="right"
-        size="large"
         onClose={() => setVisibleDrawer(false)}
         open={visibleDrawer}
+        width={500}
       >
-        {selectedResourceType === "QUESTION" && (
-          <Spin
-            spinning={isQuestionLoading}
-            tip="Carregando dados..."
-            className="bg-white rounded-lg"
-          >
-            {question && (
-              <div>
-                <h2 className="m-0">
-                  <Avatar
-                    shape="circle"
-                    size={32}
-                    src={
-                      question.user.avatar
-                        ? API_AVATAR + question.user.avatar
-                        : undefined
-                    }
-                    icon={
-                      question.user.avatar ? undefined : (
-                        <UserRound size={40} strokeWidth={1.5} />
-                      )
-                    }
-                  />
-                  {question.user.name}
-                </h2>
-                <div className="mb-2 opacity-80 text-sm">
-                  <p>Permissão: {question.user.role}</p>
-                  <p>Email: {question.user.email}</p>
-                </div>
-                <div className="w-full bg-black h-0.5 my-2 rounded-full opacity-15" />
+        {isQuestionLoading ||
+        isAnswerLoading ||
+        isQuizLoading ||
+        isQuizQuestionsLoading ? (
+          <Spin />
+        ) : (
+          <>
+            {selectedReport &&
+              reports &&
+              reports?.find((r) => r.id === selectedReport)?.status !==
+                "ACCEPTED" && (
+                <>
+                  {resourceComponents[selectedResourceType] &&
+                    resourceComponents[selectedResourceType]()}
+                </>
+              )}
+            {reports?.find((r) => r.id === selectedReport)?.status ===
+              "ACCEPTED" && <p className="line-through">Recurso removido</p>}
+            <h2 className="m-0 my-1">Informações da denúncia</h2>
+            <p>
+              <p>
+                <strong>Motivo:</strong>{" "}
+                {selectedReport &&
+                  reports &&
+                  columnFilters.reason.find(
+                    (filter) =>
+                      filter.value ===
+                      reports.find((r) => r.id === selectedReport)?.reason,
+                  )?.text}
+              </p>
+              <p>
+                <strong>Descrição:</strong>{" "}
+                {selectedReport &&
+                  reports &&
+                  (reports.find((r) => r.id === selectedReport)?.description ||
+                    "Não fornecida")}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                {selectedReport &&
+                  reports &&
+                  columnFilters.status.find(
+                    (filter) =>
+                      filter.value ===
+                      reports.find((r) => r.id === selectedReport)?.status,
+                  )?.text}
+              </p>
+              <p>
+                <strong>Retorno ao denunciante:</strong>{" "}
+                {selectedReport &&
+                  reports &&
+                  reports.find((r) => r.id === selectedReport)?.status ===
+                    "ACCEPTED" &&
+                  (reports.find((r) => r.id === selectedReport)?.message ||
+                    "Não fornecido")}
+              </p>
+            </p>
 
-                <h2 className="m-0">{question.title}</h2>
-                <p>{question.description}</p>
-              </div>
-            )}
-          </Spin>
-        )}
-        {selectedResourceType === "ANSWER" && (
-          <Spin
-            spinning={isAnswerLoading}
-            tip="Carregando dados..."
-            className="bg-white rounded-lg"
-          >
-            {answer && (
-              <div>
-                <h2 className="m-0">
-                  <Avatar
-                    shape="circle"
-                    size={32}
-                    src={
-                      answer.user.avatar
-                        ? API_AVATAR + answer.user.avatar
-                        : undefined
-                    }
-                    icon={
-                      answer.user.avatar ? undefined : (
-                        <UserRound size={40} strokeWidth={1.5} />
-                      )
-                    }
+            {selectedReport &&
+              reports &&
+              reports?.find((r) => r.id === selectedReport)?.status ===
+                "PENDING" && (
+                <>
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Escreva aqui (opcional)"
+                    rootClassName="mt-2"
+                    value={feedbackMessage}
+                    onChange={(e) => setFeedbackMessage(e.target.value)}
                   />
-                  {answer.user.name}
-                </h2>
-                <div className="mb-2 opacity-80 text-sm">
-                  <p>Permissão: {answer.user.role}</p>
-                  <p>Email: {answer.user.email}</p>
-                </div>
-                <div className="w-full bg-black h-0.5 my-2 rounded-full opacity-15" />
-
-                <p className="mb-1 text-lg">{answer.description}</p>
-                <Button
-                  type="link"
-                  className="p-0"
-                  onClick={() => navigate("/forum/" + answer.question.id)}
-                >
-                  Acessar pergunta
-                </Button>
-              </div>
-            )}
-          </Spin>
+                  <div className="flex w-full items-center justify-between mt-2 gap-2">
+                    <Button
+                      className="flex gap-2 items-center w-full"
+                      onClick={() =>
+                        handleDeleteResource(
+                          selectedResourceType,
+                          selectedResourceId,
+                        )
+                      }
+                      loading={isActionLoading}
+                      icon={<Check size={16} />}
+                      danger
+                      type="primary"
+                    >
+                      Aceitar
+                    </Button>
+                    <Button
+                      className="flex gap-2 items-center w-full"
+                      onClick={() =>
+                        handleUpdateReportStatus(selectedReport, "REJECTED")
+                      }
+                      icon={<XIcon size={16} />}
+                    >
+                      Rejeitar
+                    </Button>
+                  </div>
+                </>
+              )}
+          </>
         )}
-        {selectedResourceType === "QUIZ" && (
-          <Spin
-            spinning={isQuizLoading || isQuizQuestionsLoading}
-            tip="Carregando dados..."
-            className="bg-white rounded-lg"
-          >
-            {quiz && (
-              <div>
-                <h2 className="m-0">
-                  <Avatar
-                    shape="circle"
-                    size={32}
-                    src={
-                      quiz.user.avatar
-                        ? API_AVATAR + quiz.user.avatar
-                        : undefined
-                    }
-                    icon={
-                      quiz.user.avatar ? undefined : (
-                        <UserRound size={40} strokeWidth={1.5} />
-                      )
-                    }
-                  />
-                  {quiz.user.name}
-                </h2>
-                <div className="mb-2 opacity-80 text-sm">
-                  <p>Permissão: {quiz.user.role}</p>
-                  <p>Email: {quiz.user.email}</p>
-                </div>
-                <div className="w-full bg-black h-0.5 my-2 rounded-full opacity-15" />
-                <h2 className="m-0">{quiz.title}</h2>
-                <p>{quiz.description}</p>
-                <div className="w-full bg-black h-0.5 my-2 rounded-full opacity-15" />
-                {quizQuestions &&
-                  quizQuestions.map((question) => (
-                    <div key={question.id}>
-                      <h4 className="m-0 mt-3 text-wrap">
-                        {question.description}
-                      </h4>
-                      <ul className="m-0">
-                        <li className="bg-green-200 px-1 rounded">
-                          Resposta correta: {question.correct}
-                        </li>
-                        <li className="bg-red-200 px-1 rounded">
-                          Incorreta 1: {question.wrong1}
-                        </li>
-                        <li className="bg-red-200 px-1 rounded">
-                          Incorreta 2: {question.wrong2}
-                        </li>
-                        <li className="bg-red-200 px-1 rounded">
-                          Incorreta 3: {question.wrong3}
-                        </li>
-                        <li className="bg-red-200 px-1 rounded">
-                          Incorreta 4: {question.wrong4}
-                        </li>
-                      </ul>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </Spin>
-        )}
-        <div className="flex flex-col gap-2 mt-10">
-          <Button
-            type="primary"
-            danger
-            className="flex items-center justify-center gap-2"
-            onClick={() =>
-              handleDeleteResource(selectedResourceType, selectedResourceId)
-            }
-          >
-            <TrashIcon />
-            Deletar recurso
-          </Button>
-          <Button
-            onClick={() => handleDeleteReport(selectedReport)}
-            className="flex items-center justify-center gap-2"
-            danger
-          >
-            <XIcon /> Remover denúncia
-          </Button>
-        </div>
       </Drawer>
     </>
   );

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,7 +7,7 @@ generator dbml {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,8 +18,8 @@ enum Role {
 }
 
 model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  email    String  @unique
+  id       String  @id @default(cuid())
+  email    String  @unique @db.VarChar(255)
   name     String
   password String
   role     Role    @default(INICIANTE)
@@ -46,7 +43,6 @@ model User {
   QuizAttempt        QuizAttempt[]
 }
 
-// Gamificação:
 enum League {
   Topaz
   Rubi
@@ -56,20 +52,20 @@ enum League {
 }
 
 model Achievement {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(cuid())
 
   title       String
   image       String
-  description String
+  description String @db.Text
   goal        Int
 
   UserAchievements UserAchievements[]
 }
 
 model UserAchievements {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String @db.ObjectId
-  achievementId String @db.ObjectId
+  id            String @id @default(cuid())
+  userId        String
+  achievementId String
 
   progress  Int     @default(0)
   completed Boolean @default(false)
@@ -80,11 +76,11 @@ model UserAchievements {
   @@unique([userId, achievementId])
 }
 
-// Fórum:
 model Question {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @default(cuid())
   title       String
-  description String
+  description String @db.Text
+  tag         String
 
   locked Boolean @default(false)
 
@@ -92,46 +88,36 @@ model Question {
   updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
-
-  tag   Tags   @relation(fields: [tagId], references: [id])
-  tagId String @db.ObjectId
+  userId String
 
   Answer Answer[]
 }
 
 model Answer {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  description String
+  id          String @id @default(cuid())
+  description String @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  userId String
 
   question   Question @relation(fields: [questionId], references: [id])
-  questionId String   @db.ObjectId
+  questionId String
 }
 
-model Tags {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  Question Question[]
-}
-
-// Questionário:
 model Quiz {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(cuid())
   title       String
-  description String
+  description String  @db.Text
   subject     Subject
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  userId String
 
   Question     quizQuestion[]
   QuizRelation quizRelation[]
@@ -139,9 +125,9 @@ model Quiz {
 }
 
 model quizRelation {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  quizId String @db.ObjectId
-  userId String @db.ObjectId
+  id     String @id @default(cuid())
+  quizId String
+  userId String
 
   completed Boolean @default(false)
 
@@ -152,8 +138,8 @@ model quizRelation {
 }
 
 model quizQuestion {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  description String
+  id          String @id @default(cuid())
+  description String @db.Text
   correct     String
   wrong1      String
   wrong2      String
@@ -161,18 +147,18 @@ model quizQuestion {
   wrong4      String
 
   quiz               Quiz                 @relation(fields: [quizId], references: [id])
-  quizId             String               @db.ObjectId
+  quizId             String
   QuizQuestionAnswer QuizQuestionAnswer[]
 }
 
 model QuizQuestionAnswer {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(cuid())
 
   choice Choice
 
-  quizQuestionId String @db.ObjectId
-  userId         String @db.ObjectId
-  quizAttemptId  String @db.ObjectId
+  quizQuestionId String
+  userId         String
+  quizAttemptId  String
 
   quizQuestion quizQuestion @relation(fields: [quizQuestionId], references: [id])
   user         User         @relation(fields: [userId], references: [id])
@@ -180,13 +166,13 @@ model QuizQuestionAnswer {
 }
 
 model QuizAttempt {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(cuid())
 
   quiz Quiz @relation(fields: [quizId], references: [id])
   user User @relation(fields: [userId], references: [id])
 
-  quizId String @db.ObjectId
-  userId String @db.ObjectId
+  quizId String
+  userId String
 
   score Int?
 
@@ -218,22 +204,31 @@ enum Subject {
   EDUCACAO_FISICA
 }
 
-// Denúncias:
 model Report {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   reportedBy User   @relation(fields: [userId], references: [id])
-  userId     String @db.ObjectId
+  userId     String
 
-  reason Reason
+  reason      Reason
+  description String?
 
-  reportableId   String         @db.ObjectId
+  status  ReportStatus @default(PENDING)
+  message String?
+
+  reportableId   String
   reportableType ReportableType
 
   @@index([reportableId, reportableType])
+}
+
+enum ReportStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 enum ReportableType {
@@ -250,15 +245,14 @@ enum Reason {
   OUTRO
 }
 
-// Avaliações:
 model Rating {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ratedBy   User     @relation(fields: [userId], references: [id])
-  userId    String   @db.ObjectId
+  userId    String
 
-  rateableId   String       @db.ObjectId
+  rateableId   String
   rateableType RateableType
 
   @@index([rateableId, rateableType])
@@ -270,17 +264,16 @@ enum RateableType {
   QUIZ
 }
 
-// Autenticação:
 model Token {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  token       String    @unique
+  id          String    @id @default(uuid())
+  token       String    @unique(length: 255) @db.Text
   type        TokenType
   expires     DateTime
   blackListed Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String    @db.ObjectId
+  userId      String
 
   @@index([userId])
 }

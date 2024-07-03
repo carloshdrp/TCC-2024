@@ -4,28 +4,24 @@ const { prisma } = require('../config/database');
 const ApiError = require('../utils/ApiError');
 const { recalculateUserLeague } = require('./badges.service');
 
-const createQuestion = async (questionBody, authorId, tagId) => {
-  return await prisma.question.create({
+const createQuestion = async (questionBody, authorId) => {
+  return prisma.question.create({
     data: {
       ...questionBody,
       user: {
         connect: { id: authorId },
-      },
-      tag: {
-        connect: { id: tagId },
       },
     },
   });
 };
 
 const queryQuestions = async (filter, options) => {
-  return await prisma.question.findMany({
+  return prisma.question.findMany({
     where: {
       title: {
         contains: filter.title,
-        mode: 'insensitive',
       },
-      tag: { name: filter.tagName },
+      tag: filter.tagName,
       user: {
         id: filter.userId,
       },
@@ -35,7 +31,6 @@ const queryQuestions = async (filter, options) => {
     orderBy: { createdAt: options.sortBy },
     include: {
       Answer: true,
-      tag: true,
       user: true,
     },
   });
@@ -46,7 +41,6 @@ const getQuestionById = async (questionId) => {
     where: { id: questionId },
     include: {
       Answer: true,
-      tag: true,
       user: true,
     },
   });
@@ -63,10 +57,6 @@ const updateQuestionById = async (userId, questionId, updateBody) => {
   const user = await prisma.user.findFirst({
     where: { id: userId },
   });
-
-  if (!user || question.userId !== userId) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Você não tem permissão para acessar este recurso!');
-  }
 
   if (question.locked && user.role !== 'ADMIN') {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Esta pergunta já foi respondida e não pode ser modificada.');
@@ -91,7 +81,6 @@ const deleteQuestionById = async (questionId) => {
   await prisma.$transaction([
     prisma.answer.deleteMany({ where: { questionId } }),
     prisma.rating.deleteMany({ where: { rateableId: questionId } }),
-    prisma.report.deleteMany({ where: { reportableId: questionId } }),
     prisma.question.delete({ where: { id: questionId } }),
   ]);
 

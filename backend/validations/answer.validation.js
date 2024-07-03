@@ -1,10 +1,9 @@
 const Joi = require('joi');
-const { objectId } = require('./custom.validation');
 
 const createAnswer = {
   body: Joi.object().keys({
     description: Joi.string().required(),
-    questionId: Joi.string().custom(objectId),
+    questionId: Joi.string(),
   }),
 };
 
@@ -19,19 +18,19 @@ const getAnswers = {
 
 const getAnswer = {
   params: Joi.object().keys({
-    answerId: Joi.string().custom(objectId),
+    answerId: Joi.string(),
   }),
 };
 
 const getAnswersByQuestionId = {
   params: Joi.object().keys({
-    questionId: Joi.string().custom(objectId),
+    questionId: Joi.string(),
   }),
 };
 
 const updateAnswer = {
   params: Joi.object().keys({
-    answerId: Joi.required().custom(objectId),
+    answerId: Joi.required(),
   }),
   body: Joi.object().keys({
     description: Joi.string(),
@@ -40,7 +39,7 @@ const updateAnswer = {
 
 const deleteAnswer = {
   params: Joi.object().keys({
-    answerId: Joi.string().custom(objectId),
+    answerId: Joi.string(),
   }),
 };
 

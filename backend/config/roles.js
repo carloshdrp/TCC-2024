@@ -1,7 +1,16 @@
 const allRoles = {
   INICIANTE: [],
   ESTUDIOSO: ['manageAnswers'],
-  ADMIN: ['getUsers', 'manageUsers', 'manageQuestions', 'manageComments', 'manageTags', 'managePoints', 'manageReports'],
+  ADMIN: [
+    'getUsers',
+    'manageUsers',
+    'manageQuizzes',
+    'manageQuestions',
+    'manageComments',
+    'manageTags',
+    'managePoints',
+    'manageReports',
+  ],
 };
 
 const roles = Object.keys(allRoles);

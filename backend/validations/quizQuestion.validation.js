@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const { objectId } = require('./custom.validation');
 
 const createQuizQuestion = {
   body: Joi.object().keys({
@@ -11,26 +10,26 @@ const createQuizQuestion = {
     wrong4: Joi.string().required(),
   }),
   query: Joi.object().keys({
-    quizId: Joi.string().required().custom(objectId),
+    quizId: Joi.string().required(),
   }),
 };
 
 const getQuizQuestions = {
   query: Joi.object().keys({
-    quizId: Joi.string().required().custom(objectId),
+    quizId: Joi.string().required(),
   }),
 };
 
 const getQuizQuestion = {
   params: Joi.object().keys({
-    quizQuestionId: Joi.string().required().custom(objectId),
+    quizQuestionId: Joi.string().required(),
   }),
 };
 
 const updateQuizQuestion = {
   query: Joi.object().keys({
-    quizId: Joi.string().required().custom(objectId),
-    quizQuestionId: Joi.string().required().custom(objectId),
+    quizId: Joi.string().required(),
+    quizQuestionId: Joi.string().required(),
   }),
   body: Joi.object().keys({
     description: Joi.string(),
@@ -44,8 +43,8 @@ const updateQuizQuestion = {
 
 const deleteQuizQuestion = {
   query: Joi.object().keys({
-    quizId: Joi.string().required().custom(objectId),
-    quizQuestionId: Joi.string().required().custom(objectId),
+    quizId: Joi.string().required(),
+    quizQuestionId: Joi.string().required(),
   }),
 };
 
