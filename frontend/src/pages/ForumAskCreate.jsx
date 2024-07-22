@@ -21,7 +21,7 @@ import tags from "../utils/tags.json";
 export const ForumAskCreate = () => {
   const [form] = Form.useForm();
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [tagId, setTagId] = useState(0);
+  const [selectedTag, setSelectedTag] = useState(tags[0].name);
   const [createForumQuestion, { isLoading }] = useCreateForumQuestionMutation();
 
   const userState = useSelector(selectCurrentUser);
@@ -62,13 +62,7 @@ export const ForumAskCreate = () => {
 
   const onFinish = async (values) => {
     try {
-      let defaultTagId = tagId;
-
-      if (tagId === 0) {
-        defaultTagId = tagOptions[0].value;
-      }
-
-      values.tag = defaultTagId;
+      values.tag = selectedTag;
 
       console.log(values);
 
@@ -161,7 +155,7 @@ export const ForumAskCreate = () => {
             showSearch
             options={tagOptions}
             defaultValue={tagOptions[0].value}
-            onChange={(_, { key }) => setTagId(key)}
+            onChange={(value) => setSelectedTag(value)}
           />
         </Form.Item>
         <Form.Item>

@@ -10,7 +10,12 @@ const router = express.Router();
 router
   .route('/')
   .get(quizController.getQuizzes)
-  .post(validate(quizValidation.createQuiz), auth(), pointsMiddleware.setPoints('createQuiz'), quizController.createQuiz);
+  .post(
+    validate(quizValidation.createQuiz),
+    auth('createQuiz'),
+    pointsMiddleware.setPoints('createQuiz'),
+    quizController.createQuiz,
+  );
 
 router
   .route('/feedback/')

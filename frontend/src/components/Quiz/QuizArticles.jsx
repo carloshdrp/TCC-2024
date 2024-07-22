@@ -223,13 +223,19 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
         return (
           <article
             key={quiz.id}
-            className="flex flex-col gap-[5px] px-[10px] py-[5px] text-text my-[5px]"
+            className="flex flex-col gap-[5px] px-[10px] py-[5px] text-text my-3 hover:bg-background transition-all rounded-[10px] cursor-pointer"
+            onClick={(e) => {
+              if (
+                e.target.closest(".ant-dropdown-trigger") ||
+                e.target.closest(".ant-dropdown-menu")
+              ) {
+                return;
+              }
+              navigate(`/exercise/${quiz.id}`);
+            }}
           >
             <div className="flex justify-between">
-              <h2
-                className=" font-medium text-[20px] m-0 cursor-pointer hover:underline"
-                onClick={() => navigate(`/exercise/${quiz.id}`)}
-              >
+              <h2 className=" font-medium text-[20px] m-0 cursor-pointer">
                 {quiz.title}
               </h2>
               {userState && quiz.user.id === userState.id && (
@@ -239,8 +245,9 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
                   }}
                   trigger={["click"]}
                   className="cursor-pointer"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <EllipsisOutlined className="px-2 text-xl rounded-md text-text hover:bg-background " />
+                  <EllipsisOutlined className="px-2 text-xl rounded-md text-text hover:bg-white transition-all " />
                 </Dropdown>
               )}
             </div>

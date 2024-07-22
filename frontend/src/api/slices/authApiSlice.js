@@ -17,13 +17,20 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: { ...loginData, stayConnected },
       }),
     }),
-
     logoutUser: builder.mutation({
       query: (refreshToken) => ({
         url: "/auth/logout",
         method: "POST",
         body: { refreshToken },
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(logoutUser());
+        } catch (error) {
+          throw new Error("Erro logout user: " + error.message);
+        }
+      },
     }),
     refreshTokens: builder.mutation({
       query: (refreshToken) => ({

@@ -3,7 +3,7 @@ import { authApiSlice } from "../../api/slices/authApiSlice.js";
 
 const initialState = {
   user: null,
-  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: "idle",
   error: null,
   accessToken: null,
   refreshToken: null,
@@ -25,17 +25,11 @@ const authSlice = createSlice({
       if (action.payload) {
         state.user = { ...state.user, ...action.payload };
       } else {
-        state.user = null;
-        state.accessToken = null;
-        state.refreshToken = null;
-        state.stayConnected = null;
+        Object.assign(state, initialState);
       }
     },
     logoutUser(state) {
-      state.user = null;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.stayConnected = null;
+      Object.assign(state, initialState);
     },
     clearAuthError(state) {
       state.error = null;

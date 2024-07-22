@@ -1,5 +1,7 @@
 const { prisma } = require('../config/database');
 const badgesConfig = require('../config/badges');
+const { getUserSocket } = require('../socketManager');
+const { createNotification } = require('./notification.service');
 
 const badgeProgress = async (ownerId) => {
   const [questionRatings, answerRatings, quizRatings] = await Promise.all([
@@ -75,6 +77,24 @@ const updateUserLeague = async (userId, newLeague) => {
       where: { id: userId },
       data: updates,
     });
+
+    const leagueOrder = Object.keys(badgesConfig.leagues);
+    const oldLeagueIndex = leagueOrder.indexOf(user.league);
+    const newLeagueIndex = leagueOrder.indexOf(newLeague);
+
+    let message;
+    if (newLeagueIndex > oldLeagueIndex) {
+      message = `Parabéns! Você foi promovido para a liga "${newLeague}"`;
+    } else {
+      message = `Você foi movido para a liga "${newLeague}"`;
+    }
+
+    const notification = await createNotification(userId, message, 'league-change', '/profile');
+
+    const userSocket = getUserSocket(userId);
+    if (userSocket) {
+      userSocket.emit('newNotification', notification);
+    }
   }
 };
 

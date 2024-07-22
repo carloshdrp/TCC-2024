@@ -1,12 +1,15 @@
 const allRoles = {
   INICIANTE: [],
-  ESTUDIOSO: ['manageAnswers'],
+  ESTUDIOSO: ['createAnswer', 'createQuiz'],
   ADMIN: [
     'getUsers',
+    'createQuiz',
+    'createAnswer',
     'manageUsers',
     'manageQuizzes',
     'manageQuestions',
     'manageComments',
+    'manageAnswers',
     'manageTags',
     'managePoints',
     'manageReports',

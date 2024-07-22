@@ -24,6 +24,7 @@ import Manage from "./pages/Manage.jsx";
 import About from "./pages/About.jsx";
 import { ConfigProvider } from "antd";
 import theme from "./styles/theme.json";
+import AntDesignShowcase from "./pages/DesignSystem.jsx";
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/design-system" element={<AntDesignShowcase />} />
 
           <Route path="*" element={<NotFound />} />
 

@@ -57,7 +57,7 @@ function Home() {
           </motion.span>
         </h2>
         <p className="text-lg  w-[620px] z-10 my-0">
-          Fóruns por competências, questionários e desafios à sua disposição!
+          Fórum por competências, questionários e desafios à sua disposição!
           Aprenda, colabore e evolua em uma comunidade de estudantes.
         </p>
         <motion.div

@@ -198,11 +198,11 @@ const Reports = () => {
     const deleteHandler = deleteHandlers[reportableType];
     if (deleteHandler) {
       try {
-        await deleteHandler(reportableId);
         await updateReportStatus({
           reportId: selectedReport,
           status: "ACCEPTED",
         });
+        await deleteHandler(reportableId);
         refetch();
         setVisibleDrawer(false);
       } catch (e) {
@@ -241,8 +241,12 @@ const Reports = () => {
             <p>Email: {question.user?.email || "N/A"}</p>
 
             <h2 className="m-0 mt-2">Pergunta:</h2>
-
-            <p>{question.description || "Sem descrição"}</p>
+            <p>
+              <b>Título:</b> {question.title}
+            </p>
+            <p>
+              <b>Conteúdo:</b> {question.description || "Sem descrição"}
+            </p>
           </>
         ) : (
           <p>Pergunta não encontrada ou foi deletada.</p>
@@ -401,8 +405,8 @@ const Reports = () => {
                 <strong>Retorno ao denunciante:</strong>{" "}
                 {selectedReport &&
                   reports &&
-                  reports.find((r) => r.id === selectedReport)?.status ===
-                    "ACCEPTED" &&
+                  reports.find((r) => r.id === selectedReport)?.status !==
+                    "PENDING" &&
                   (reports.find((r) => r.id === selectedReport)?.message ||
                     "Não fornecido")}
               </p>

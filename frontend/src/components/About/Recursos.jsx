@@ -11,7 +11,7 @@ const Recursos = () => {
   });
 
   return (
-    <section ref={targetRef} className="relative h-[300vh]" id="recursos">
+    <section ref={targetRef} className="relative h-[200vh]" id="recursos">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         <div className="w-full max-w-5xl relative h-full flex flex-col justify-center">
           <StaticCard component={Forum} />

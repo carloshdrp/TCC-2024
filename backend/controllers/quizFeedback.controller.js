@@ -2,11 +2,14 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { quizAttemptService } = require('../services');
 const { pick } = require('../utils');
+const { checkAndAwardAchievements } = require('../services/achievement.service');
 
 const createQuizAttempt = catchAsync(async (req, res) => {
   const { quizId } = req.query;
   const { id: userId } = req.user;
   const quizAttempt = await quizAttemptService.createQuizAttempt(req.body, quizId, userId);
+  await checkAndAwardAchievements(userId);
+
   res.status(httpStatus.CREATED).send(quizAttempt);
 });
 

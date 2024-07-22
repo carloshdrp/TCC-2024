@@ -7,7 +7,6 @@ import {
   useRemoveUserMutation,
 } from "../api/slices/profileApiSlice";
 import {
-  Archive,
   Edit3Icon,
   LogOut,
   ThumbsUp,
@@ -16,7 +15,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Avatar, Button, Modal, notification, Spin, Table } from "antd";
+import { Avatar, Button, Empty, Modal, notification, Spin, Table } from "antd";
 import UserLeague from "../components/UserLeague.jsx";
 import ProfileForumActivities from "../components/Profile/ProfileForumActivities.jsx";
 
@@ -30,6 +29,8 @@ import { useGetReportsByUserIdQuery } from "../api/slices/reportApiSlice.js";
 import QuizActivities from "../components/Profile/QuizActivities.jsx";
 import CountUp from "react-countup";
 import renderStatusBadge from "../components/Manage/RenderStatusBadge.jsx";
+import Achievements from "../components/Profile/Achievements.jsx";
+import LeagueProgressBar from "../components/Profile/LeagueProgressBar.jsx";
 
 const { confirm } = Modal;
 
@@ -102,9 +103,18 @@ function Profile() {
     skip: !user,
   });
 
-  const { data: likeCount } = useGetLikeCountQuery(user?.id, {
-    skip: !user,
-  });
+  const { data: likeCount, refetch: refetchLikes } = useGetLikeCountQuery(
+    user?.id,
+    {
+      skip: !user,
+    },
+  );
+
+  useEffect(() => {
+    if (user) {
+      refetchLikes();
+    }
+  }, [refetchLikes, user]);
 
   const {
     data: userReports,
@@ -118,7 +128,7 @@ function Profile() {
     if (user) {
       refetchReports();
     }
-  }, [refetchReports]);
+  }, [refetchReports, user]);
 
   const navigate = useNavigate();
 
@@ -171,7 +181,7 @@ function Profile() {
   if (isLoading) {
     content = <Spin fullscreen />;
   } else if (error) {
-    content = <p>Erro: {error}</p>;
+    content = <p>Erro: {error.message}</p>;
   } else if (userData && likeCount) {
     const nextLeague = badgeRequirements.find(
       (league) => league.moreThan > likeCount.count,
@@ -283,17 +293,11 @@ function Profile() {
               (userData.role === "INICIANTE" && "Iniciante")}
           </span>
         </h2>
-        <h2 className="text-text m-0 mt-4" id="conquistas">
-          Minhas conquistas
-        </h2>
-        <div className="grid items-center justify-center w-full grid-flow-col bg-white rounded-lg min-h-32">
-          <div className="flex flex-col items-center justify-center p-2">
-            <Archive size={96} opacity="70%" strokeWidth={1.5} />
-            <p className="opacity-70">
-              Botar as conquistas aqui e colocar os requisitos para ganhar
-            </p>
-          </div>
-        </div>
+
+        <LeagueProgressBar likeCount={likeCount.count} />
+
+        <h2 className="text-text m-0 mt-4">Conquistas</h2>
+        <Achievements userId={user?.id} />
 
         <div className="flex items-center justify-between gap-8 text-text">
           <div className="w-1/2">
@@ -321,7 +325,10 @@ function Profile() {
             }}
           />
         ) : (
-          <p>Você não realizou nenhuma denúncia.</p>
+          <Empty
+            description={"Você ainda não realizou uma denúncia"}
+            className="bg-white rounded-[10px] py-2"
+          />
         )}
 
         <h2 className="text-text m-0 mt-4">Acesso rápido</h2>

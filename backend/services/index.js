@@ -12,3 +12,4 @@ module.exports.quizAttemptService = require('./quizFeedback.service');
 module.exports.pointsService = require('./points.service');
 module.exports.reportsService = require('./reports.service');
 module.exports.badgeService = require('./badges.service');
+module.exports.notificationService = require('./notification.service');

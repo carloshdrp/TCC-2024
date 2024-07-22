@@ -25,8 +25,9 @@ model User {
   role     Role    @default(INICIANTE)
   avatar   String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  lastProfileEdit DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   points Int    @default(0)
   league League @default(Topaz)
@@ -52,26 +53,24 @@ enum League {
 }
 
 model Achievement {
-  id String @id @default(cuid())
-
+  id          String   @id @default(cuid())
   title       String
-  image       String
-  description String @db.Text
-  goal        Int
+  description String
+  condition   String
+  imagePath   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   UserAchievements UserAchievements[]
 }
 
 model UserAchievements {
-  id            String @id @default(cuid())
+  id            String      @id @default(cuid())
   userId        String
   achievementId String
-
-  progress  Int     @default(0)
-  completed Boolean @default(false)
-
-  user        User        @relation(fields: [userId], references: [id])
-  achievement Achievement @relation(fields: [achievementId], references: [id])
+  unlockedAt    DateTime    @default(now())
+  user          User        @relation(fields: [userId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
 
   @@unique([userId, achievementId])
 }
@@ -262,6 +261,18 @@ enum RateableType {
   QUESTION
   ANSWER
   QUIZ
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  recipientId String
+  content     String
+  category    String
+  resourceId  String?
+  readAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([recipientId])
 }
 
 model Token {

@@ -45,3 +45,42 @@ p {
 .borda-teste{
   @apply border-solid border-2 border-red-500;
 }
+
+.ant-showcase {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f0f2f5;
+  border-radius: 8px;
+}
+
+.ant-showcase .ant-card {
+  height: 100%;
+}
+
+.ant-showcase .ant-form-item {
+  margin-bottom: 8px;
+}
+
+.mr-2 {
+  margin-right: 8px;
+}
+
+.ml-2 {
+  margin-left: 8px;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.ant-showcase .ant-card-body {
+  overflow: visible;
+}
+
+.ant-showcase .ant-select-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  width: 100% !important;
+}

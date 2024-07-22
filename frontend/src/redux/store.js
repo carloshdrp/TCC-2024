@@ -7,6 +7,7 @@ import forumNavigatorReducer from "./slices/forumNavigatorSlice";
 import quizCreateReducer from "./slices/quizCreateSlice";
 import quizMenuReducer from "./slices/quizMenuSlice";
 import quizPracticeReducer from "./slices/quizPracticeSlice.js";
+import notificationReducer from "./slices/notificationSlice.js";
 
 const persistConfig = {
   key: "authData",
@@ -23,6 +24,7 @@ export const store = configureStore({
     quizCreate: quizCreateReducer,
     quizMenu: quizMenuReducer,
     quizPractice: quizPracticeReducer,
+    Notification: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

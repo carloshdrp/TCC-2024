@@ -10,6 +10,7 @@ Table User {
   role Role [not null, default: 'INICIANTE']
   avatar String
   createdAt DateTime [default: `now()`, not null]
+  lastProfileEdit DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   points Int [not null, default: 0]
   league League [not null, default: 'Topaz']
@@ -28,9 +29,11 @@ Table User {
 Table Achievement {
   id String [pk]
   title String [not null]
-  image String [not null]
   description String [not null]
-  goal Int [not null]
+  condition String [not null]
+  imagePath String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
   UserAchievements UserAchievements [not null]
 }
 
@@ -38,8 +41,7 @@ Table UserAchievements {
   id String [pk]
   userId String [not null]
   achievementId String [not null]
-  progress Int [not null, default: 0]
-  completed Boolean [not null, default: false]
+  unlockedAt DateTime [default: `now()`, not null]
   user User [not null]
   achievement Achievement [not null]
 
@@ -156,6 +158,16 @@ Table Rating {
   userId String [not null]
   rateableId String [not null]
   rateableType RateableType [not null]
+}
+
+Table Notification {
+  id String [pk]
+  recipientId String [not null]
+  content String [not null]
+  category String [not null]
+  resourceId String
+  readAt DateTime
+  createdAt DateTime [default: `now()`, not null]
 }
 
 Table Token {

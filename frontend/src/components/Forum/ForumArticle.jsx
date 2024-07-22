@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, Spin } from "antd";
+import { Avatar, Dropdown, Spin } from "antd";
 import { UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetForumQuestionsQuery } from "../../api/slices/forumApiSlice";
@@ -90,7 +90,18 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
 
         return (
           <div key={question.id}>
-            <div className="bg-white rounded-t-[10px] flex flex-col gap-[10px] text-text p-[10px]">
+            <div
+              className="bg-white rounded-[10px] flex flex-col gap-[10px] text-text p-[10px] cursor-pointer hover:shadow-md transition-all"
+              onClick={(e) => {
+                if (
+                  e.target.closest(".ant-dropdown-trigger") ||
+                  e.target.closest(".ant-dropdown-menu")
+                ) {
+                  return;
+                }
+                navigate(question.id);
+              }}
+            >
               <div className="flex justify-between">
                 <p
                   className="text-2xl font-medium truncate hover:whitespace-normal"
@@ -156,13 +167,6 @@ export const ForumArticle = ({ selectedTab, searchTitle }) => {
                 </div>
               </div>
             </div>
-            <Button
-              type="primary"
-              className="w-full rounded-t-none"
-              onClick={() => navigate(question.id)}
-            >
-              Ler mais
-            </Button>
           </div>
         );
       });

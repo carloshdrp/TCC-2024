@@ -85,24 +85,35 @@ function Exercises() {
                   Questionário aleatório
                 </h2>
                 <p className="mb-[50px]">Ideal para uma revisão geral</p>
-                <Badge.Ribbon
-                  text={
-                    <p>
-                      +1 <img src={coin} alt="coin" className="w-3 h-3" />
-                    </p>
-                  }
-                  className="mt-1 text-sm"
-                  color="gold"
-                  style={{ top: "-1px" }}
-                >
+                {userState?.id ? (
+                  <Badge.Ribbon
+                    text={
+                      <p>
+                        +1 <img src={coin} alt="coin" className="w-3 h-3" />
+                      </p>
+                    }
+                    className="mt-1 text-sm"
+                    color="gold"
+                    style={{ top: "-1px" }}
+                  >
+                    <Button
+                      type="primary"
+                      onClick={handleRandomQuiz}
+                      className="w-full"
+                    >
+                      Começar
+                    </Button>
+                  </Badge.Ribbon>
+                ) : (
                   <Button
                     type="primary"
-                    onClick={handleRandomQuiz}
-                    className="w-full"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
                   >
                     Começar
                   </Button>
-                </Badge.Ribbon>
+                )}
               </div>
 
               <div className="flex flex-col bg-[url('./assets/bg-discovery-card-2.png')] bg-center bg-repeat-round w-full p-[20px] text-white rounded-[10px]">

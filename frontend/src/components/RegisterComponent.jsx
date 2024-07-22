@@ -114,7 +114,7 @@ const RegisterComponent = () => {
           name="name"
           label="Usuário:"
           hasFeedback="true"
-          rules={[{ required: true, message: "Este é um campo obrigatório!" }]}
+          rules={[{ required: true, message: "Este é um campo obrigatório" }]}
         >
           <Input placeholder="Digite seu nome de usuário" />
         </Form.Item>
@@ -123,8 +123,8 @@ const RegisterComponent = () => {
           label="Email:"
           hasFeedback="true"
           rules={[
-            { required: true, message: "Este é um campo obrigatório!" },
-            { type: "email", message: "Por favor, insira um email válido!" },
+            { required: true, message: "Este é um campo obrigatório" },
+            { type: "email", message: "Por favor, insira um email válido" },
           ]}
         >
           <Input placeholder="Digite seu email" />
@@ -134,14 +134,14 @@ const RegisterComponent = () => {
           hasFeedback="true"
           label="Senha:"
           rules={[
-            { required: true, message: "Este é um campo obrigatório!" },
+            { required: true, message: "Este é um campo obrigatório" },
             {
               min: 8,
-              message: "A senha deve ter no mínimo 8 caracteres!",
+              message: "A senha deve ter no mínimo 8 caracteres",
             },
             {
               pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-              message: "A senha deve conter no mínimo 1 letra e 1 número!",
+              message: "A senha deve conter no mínimo 1 letra e 1 número",
             },
           ]}
         >

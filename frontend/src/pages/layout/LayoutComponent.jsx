@@ -10,6 +10,7 @@ import ScrollTop from "../../components/ScrollTop";
 
 import PropTypes from "prop-types";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
+import Notifications from "../../components/Profile/Notification.jsx";
 
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
@@ -21,7 +22,7 @@ const LayoutComponent = ({ children, quizName }) => {
   const location = useLocation();
   const titles = {
     "/forum": "Fórum",
-    "/exercises": "Exercícios",
+    "/exercises": "Questionários",
     "/exercises/create": "Criar Questionário",
     "/exercise/": quizName,
     "/login": "Entrar",
@@ -44,7 +45,7 @@ const LayoutComponent = ({ children, quizName }) => {
 
   return (
     <Layout>
-      <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] bg-transparent">
+      <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] mx-auto  max-w-[1440px] bg-transparent">
         <Title level={2} className="m-0 !mb-0 text-text">
           <Link to="/" style={{ color: "#333" }}>
             🚀 {APP_NAME}
@@ -59,29 +60,32 @@ const LayoutComponent = ({ children, quizName }) => {
             Fórum <ArrowRight />
           </Link>
           <Link to="/exercises">
-            Exercícios <ArrowRight />
+            Questionários <ArrowRight />
           </Link>
         </div>
 
         <div className="flex items-center justify-center h-[30px] ">
           {user ? (
-            <Link
-              to="/profile"
-              className="text-black mr-[15px] hover:text-black  flex items-center px-2 gap-2"
-            >
-              <Avatar
-                size="large"
-                src={user.avatar ? API_AVATAR + user.avatar : undefined}
-                icon={!user.avatar && <UserRound />}
-              />
-              {user.name}
-            </Link>
+            <>
+              <Link
+                to="/profile"
+                className="text-black  hover:text-black flex items-center px-2 gap-2"
+              >
+                <Avatar
+                  size="large"
+                  src={user.avatar ? API_AVATAR + user.avatar : undefined}
+                  icon={!user.avatar && <UserRound />}
+                />
+                {user.name}
+              </Link>
+              <Notifications />
+            </>
           ) : (
             <Link to="/login" className="text-black mr-[15px] hover:text-black">
               Entrar
             </Link>
           )}
-          <Link to="/about" className="btn-nav hover:text-primary">
+          <Link to="/about" className="btn-nav hover:text-primary ml-[15px]">
             Recursos
             <div className="btn-nav-icon">
               <ArrowUpRight size="16" color="white" className="absolute" />
@@ -95,7 +99,7 @@ const LayoutComponent = ({ children, quizName }) => {
         exit={{ x: -100, opacity: 0 }}
         transition={{ duration: 0.45, ease: "easeInOut" }}
       >
-        <Content className="px-[90px] min-h-[calc(100vh-200px)]">
+        <Content className="px-[90px] mx-auto min-h-[calc(100vh-200px)] max-w-[1440px]">
           {children}
         </Content>
       </motion.div>

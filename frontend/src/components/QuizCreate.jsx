@@ -3,11 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { getQuiz, setQuiz, setStep } from "../redux/slices/quizCreateSlice.js";
 import { useHandleCancel } from "../utils/quiz/handleCancel.js";
 import { getMenuTab } from "../redux/slices/quizMenuSlice.js";
+import { selectCurrentUser } from "../redux/slices/authSlice.js";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const QuizCreate = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
+
+  const user = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.role === "INICIANTE") {
+      navigate(-1);
+    }
+  }, [user, navigate]);
 
   const menuTab = useSelector(getMenuTab);
 

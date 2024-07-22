@@ -55,7 +55,15 @@ export const ForumQuestion = () => {
     refetch();
   }, [questionData, refetch, refreshAnswers]);
 
-  const ratingData = useGetRatingByRateableIdQuery(questionId);
+  const {
+    data: ratingData,
+    isLoading: ratingLoading,
+    refetch: refetchRating,
+  } = useGetRatingByRateableIdQuery(questionId);
+
+  useEffect(() => {
+    refetchRating();
+  }, [refetchRating]);
 
   const [createAnswer, { isLoading }] = useCreateAnswerMutation();
   const { data: answerData, isLoading: answerLoading } =
@@ -67,24 +75,25 @@ export const ForumQuestion = () => {
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
-    try {
-      await createAnswer({
-        questionId,
-        description: values.description,
-      });
-      form.resetFields();
-      setRefreshAnswers((i) => i + 1);
-      setIsExpanded(false);
-      notification.success({
-        message: "Resposta adicionada com sucesso!",
-        description: "Foi adicionado 1 ponto à sua conta!",
-      });
-    } catch (error) {
-      notification.error({
-        message: "Erro ao adicionar resposta!",
-        description: error.error,
-      });
-    }
+    await createAnswer({
+      questionId,
+      description: values.description,
+    }).then((res) => {
+      if (!res.error?.data) {
+        notification.success({
+          message: "Resposta adicionada com sucesso!",
+          description: "Foi adicionado 1 ponto à sua conta!",
+        });
+      } else {
+        notification.error({
+          message: "Erro ao adicionar resposta!",
+          description: res.error.data.message,
+        });
+      }
+    });
+    form.resetFields();
+    setRefreshAnswers((i) => i + 1);
+    setIsExpanded(false);
   };
 
   let content;
@@ -124,7 +133,7 @@ export const ForumQuestion = () => {
       },
     ];
 
-    const rating = ratingData?.data?.find(
+    const rating = ratingData?.find(
       (rating) => rating.userId === userState?.id,
     );
 
@@ -133,7 +142,7 @@ export const ForumQuestion = () => {
 
       if (rating) {
         deleteRating({ id: rating.id, userId: userState.id }).then(() => {
-          ratingData.refetch();
+          refetchRating();
           setProcessingLike(false);
         });
       } else {
@@ -141,7 +150,7 @@ export const ForumQuestion = () => {
           rateableId: questionId,
           rateableType: "QUESTION",
         }).then(() => {
-          ratingData.refetch();
+          refetchRating();
           setProcessingLike(false);
         });
       }
@@ -261,12 +270,12 @@ export const ForumQuestion = () => {
                   </Button>
                 )}
 
-                {ratingData.isLoading ? (
+                {ratingLoading ? (
                   <Spin />
-                ) : ratingData.data.length > 1 ? (
-                  <span>{ratingData.data.length} Curtidas</span>
+                ) : ratingData.length > 1 ? (
+                  <span>{ratingData.length} Curtidas</span>
                 ) : (
-                  <span>{ratingData.data.length} Curtida</span>
+                  <span>{ratingData.length} Curtida</span>
                 )}
               </div>
             </div>
@@ -280,7 +289,8 @@ export const ForumQuestion = () => {
 
           {userState &&
             userState?.id !== questionData.userId &&
-            !answerData.some((answer) => answer.userId === userState?.id) && (
+            !answerData.some((answer) => answer.userId === userState?.id) &&
+            userState?.role !== "INICIANTE" && (
               <div className="flex flex-col">
                 <Badge.Ribbon
                   text={

@@ -2,11 +2,14 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { questionService } = require('../services');
 const { pick, ApiError } = require('../utils');
+const { checkAndAwardAchievements } = require('../services/achievement.service');
 
 const createQuestion = catchAsync(async (req, res) => {
   const authorId = req.user.id;
   const { tagId, ...questionBody } = req.body;
   const question = await questionService.createQuestion(questionBody, authorId, tagId);
+  await checkAndAwardAchievements(authorId);
+
   res.status(httpStatus.CREATED).send(question);
 });
 

@@ -3,6 +3,7 @@ import { Spin } from "antd";
 import CountUp from "react-countup";
 import { useGetAnswersQuery } from "../../api/slices/answersApiSlice.js";
 import { useGetRatingByUserIdQuery } from "../../api/slices/ratingApiSlice.js";
+import { useEffect } from "react";
 
 const ProfileForumActivities = ({ userId }) => {
   const filter = {
@@ -13,13 +14,32 @@ const ProfileForumActivities = ({ userId }) => {
     data: questionsData,
     error: questionError,
     isLoading: questionLoading,
+    refetch: questionsRefetch,
   } = useGetForumQuestionsQuery(filter);
 
-  const { data: answersData, isLoading: answerLoading } =
-    useGetAnswersQuery(filter);
+  const {
+    data: answersData,
+    isLoading: answerLoading,
+    refetch: answerRefetch,
+  } = useGetAnswersQuery(filter);
 
-  const { data: ratingData, isLoading: ratingLoading } =
-    useGetRatingByUserIdQuery(userId);
+  const {
+    data: ratingData,
+    isLoading: ratingLoading,
+    refetch: ratingRefetch,
+  } = useGetRatingByUserIdQuery(userId);
+
+  useEffect(() => {
+    questionsRefetch();
+  }, [questionsRefetch]);
+
+  useEffect(() => {
+    answerRefetch();
+  }, [answerRefetch]);
+
+  useEffect(() => {
+    ratingRefetch();
+  }, [ratingRefetch]);
 
   let content;
 

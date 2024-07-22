@@ -3,6 +3,8 @@ const catchAsync = require('../utils/catchAsync');
 const { ratingService, badgeService } = require('../services');
 
 const { pick, ApiError } = require('../utils');
+const { createNotification } = require('../services/notification.service');
+const { getUserSocket } = require('../socketManager');
 
 const createRating = catchAsync(async (req, res) => {
   const userId = req.user.id;
@@ -15,6 +17,14 @@ const createRating = catchAsync(async (req, res) => {
 
   if (beforeProgress.newLeague !== afterProgress.newLeague) {
     await badgeService.updateUserLeague(resourceOwnerId, afterProgress.newLeague);
+  }
+
+  const notification = await createNotification(resourceOwnerId, 'Você recebeu uma nova curtida', 'rating');
+  const resourceOwnerSocket = getUserSocket(resourceOwnerId);
+  if (resourceOwnerSocket) {
+    resourceOwnerSocket.emit('newNotification', notification);
+  } else {
+    console.log(`Socket não encontrado para o usuário ${resourceOwnerId}`);
   }
 
   res.status(httpStatus.CREATED).send({ rating, badgeProgress: afterProgress });

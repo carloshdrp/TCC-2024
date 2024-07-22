@@ -2,6 +2,9 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { answerService, questionService } = require('../services');
 const { pick, ApiError } = require('../utils');
+const { createNotification } = require('../services/notification.service');
+const { getUserSocket } = require('../socketManager');
+const { checkAndAwardAchievements } = require('../services/achievement.service');
 
 const createAnswer = catchAsync(async (req, res) => {
   const userId = req.user.id;
@@ -14,6 +17,21 @@ const createAnswer = catchAsync(async (req, res) => {
 
   try {
     const answer = await answerService.createAnswer(answerBody, userId, questionId);
+    await checkAndAwardAchievements(userId);
+
+    const notification = await createNotification(
+      question.userId,
+      'Sua pergunta recebeu uma resposta',
+      'answer-received',
+      `/forum/${question.id}`,
+    );
+    const resourceOwnerSocket = getUserSocket(question.userId);
+    if (resourceOwnerSocket) {
+      resourceOwnerSocket.emit('newNotification', notification);
+    } else {
+      console.log(`Socket não encontrado para o usuário ${question.userId}`);
+    }
+
     res.status(httpStatus.CREATED).send(answer);
   } catch (error) {
     throw new ApiError(httpStatus.BAD_REQUEST, error.message);
@@ -68,6 +86,16 @@ const deleteAnswer = catchAsync(async (req, res) => {
   }
 });
 
+const attachAnswer = catchAsync(async (req, res, next) => {
+  const answer = await answerService.getAnswerById(req.params.answerId);
+  if (!answer) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Resposta não encontrada');
+  }
+  req.answer = answer;
+  req.resourceOwnerId = answer.userId;
+  next();
+});
+
 module.exports = {
   createAnswer,
   getAnswer,
@@ -75,4 +103,5 @@ module.exports = {
   getAnswersByQuestionId,
   updateAnswer,
   deleteAnswer,
+  attachAnswer,
 };

@@ -165,7 +165,7 @@ function ProfileEdit() {
               rules={[
                 {
                   required: true,
-                  message: "Este campo não pode ser vazio!",
+                  message: "Este campo não pode estar vazio",
                 },
               ]}
             >
@@ -178,11 +178,11 @@ function ProfileEdit() {
               rules={[
                 {
                   type: "email",
-                  message: "Por favor, insira um email válido!",
+                  message: "Por favor, insira um email válido",
                 },
                 {
                   required: true,
-                  message: "Este campo não pode ser vazio!",
+                  message: "Este campo não pode estar vazio",
                 },
               ]}
             >
@@ -197,7 +197,7 @@ function ProfileEdit() {
                   rules={[
                     {
                       min: 8,
-                      message: "A senha deve ter no mínimo 8 caracteres!",
+                      message: "A senha deve ter no mínimo 8 caracteres",
                     },
                   ]}
                 >
@@ -213,7 +213,7 @@ function ProfileEdit() {
                   rules={[
                     {
                       min: 8,
-                      message: "A senha deve ter no mínimo 8 caracteres!",
+                      message: "A senha deve ter no mínimo 8 caracteres",
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
@@ -222,7 +222,7 @@ function ProfileEdit() {
                         }
                         if (value !== getFieldValue("new-password")) {
                           return Promise.reject(
-                            new Error("As senhas não correspondem!"),
+                            new Error("As senhas não correspondem"),
                           );
                         }
                         return Promise.resolve();
@@ -230,7 +230,7 @@ function ProfileEdit() {
                     }),
                     ({ getFieldValue }) => ({
                       required: !!getFieldValue("new-password"),
-                      message: "Por favor, confirme sua senha!",
+                      message: "Por favor, confirme sua senha",
                     }),
                   ]}
                 >
@@ -259,7 +259,7 @@ function ProfileEdit() {
                     deleteAvatar(user.avatar);
                     notification.success({
                       message: `Avatar atualizado!`,
-                      description: `Você removeu com sucesso o seu avatar!`,
+                      description: `Você removeu com sucesso o seu avatar`,
                     });
                   }
                   setServerFile(null);

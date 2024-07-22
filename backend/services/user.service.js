@@ -46,6 +46,13 @@ const getUserByEmail = async (email) => {
 const updateUserById = async (userId, updateBody) => {
   const updateData = { ...updateBody };
 
+  const profileFields = ['name', 'email', 'avatar', 'password'];
+  const isProfileEdit = profileFields.some((field) => field in updateData);
+
+  if (isProfileEdit) {
+    updateData.lastProfileEdit = new Date();
+  }
+
   if (updateData.email) {
     const emailExists = await prisma.user.findUnique({
       where: { email: updateData.email },
@@ -205,6 +212,13 @@ const getUserCount = async () => {
   return prisma.user.count();
 };
 
+const getUserAchievements = async (userId) => {
+  return prisma.userAchievements.findMany({
+    where: { userId },
+    include: { achievement: true },
+  });
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -215,4 +229,5 @@ module.exports = {
   getRanking,
   getLeague,
   getUserCount,
+  getUserAchievements,
 };

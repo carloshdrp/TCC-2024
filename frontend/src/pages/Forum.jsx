@@ -68,11 +68,6 @@ function Forum() {
               <Button
                 type="primary"
                 onClick={() => navigate("ask")}
-                style={
-                  userData.points >= 1
-                    ? { background: "rgb(255, 64, 129, 1)" }
-                    : true
-                }
                 className="font-medium"
                 disabled={userData.points < 1}
               >
@@ -84,7 +79,7 @@ function Forum() {
           <ForumArticle selectedTab={selectedTab} searchTitle={searchTitle} />
         </div>
         <div className="flex flex-col h-full row-span-3 gap-5">
-          {userState && <ForumAchievements />}
+          {userState && <ForumAchievements userId={userData?.id} />}
           <ForumTrendingTopics />
           <ForumStatisticWidgets />
         </div>
