@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { API_AVATAR, APP_NAME } from "../../config";
 import ScrollTop from "../../components/ScrollTop";
+import logo from "../../assets/foguete.png";
 
 import PropTypes from "prop-types";
 import { selectCurrentUser } from "../../redux/slices/authSlice";
@@ -47,8 +48,12 @@ const LayoutComponent = ({ children, quizName }) => {
     <Layout>
       <Header className="top-0 flex w-full h-32 items-center justify-between z-1 px-[90px] mx-auto  max-w-[1440px] bg-transparent">
         <Title level={2} className="m-0 !mb-0 text-text">
-          <Link to="/" style={{ color: "#333" }}>
-            🚀 {APP_NAME}
+          <Link
+            to="/"
+            style={{ color: "#333" }}
+            className="flex items-center gap-2"
+          >
+            <img src={logo} alt="logo" className="w-9 h-9" /> {APP_NAME}
           </Link>
         </Title>
 

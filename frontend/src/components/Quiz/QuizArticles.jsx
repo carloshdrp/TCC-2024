@@ -138,7 +138,7 @@ const QuizArticles = ({ menuTab, searchTitle }) => {
       </Spin>
     );
   } else if (quizzesError) {
-    content = <p>Erro: {quizzesError.data.message}</p>;
+    content = <p>Erro: {quizzesError.error}</p>;
   } else if (quizzesData) {
     if (menuTab === "Seu histórico") {
       content = <HistoryArticles />;
