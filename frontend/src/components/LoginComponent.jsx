@@ -51,7 +51,7 @@ const LoginComponent = () => {
         name="login"
         initialValues={{ remember: true }}
         layout="vertical"
-        className="text-left mb-[5px]"
+        className="text-left mb-[5px] w-full px-8"
         onFinish={onFinish}
       >
         <Form.Item
