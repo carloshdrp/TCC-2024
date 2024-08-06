@@ -262,6 +262,32 @@ const ExerciseLanding = () => {
       }
     };
 
+    let scoreDisplay;
+    if (scoreLoading) {
+      scoreDisplay = <Spin />;
+    } else if (
+      quizScore &&
+      quizScore.score !== null &&
+      quizScore.score !== undefined
+    ) {
+      scoreDisplay = (
+        <div className="flex items-center gap-1">
+          <Rate disabled defaultValue={quizScore.score} allowHalf />
+          <p className="text-[#EABF28]">
+            {quizScore.score <= 1
+              ? "Muito Fácil"
+              : quizScore.score <= 2
+                ? "Fácil"
+                : quizScore.score <= 3
+                  ? "Médio"
+                  : quizScore.score <= 4
+                    ? "Difícil"
+                    : "Muito Difícil"}
+          </p>
+        </div>
+      );
+    }
+
     content = (
       <>
         <Breadcrumb items={topMenu} />
@@ -291,22 +317,7 @@ const ExerciseLanding = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-1">
-              <Rate disabled defaultValue={score} allowHalf />
-              <p className="text-[#EABF28]">
-                {score === null
-                  ? "N.A."
-                  : score <= 1
-                    ? "Muito Fácil"
-                    : score <= 2
-                      ? "Fácil"
-                      : score <= 3
-                        ? "Médio"
-                        : score <= 4
-                          ? "Difícil"
-                          : "Muito Difícil"}
-              </p>
-            </div>
+            {scoreDisplay}
           </div>
 
           <p>{quiz.description}</p>
