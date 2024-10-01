@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import Forum from "./Recursos/Forum.jsx";
 import Quiz from "./Recursos/Quiz.jsx";
@@ -18,7 +18,7 @@ const Recursos = () => {
           <AnimatedCard
             component={Quiz}
             progress={scrollYProgress}
-            range={[0, 0.5]}
+            range={[0, 0.4, 0.6, 0.8]}
           />
         </div>
       </div>
@@ -28,16 +28,16 @@ const Recursos = () => {
 
 const StaticCard = ({ component: Component }) => {
   return (
-    <div className="w-full absolute left-0 right-0 h-auto max-h-[100vh] overflow-visible">
+    <div className="w-full absolute left-0 right-0 h-auto max-h-[80vh] overflow-visible">
       <Component />
     </div>
   );
 };
 
 const AnimatedCard = ({ component: Component, progress, range }) => {
-  const yRange = useTransform(progress, range, [600, 20]);
-  const scaleRange = useTransform(progress, range, [0.8, 1]);
-  const opacityRange = useTransform(progress, range, [0.6, 1]);
+  const yRange = useTransform(progress, range, [600, 20, 20, 20]);
+  const scaleRange = useTransform(progress, range, [0.8, 1, 1, 1]);
+  const opacityRange = useTransform(progress, range, [0.6, 1, 1, 1]);
 
   const y = useSpring(yRange, {
     stiffness: 100,
@@ -64,7 +64,7 @@ const AnimatedCard = ({ component: Component, progress, range }) => {
         zIndex: 1,
       }}
       transition={{ duration: 1 }}
-      className="w-full absolute left-0 right-0 h-auto max-h-[100vh] overflow-visible"
+      className="w-full absolute left-0 right-0 h-auto max-h-[80vh] overflow-visible"
     >
       <Component />
     </motion.div>

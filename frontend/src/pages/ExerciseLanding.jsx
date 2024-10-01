@@ -56,6 +56,7 @@ const ExerciseLanding = () => {
   const userState = useSelector(selectCurrentUser);
 
   const [processingLike, setProcessingLike] = useState(false);
+  const [displayScore, setScoreDisplay] = useState(null);
 
   const { data: quiz, isLoading, error, refetch } = useGetQuizQuery(exerciseId);
 
@@ -64,6 +65,33 @@ const ExerciseLanding = () => {
     isLoading: scoreLoading,
     refetch: refreshScore,
   } = useGetQuizScoreQuery(exerciseId);
+
+  useEffect(() => {
+    let scoreDisplay;
+    if (scoreLoading) {
+      scoreDisplay = <Spin />;
+    } else if (quizScore && quizScore.score !== undefined) {
+      scoreDisplay = (
+        <div className="flex items-center gap-1">
+          <Rate disabled defaultValue={quizScore.score} allowHalf />
+          <p className="text-[#EABF28]">
+            {quizScore.score === null
+              ? "N.A."
+              : quizScore.score <= 1
+                ? "Muito Fácil"
+                : quizScore.score <= 2
+                  ? "Fácil"
+                  : quizScore.score <= 3
+                    ? "Médio"
+                    : quizScore.score <= 4
+                      ? "Difícil"
+                      : "Muito Difícil"}
+          </p>
+        </div>
+      );
+    }
+    setScoreDisplay(scoreDisplay);
+  }, [quizScore, scoreLoading]);
 
   const { data: quizFeedbacks } = useGetQuizFeedbackQuery(exerciseId);
 
@@ -161,13 +189,6 @@ const ExerciseLanding = () => {
       rating = ratingData?.find((rating) => rating.userId === userState?.id);
     }
 
-    let score;
-    if (scoreLoading) {
-      score = <Spin />;
-    } else if (quizScore) {
-      score = quizScore.score;
-    }
-
     const handleDeleteQuiz = async (quiz) => {
       try {
         await deleteQuizRelation(quiz.id);
@@ -262,32 +283,6 @@ const ExerciseLanding = () => {
       }
     };
 
-    let scoreDisplay;
-    if (scoreLoading) {
-      scoreDisplay = <Spin />;
-    } else if (
-      quizScore &&
-      quizScore.score !== null &&
-      quizScore.score !== undefined
-    ) {
-      scoreDisplay = (
-        <div className="flex items-center gap-1">
-          <Rate disabled defaultValue={quizScore.score} allowHalf />
-          <p className="text-[#EABF28]">
-            {quizScore.score <= 1
-              ? "Muito Fácil"
-              : quizScore.score <= 2
-                ? "Fácil"
-                : quizScore.score <= 3
-                  ? "Médio"
-                  : quizScore.score <= 4
-                    ? "Difícil"
-                    : "Muito Difícil"}
-          </p>
-        </div>
-      );
-    }
-
     content = (
       <>
         <Breadcrumb items={topMenu} />
@@ -317,7 +312,7 @@ const ExerciseLanding = () => {
               </p>
             </div>
 
-            {scoreDisplay}
+            {displayScore}
           </div>
 
           <p>{quiz.description}</p>

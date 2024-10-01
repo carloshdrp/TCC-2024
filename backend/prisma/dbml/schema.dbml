@@ -24,6 +24,7 @@ Table User {
   QuizRelation quizRelation [not null]
   QuizQuestionAnswer QuizQuestionAnswer [not null]
   QuizAttempt QuizAttempt [not null]
+  Notification Notification [not null]
 }
 
 Table Achievement {
@@ -162,6 +163,7 @@ Table Rating {
 
 Table Notification {
   id String [pk]
+  User User [not null]
   recipientId String [not null]
   content String [not null]
   category String [not null]
@@ -284,5 +286,7 @@ Ref: QuizAttempt.userId > User.id
 Ref: Report.userId > User.id
 
 Ref: Rating.userId > User.id
+
+Ref: Notification.recipientId > User.id [delete: Cascade]
 
 Ref: Token.userId > User.id [delete: Cascade]

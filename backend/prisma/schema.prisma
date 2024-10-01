@@ -42,6 +42,7 @@ model User {
   QuizRelation       quizRelation[]
   QuizQuestionAnswer QuizQuestionAnswer[]
   QuizAttempt        QuizAttempt[]
+  Notification       Notification[]
 }
 
 enum League {
@@ -265,6 +266,7 @@ enum RateableType {
 
 model Notification {
   id          String    @id @default(cuid())
+  User        User      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   recipientId String
   content     String
   category    String
