@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import { API_URL } from "./index.js";
 import { logoutUser } from "../redux/slices/authSlice";
-import { useDispatch } from "react-redux"; // Importe a action de logout
+import { useDispatch } from "react-redux"; 
 
 let socket = null;
 let reconnectAttempts = 0;
