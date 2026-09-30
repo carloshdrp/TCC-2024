@@ -26,19 +26,3 @@ Porta padrão: `8080`
  ```cd frontend``` > ```npm i``` > ```npm run dev```
 
 Porta padrão: `5173`
-
-# Ainda faltam:
-- [X] Completar a página Recursos;
-- [X] Notificação;
-- [X] Completar seeds;
-- [X] Ajustar conquista editar perfil para não alterar o updatedAt quando os pontos forem trocados;
-- [X] Trocar ícones do antd pelo lucide
-
----
-- [X] Quando o estado menuTab foi != de descobrir, utilizar ela como valor do select no formulário;
-- [X] Melhorar as rules e a mensagem de erro no formulário de register;
-- [X] Adicionar campo descrição a denúncia e exibir no lugar do ID na tabela;
-- [X] Adicionar uma seção suas denúncias no perfil do usuário;
-- [X] Mostrar se o administrador deletou ou não o recurso denunciado;
-- [X] Ajustar as permissões;
-- [X] Conquistas;
